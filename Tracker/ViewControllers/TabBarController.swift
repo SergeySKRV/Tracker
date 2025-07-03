@@ -4,15 +4,14 @@ import UIKit
 final class TabBarController: UITabBarController {
     
     // MARK: - Lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupAppearance()
         configureViewControllers()
+        addTopBorder()
     }
     
     // MARK: - Appearance Setup
-    
     private func setupAppearance() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
@@ -22,7 +21,6 @@ final class TabBarController: UITabBarController {
     }
     
     // MARK: - View Controllers Configuration
-    
     private func configureViewControllers() {
         let trackersViewController = TrackersViewController()
         trackersViewController.tabBarItem = UITabBarItem(
@@ -40,4 +38,16 @@ final class TabBarController: UITabBarController {
         
         self.viewControllers = [trackersViewController, statisticsViewController]
     }
+    private func addTopBorder() {
+           let borderLayer = CALayer()
+           borderLayer.backgroundColor = UIColor.ypGray.cgColor
+           borderLayer.frame = CGRect(
+               x: 0,
+               y: 0,
+               width: tabBar.frame.width,
+               height: 0.5
+           )
+           tabBar.layer.addSublayer(borderLayer)
+       }
 }
+

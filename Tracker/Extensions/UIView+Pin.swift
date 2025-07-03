@@ -1,7 +1,6 @@
 import UIKit
 
 // MARK: - Pin Layout Class
-
 final class Pin {
     private let view: UIView
     init(view: UIView) {
@@ -9,7 +8,6 @@ final class Pin {
     }
     
     // MARK: - Position Constraints
-    
     @discardableResult
     func top(_ anchor: NSLayoutYAxisAnchor, offset: CGFloat = 0) -> Self {
         view.topAnchor.constraint(equalTo: anchor, constant: offset).isActive = true
@@ -23,8 +21,15 @@ final class Pin {
     }
     
     @discardableResult
-    func trailing(_ anchor: NSLayoutXAxisAnchor, offset: CGFloat = 0) -> Self {
-        view.trailingAnchor.constraint(equalTo: anchor, constant: offset).isActive = true
+    func trailing(_ anchor: NSLayoutXAxisAnchor, offset: CGFloat = 0, relation: PinRelation = .equal) -> Self {
+        let constraint: NSLayoutConstraint
+        switch relation {
+        case .equal:
+            constraint = view.trailingAnchor.constraint(equalTo: anchor, constant: offset)
+        case .lessThanOrEqual:
+            constraint = view.trailingAnchor.constraint(lessThanOrEqualTo: anchor, constant: offset)
+        }
+        constraint.isActive = true
         return self
     }
     
@@ -79,9 +84,14 @@ final class Pin {
 }
 
 // MARK: - UIView Extension for Pin
-
 extension UIView {
     var pin: Pin {
         return Pin(view: self)
     }
 }
+
+enum PinRelation {
+    case equal
+    case lessThanOrEqual
+}
+

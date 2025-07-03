@@ -21,12 +21,25 @@ enum Weekday: Int, CaseIterable {
         case .sunday: return "Вс"
         }
     }
+    
+    var fullName: String {
+        switch self {
+        case .monday: return "Понедельник"
+        case .tuesday: return "Вторник"
+        case .wednesday: return "Среда"
+        case .thursday: return "Четверг"
+        case .friday: return "Пятница"
+        case .saturday: return "Суббота"
+        case .sunday: return "Воскресенье"
+        }
+    }
 }
 
-struct Tracker {
-    let id: UUID
-    let title: String
-    let color: UIColor
-    let emoji: String
-    let schedule: Set<Weekday>
-}
+    struct Tracker {
+        let id: UUID
+        let title: String
+        let color: UIColor
+        let emoji: String
+        let schedule: Set<Weekday>
+    }
+
