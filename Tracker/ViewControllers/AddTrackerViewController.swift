@@ -7,6 +7,9 @@ enum TrackerType {
 
 // MARK: - AddTrackerViewController Class
 final class AddTrackerViewController: UIViewController {
+    private enum Constants {
+            static let maxTitleLength = 38
+        }
     
     // MARK: - Properties
     private let type: TrackerType
@@ -60,7 +63,7 @@ final class AddTrackerViewController: UIViewController {
     
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
-        label.text = "Ограничение 38 символов"
+        label.text = "Ограничение \(Constants.maxTitleLength) символов"
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
         label.textColor = .ypRed
         label.textAlignment = .center
@@ -179,9 +182,9 @@ final class AddTrackerViewController: UIViewController {
             clearButton.isHidden = text.isEmpty
         }
         
-        if text.count > 38 {
+        if text.count > Constants.maxTitleLength {
             errorLabel.isHidden = false
-            textField.text = String(text.prefix(38))
+            textField.text = String(text.prefix(Constants.maxTitleLength))
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
@@ -244,36 +247,36 @@ extension AddTrackerViewController: UITableViewDataSource {
         cell.backgroundColor = .ypBackgroundDay
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
-        
         cell.textLabel?.text = options[indexPath.row]
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
-        
-        if indexPath.row == 1 {
-            if !selectedDays.isEmpty {
-                let sortedDays = selectedDays.sorted(by: { $0.rawValue < $1.rawValue })
-                let daysString = sortedDays.map { $0.shortName }.joined(separator: ", ")
-                
-                cell.detailTextLabel?.text = daysString
-                cell.detailTextLabel?.textColor = .ypGray
-                cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
-            }
+
+        if indexPath.row == 1 && !selectedDays.isEmpty {
+            let sortedDays = selectedDays.sorted(by: { $0.rawValue < $1.rawValue })
+            let daysString = sortedDays.map { $0.shortName }.joined(separator: ", ")
+            cell.detailTextLabel?.text = daysString
+            cell.detailTextLabel?.textColor = .ypGray
+            cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
+        } else {
+            cell.detailTextLabel?.text = nil
         }
-        
-        if options.count == 1 {
+
+        switch (options.count, indexPath.row) {
+        case (1, _):
             cell.layer.cornerRadius = 16
             cell.layer.masksToBounds = true
-        } else {
-            switch indexPath.row {
-            case 0:
-                cell.layer.cornerRadius = 16
-                cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-            case options.count - 1:
-                cell.layer.cornerRadius = 16
-                cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-            default:
-                cell.layer.cornerRadius = 0
-            }
+            
+        case (_, 0):
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+            
+        case (_, let row) where row == options.count - 1:
+            cell.layer.cornerRadius = 16
+            cell.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+            
+        default:
+            cell.layer.cornerRadius = 0
         }
+        
         return cell
     }
     
