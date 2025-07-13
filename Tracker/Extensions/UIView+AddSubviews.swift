@@ -1,16 +1,10 @@
 import UIKit
 
-// MARK: - UIView Extension
-
+// MARK: - UIView Extension: Subviews Management
 extension UIView {
-    func addSubviews(_ views: UIView...) {
-        addSubviews(views)
-    }
     
-    func addSubviews(_ views: [UIView]) {
-        views.forEach { view in
-            view.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(view)
-        }
+    // MARK: - Public Methods
+    func addSubviews(_ views: UIView...) {
+        views.forEach { addSubview($0) }
     }
 }

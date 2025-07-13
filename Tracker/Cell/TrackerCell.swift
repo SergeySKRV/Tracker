@@ -1,4 +1,5 @@
 import UIKit
+import SnapKit
 
 // MARK: - TrackerCell Class
 final class TrackerCell: UICollectionViewCell {
@@ -85,43 +86,46 @@ final class TrackerCell: UICollectionViewCell {
     
     // MARK: - Private Methods
     private func setupUI() {
-        contentView.addSubviews(cardView, daysCountLabel, checkButton)
-        cardView.addSubviews(emojiBackground, titleLabel)
-        emojiBackground.addSubviews(emojiLabel)
+        [cardView, daysCountLabel, checkButton].forEach {
+            contentView.addSubview($0)
+        }
+        [emojiBackground, titleLabel].forEach {
+            cardView.addSubview($0)
+        }
+        emojiBackground.addSubview(emojiLabel)
     }
     
     private func setupConstraints() {
-        cardView.pin
-            .top(contentView.topAnchor)
-            .leading(contentView.leadingAnchor)
-            .trailing(contentView.trailingAnchor)
-            .height(90)
+        cardView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(90)
+        }
         
-        emojiBackground.pin
-            .top(cardView.topAnchor, offset: 12)
-            .leading(cardView.leadingAnchor, offset: 12)
-            .width(24)
-            .height(24)
+        emojiBackground.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(12)
+            make.width.height.equalTo(24)
+        }
         
-        emojiLabel.pin
-            .centerX(to: emojiBackground.centerXAnchor)
-            .centerY(to: emojiBackground.centerYAnchor)
-      
-        titleLabel.pin
-            .leading(cardView.leadingAnchor, offset: 12)
-            .trailing(cardView.trailingAnchor, offset: -12)
-            .bottom(cardView.bottomAnchor, offset: -12)
-   
-        daysCountLabel.pin
-            .top(cardView.bottomAnchor, offset: 16)
-            .leading(contentView.leadingAnchor, offset: 12)
-            .bottom(contentView.bottomAnchor, offset: -24)
-      
-        checkButton.pin
-            .top(cardView.bottomAnchor, offset: 8)
-            .trailing(contentView.trailingAnchor, offset: -16)
-            .width(34)
-            .height(34)
+        emojiLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(12)
+            make.bottom.equalToSuperview().offset(-12)
+        }
+        
+        daysCountLabel.snp.makeConstraints { make in
+            make.top.equalTo(cardView.snp.bottom).offset(16)
+            make.leading.equalToSuperview().offset(12)
+            make.bottom.equalToSuperview().offset(-24)
+        }
+        
+        checkButton.snp.makeConstraints { make in
+            make.top.equalTo(cardView.snp.bottom).offset(8)
+            make.trailing.equalToSuperview().offset(-16)
+            make.width.height.equalTo(34)
+        }
     }
     
     private func pluralizeDays(count: Int) -> String {

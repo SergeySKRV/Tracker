@@ -1,0 +1,55 @@
+import UIKit
+import CoreData
+
+// MARK: - TrackerCoreData Extension
+extension TrackerCoreData {
+    
+    // MARK: - Public Methods
+    func toTracker() -> Tracker? {
+        guard let id = id,
+              let title = title,
+              let emoji = emoji,
+              let colorHex = color,
+              let color = UIColor(hex: colorHex) else {
+            print("Failed to convert TrackerCoreData: Missing required fields")
+            return nil
+        }
+        
+        let schedule: Set<Weekday> = decodeSchedule(from: schedule)
+        
+        return Tracker(
+            id: id,
+            title: title,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            isPinned: isPinned
+        )
+    }
+    
+    // MARK: - Private Methods
+    private func decodeSchedule(from data: Data?) -> Set<Weekday> {
+        guard let data = data else { return [] }
+        
+        do {
+            let weekdays = try JSONDecoder().decode([Weekday].self, from: data)
+            return Set(weekdays)
+        } catch {
+            print("Failed to decode schedule: \(error)")
+            return []
+        }
+    }
+}
+
+// MARK: - TrackerRecordCoreData Extension
+extension TrackerRecordCoreData {
+    
+    // MARK: - Public Methods
+    func toTrackerRecord() -> TrackerRecord? {
+        guard let trackerID = trackerID, let date = date else {
+            print("Failed to convert TrackerRecordCoreData: Missing required fields")
+            return nil
+        }
+        return TrackerRecord(trackerID: trackerID, date: date)
+    }
+}

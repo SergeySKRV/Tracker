@@ -1,26 +1,29 @@
 import UIKit
-
+import CoreData
 
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-      
+    private let coreDataStack = CoreDataStack.shared
+    
+    func application(_ application: UIApplication,
+                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        _ = coreDataStack.viewContext
         return true
     }
     
-    // MARK: UISceneSession Lifecycle
+    func applicationWillTerminate(_ application: UIApplication) {
+        coreDataStack.saveContext()
+    }
     
-    func application(
-        _ application: UIApplication,
-        configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        let sceneConfiguration = UISceneConfiguration(
+    // MARK: - UISceneSession Lifecycle
+    func application(_ application: UIApplication,
+                   configurationForConnecting connectingSceneSession: UISceneSession,
+                   options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        UISceneConfiguration(
             name: "Main",
             sessionRole: connectingSceneSession.role
         )
-        sceneConfiguration.delegateClass = SceneDelegate.self
-        return sceneConfiguration
     }
 }
+
