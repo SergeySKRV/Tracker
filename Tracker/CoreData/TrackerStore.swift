@@ -12,7 +12,7 @@ final class TrackerStore: NSObject {
     // MARK: Properties
     private let context: NSManagedObjectContext
     private let categoryStore: TrackerCategoryStore
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>!
+    private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     weak var delegate: TrackerStoreDelegate?
     
     // MARK: Initialization
@@ -38,10 +38,10 @@ final class TrackerStore: NSObject {
             sectionNameKeyPath: "category.title",
             cacheName: nil
         )
-        fetchedResultsController.delegate = self
+        fetchedResultsController?.delegate = self
         
         do {
-            try fetchedResultsController.performFetch()
+            try fetchedResultsController?.performFetch()
         } catch {
             print("Failed to initialize FetchedResultsController: \(error)")
         }
@@ -98,7 +98,7 @@ final class TrackerStore: NSObject {
     }
     
     func fetchTrackers() -> [Tracker] {
-        guard let sections = fetchedResultsController.sections else { return [] }
+        guard let sections = fetchedResultsController?.sections else { return [] }
         return sections.flatMap { section in
             section.objects?.compactMap { object in
                 guard let trackerCoreData = object as? TrackerCoreData else { return nil }

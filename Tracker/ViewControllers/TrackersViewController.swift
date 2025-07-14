@@ -186,8 +186,8 @@ final class TrackersViewController: UIViewController {
     }
 
     @objc private func handleTrackersUpdate() {
-        DispatchQueue.main.async { [weak self] in
-            self?.updateVisibleTrackers()
+        DispatchQueue.main.async {
+            self.updateVisibleTrackers()
         }
     }
     

@@ -3,7 +3,7 @@ import SnapKit
 
 // MARK: - AddTrackerViewController
 final class AddTrackerViewController: UIViewController {
-
+    
     // MARK: - Properties
     private let type: TrackerType
     private let dataProvider: TrackerDataProviderProtocol
@@ -12,27 +12,27 @@ final class AddTrackerViewController: UIViewController {
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
     private var selectedCategoryId: UUID?
-
+    
     private var options: [String] {
         type == .habit ? [TrackerConstants.Text.categoryOption, TrackerConstants.Text.scheduleOption] : [TrackerConstants.Text.categoryOption]
     }
-
+    
     // MARK: - UI Elements
     private lazy var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.showsVerticalScrollIndicator = false
         return view
     }()
-
+    
     private lazy var contentView: UIView = UIView()
-
+    
     private lazy var textFieldContainer: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = TrackerConstants.Layout.smallSpacing
         return stack
     }()
-
+    
     private lazy var titleTextField: UITextField = {
         let field = UITextField()
         field.placeholder = TrackerConstants.Text.trackerNamePlaceholder
@@ -42,23 +42,23 @@ final class AddTrackerViewController: UIViewController {
         field.layer.masksToBounds = true
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
         field.leftViewMode = .always
-
+        
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "xmark.circle.fill")
         config.baseForegroundColor = .ypGray
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12)
-
+        
         let clearButton = UIButton(configuration: config, primaryAction: UIAction { [weak self] _ in
             self?.titleTextField.text = ""
             self?.textFieldDidChange(self?.titleTextField ?? UITextField())
         })
-
+        
         field.rightView = clearButton
         field.rightViewMode = .whileEditing
         field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
         return field
     }()
-
+    
     private lazy var errorLabel: UILabel = {
         let label = UILabel()
         label.text = TrackerConstants.Text.lengthError
@@ -68,7 +68,7 @@ final class AddTrackerViewController: UIViewController {
         label.isHidden = true
         return label
     }()
-
+    
     private lazy var optionsTableView: UITableView = {
         let table = UITableView()
         table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -79,7 +79,7 @@ final class AddTrackerViewController: UIViewController {
         table.separatorColor = .ypGray
         return table
     }()
-
+    
     private lazy var emojiLabel: UILabel = {
         let label = UILabel()
         label.text = TrackerConstants.Text.emojiTitle
@@ -87,7 +87,7 @@ final class AddTrackerViewController: UIViewController {
         label.textColor = .ypBlackDay
         return label
     }()
-
+    
     private lazy var emojiCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -97,7 +97,7 @@ final class AddTrackerViewController: UIViewController {
         collection.isScrollEnabled = false
         return collection
     }()
-
+    
     private lazy var colorLabel: UILabel = {
         let label = UILabel()
         label.text = TrackerConstants.Text.colorTitle
@@ -105,7 +105,7 @@ final class AddTrackerViewController: UIViewController {
         label.textColor = .ypBlackDay
         return label
     }()
-
+    
     private lazy var colorCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -115,7 +115,7 @@ final class AddTrackerViewController: UIViewController {
         collection.isScrollEnabled = false
         return collection
     }()
-
+    
     private lazy var buttonsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -123,7 +123,7 @@ final class AddTrackerViewController: UIViewController {
         stack.distribution = .fillEqually
         return stack
     }()
-
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(TrackerConstants.Text.cancelButton, for: .normal)
@@ -134,7 +134,7 @@ final class AddTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapCancel), for: .touchUpInside)
         return button
     }()
-
+    
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(TrackerConstants.Text.createButton, for: .normal)
@@ -145,22 +145,22 @@ final class AddTrackerViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapSave), for: .touchUpInside)
         return button
     }()
-
+    
     // MARK: - Initialization
     init(
-           type: TrackerType,
-           dataProvider: TrackerDataProviderProtocol = TrackerDataProvider()
-       ) {
-           self.type = type
-           self.dataProvider = dataProvider
-           super.init(nibName: nil, bundle: nil)
-       }
-
+        type: TrackerType,
+        dataProvider: TrackerDataProviderProtocol = TrackerDataProvider()
+    ) {
+        self.type = type
+        self.dataProvider = dataProvider
+        super.init(nibName: nil, bundle: nil)
+    }
+    
     required init?(coder: NSCoder) {
-       assertionFailure("init(coder:) has not been implemented")
+        assertionFailure("init(coder:) has not been implemented")
         return nil
     }
-
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -173,7 +173,7 @@ final class AddTrackerViewController: UIViewController {
         titleTextField.inputAssistantItem.trailingBarButtonGroups = []
         titleTextField.autocorrectionType = .no
     }
-
+    
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
@@ -188,7 +188,7 @@ final class AddTrackerViewController: UIViewController {
             contentView.addSubview($0)
         }
     }
-
+    
     private func setupDelegates() {
         optionsTableView.dataSource = self
         optionsTableView.delegate = self
@@ -198,7 +198,7 @@ final class AddTrackerViewController: UIViewController {
         colorCollectionView.delegate = self
         titleTextField.delegate = self
     }
-
+    
     private func setupConstraints() {
         scrollView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
@@ -243,7 +243,7 @@ final class AddTrackerViewController: UIViewController {
             make.bottom.equalToSuperview().offset(-TrackerConstants.Layout.defaultSpacing)
         }
     }
-
+    
     // MARK: - Action Methods
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
@@ -256,11 +256,11 @@ final class AddTrackerViewController: UIViewController {
         trackerTitle = textField.text ?? ""
         updateSaveButtonState()
     }
-
+    
     @objc private func didTapCancel() {
         dismiss(animated: true)
     }
-
+    
     @objc private func didTapSave() {
         guard let emoji = selectedEmoji,
               let color = selectedColor,
@@ -268,7 +268,6 @@ final class AddTrackerViewController: UIViewController {
             showAlert(title: "Ошибка", message: "Заполните все поля")
             return
         }
-
         let tracker = Tracker(
             id: UUID(),
             title: trackerTitle,
@@ -277,7 +276,6 @@ final class AddTrackerViewController: UIViewController {
             schedule: type == .habit ? selectedDays : [],
             isPinned: false
         )
-
         do {
             try dataProvider.addTracker(tracker, categoryId: selectedCategoryId)
             NotificationCenter.default.post(name: NSNotification.Name("TrackersUpdated"), object: nil)
@@ -286,7 +284,7 @@ final class AddTrackerViewController: UIViewController {
             showAlert(title: "Ошибка", message: error.localizedDescription)
         }
     }
-
+    
     private func updateSaveButtonState() {
         let isValid = !trackerTitle.isEmpty &&
         errorLabel.isHidden &&
@@ -295,7 +293,7 @@ final class AddTrackerViewController: UIViewController {
         saveButton.isEnabled = isValid
         saveButton.backgroundColor = isValid ? .ypBlackDay : .ypGray
     }
-
+    
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -308,7 +306,7 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         options.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         cell.backgroundColor = .ypBackgroundDay
@@ -317,21 +315,20 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.textColor = .ypBlackDay
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.detailTextLabel?.textColor = .ypGray
-
+        
         if indexPath.row == 0 {
             cell.detailTextLabel?.text = "Без категории"
         } else if indexPath.row == 1 && !selectedDays.isEmpty {
             let sortedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
             cell.detailTextLabel?.text = sortedDays.map { $0.shortName }.joined(separator: ", ")
         }
-
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         TrackerConstants.Layout.textFieldHeight
     }
-
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == options.count - 1 {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 1000)
@@ -339,7 +336,7 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
@@ -363,25 +360,39 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         collectionView == emojiCollectionView ? TrackerConstants.emojis.count : TrackerConstants.colors.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == emojiCollectionView {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: EmojiCell.reuseIdentifier, for: indexPath) as! EmojiCell
-            cell.configure(with: TrackerConstants.emojis[indexPath.item], isSelected: TrackerConstants.emojis[indexPath.item] == selectedEmoji)
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: EmojiCell.reuseIdentifier,
+                for: indexPath
+            ) as? EmojiCell else {
+                assertionFailure("Failed to dequeue EmojiCell. Make sure the cell is registered.")
+                return UICollectionViewCell()
+            }
+            let emoji = TrackerConstants.emojis[indexPath.item]
+            cell.configure(with: emoji, isSelected: emoji == selectedEmoji)
             return cell
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ColorCell.reuseIdentifier, for: indexPath) as! ColorCell
-            cell.configure(with: TrackerConstants.colors[indexPath.item], isSelected: TrackerConstants.colors[indexPath.item] == selectedColor)
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ColorCell.reuseIdentifier,
+                for: indexPath
+            ) as? ColorCell else {
+                assertionFailure("Failed to dequeue ColorCell. Make sure the cell is registered.")
+                return UICollectionViewCell() 
+            }
+            let color = TrackerConstants.colors[indexPath.item]
+            cell.configure(with: color, isSelected: color == selectedColor)
             return cell
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.bounds.width - CGFloat(TrackerConstants.columnsCount - 1) * 0
         let cellWidth = availableWidth / CGFloat(TrackerConstants.columnsCount)
         return CGSize(width: cellWidth, height: cellWidth)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
             selectedEmoji = TrackerConstants.emojis[indexPath.item]
@@ -391,11 +402,11 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
         collectionView.reloadData()
         updateSaveButtonState()
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         0
     }

@@ -14,14 +14,10 @@ extension CoreDataError: LocalizedError {
     // MARK: Computed Properties
     var errorDescription: String? {
         switch self {
-        case .categoryNotFound:
-            return "Категория не найдена"
-        case .trackerNotFound:
-            return "Трекер не найден"
-        case .saveError(let error):
-            return "Ошибка сохранения: \(error.localizedDescription)"
-        case .fetchError(let error):
-            return "Ошибка загрузки данных: \(error.localizedDescription)"
+        case .categoryNotFound: "Категория не найдена"
+        case .trackerNotFound: "Трекер не найден"
+        case .saveError(let error): "Ошибка сохранения: \(error.localizedDescription)"
+        case .fetchError(let error): "Ошибка загрузки данных: \(error.localizedDescription)"
         }
     }
     
