@@ -1,4 +1,5 @@
 import UIKit
+import SnapKit
 
 // MARK: - TrackerCategoryHeaderView
 final class TrackerCategoryHeaderView: UICollectionReusableView {
@@ -22,13 +23,13 @@ final class TrackerCategoryHeaderView: UICollectionReusableView {
     }
     
     private func setupViews() {
-        addSubviews(titleLabel)
+        addSubview(titleLabel)
         
-        titleLabel.pin
-            .leading(leadingAnchor, offset: 28)
-            .top(topAnchor)
-            .bottom(bottomAnchor)
-            .trailing(trailingAnchor, offset: -16, relation: .lessThanOrEqual)
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(28)
+            make.top.bottom.equalToSuperview()
+            make.trailing.lessThanOrEqualToSuperview().offset(-16)
+        }
     }
     
     func configure(with title: String) {
