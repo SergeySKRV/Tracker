@@ -37,6 +37,8 @@
 		9058DE6C2E2302C6000A1365 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9058DE6B2E2302C6000A1365 /* CoreDataError.swift */; };
 		9058DE6E2E2406DE000A1365 /* TrackerDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9058DE6D2E2406DE000A1365 /* TrackerDataProvider.swift */; };
 		9058DE702E244F34000A1365 /* ViewConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9058DE6F2E244F34000A1365 /* ViewConstants.swift */; };
+		9058DEC22E36A151000A1365 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9058DEC12E36A151000A1365 /* OnboardingViewController.swift */; };
+		9058DEC42E36A4B2000A1365 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9058DEC32E36A4B2000A1365 /* OnboardingPageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +92,8 @@
 		9058DE6B2E2302C6000A1365 /* CoreDataError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataError.swift; sourceTree = "<group>"; };
 		9058DE6D2E2406DE000A1365 /* TrackerDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerDataProvider.swift; sourceTree = "<group>"; };
 		9058DE6F2E244F34000A1365 /* ViewConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConstants.swift; sourceTree = "<group>"; };
+		9058DEC12E36A151000A1365 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		9058DEC32E36A4B2000A1365 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,8 @@
 				904172812E0D9BC600638E71 /* ScheduleViewController.swift */,
 				9041734A2E0DCA2400638E71 /* TrackerTypeViewController.swift */,
 				904BF4492E11E5680090EFCC /* TrackerCategoryHeaderView.swift */,
+				9058DEC12E36A151000A1365 /* OnboardingViewController.swift */,
+				9058DEC32E36A4B2000A1365 /* OnboardingPageViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -371,8 +377,10 @@
 				9041734B2E0DCA2400638E71 /* TrackerTypeViewController.swift in Sources */,
 				904BF44A2E11E5680090EFCC /* TrackerCategoryHeaderView.swift in Sources */,
 				903A98AB2E1C58FE00A130BD /* EmojiCell.swift in Sources */,
+				9058DEC42E36A4B2000A1365 /* OnboardingPageViewController.swift in Sources */,
 				90449DD42E1842E300024983 /* TrackerCell.swift in Sources */,
 				9058DE6A2E230076000A1365 /* TrackerConstants.swift in Sources */,
+				9058DEC22E36A151000A1365 /* OnboardingViewController.swift in Sources */,
 				9058DE322E21623A000A1365 /* TrackerModel.xcdatamodeld in Sources */,
 				9058DE6C2E2302C6000A1365 /* CoreDataError.swift in Sources */,
 				9058DE612E22CFA7000A1365 /* UIColor+Hex.swift in Sources */,
