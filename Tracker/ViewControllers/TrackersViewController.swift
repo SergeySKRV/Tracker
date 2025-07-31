@@ -3,7 +3,6 @@ import SnapKit
 
 // MARK: - TrackersViewController
 final class TrackersViewController: UIViewController {
-
     // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
     private var filteredCategories: [TrackerCategory] = []
@@ -61,32 +60,14 @@ final class TrackersViewController: UIViewController {
         return collectionView
     }()
 
-    private lazy var placeholderStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.spacing = 8
-        stack.alpha = 0
-        return stack
+    private lazy var mainPlaceholderView: PlaceholderView = {
+        let view = PlaceholderView()
+        view.isHidden = true
+        return view
     }()
-
-    private lazy var placeholderImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(resource: .placeholder))
-        imageView.clipsToBounds = true
-        return imageView
-    }()
-
-    private lazy var plugText: UILabel = {
-        let label = UILabel()
-        label.text = "Что будем отслеживать?"
-        label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .ypBlackDay
-        label.textAlignment = .center
-        return label
-    }()
-
+    
     // MARK: - Initialization
-    init(dataProvider: TrackerDataProviderProtocol = TrackerDataProvider()) {
+    init(dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
         self.dataProvider = dataProvider
         super.init(nibName: nil, bundle: nil)
     }
@@ -102,17 +83,8 @@ final class TrackersViewController: UIViewController {
         setupUI()
         setupConstraints()
         loadInitialData()
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-           tapGesture.cancelsTouchesInView = false
-           view.addGestureRecognizer(tapGesture)
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleTrackersUpdate),
-            name: NSNotification.Name("TrackersUpdated"),
-            object: nil
-        )
+
+        dataProvider.setTrackerStoreDelegate(self)
     }
 
     deinit {
@@ -122,9 +94,8 @@ final class TrackersViewController: UIViewController {
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
-        placeholderStackView.addArrangedSubview(placeholderImageView)
-        placeholderStackView.addArrangedSubview(plugText)
-        view.addSubviews(addTrackerButton, trackersLabel, datePicker, searchBar, collectionView, placeholderStackView)
+       
+        view.addSubviews(addTrackerButton, trackersLabel, datePicker, searchBar, collectionView, mainPlaceholderView)
         updateStubVisibility()
     }
 
@@ -152,24 +123,14 @@ final class TrackersViewController: UIViewController {
             make.top.equalTo(searchBar.snp.bottom).offset(34)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
-        placeholderStackView.snp.makeConstraints { make in
-            make.centerY.equalToSuperview().offset(40)
-            make.centerX.equalToSuperview()
-        }
-        placeholderImageView.snp.makeConstraints { make in
-            make.width.height.equalTo(80)
-        }
+        mainPlaceholderView.snp.makeConstraints { make in
+                make.centerY.equalToSuperview().offset(40)
+                make.centerX.equalToSuperview()
+                make.leading.trailing.equalToSuperview().inset(16)
+            }
     }
 
     private func loadInitialData() {
-        let categories = dataProvider.fetchCategories()
-        if categories.isEmpty {
-            do {
-                _ = try dataProvider.getDefaultCategory()
-            } catch {
-                print("Ошибка получения категории по умолчанию: \(error)")
-            }
-        }
         updateVisibleTrackers()
     }
 
@@ -185,43 +146,87 @@ final class TrackersViewController: UIViewController {
         updateVisibleTrackers()
     }
 
-    @objc private func handleTrackersUpdate() {
-        DispatchQueue.main.async {
-            self.updateVisibleTrackers()
-        }
-    }
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }
 
     // MARK: - Data Processing
     private func updateVisibleTrackers() {
-        dataProvider.fetchTrackers(for: currentDate, searchText: searchText) { [weak self] trackers in
-            guard let self = self else { return }
+        let allTrackers = fetchAllTrackersFromStore()
 
-            let grouped = Dictionary(grouping: trackers, by: { $0.category?.title ?? "Без категории" })
+        let calendar = Calendar.current
+        let dayOfWeek = calendar.component(.weekday, from: currentDate)
+        let weekDayIndex = dayOfWeek == 1 ? 6 : dayOfWeek - 2
+        guard let weekday = Weekday(rawValue: weekDayIndex) else { return }
 
-            let sortedKeys = grouped.keys.sorted()
-            self.filteredCategories = sortedKeys.map { key in
-                TrackerCategory(title: key, trackers: grouped[key] ?? [])
-            }
+        let filteredTrackers = allTrackers.filter { tracker in
+            let isEvent = tracker.schedule.isEmpty
+            let isHabitForToday = !tracker.schedule.isEmpty && tracker.schedule.contains(weekday)
+            let dayMatches = isEvent || isHabitForToday
+            let searchMatches = searchText.isEmpty || tracker.title.localizedCaseInsensitiveContains(searchText)
+            return dayMatches && searchMatches
+        }
 
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                self.updateStubVisibility()
+        var categoriesDict: [UUID: TrackerCategory] = [:]
+        for tracker in filteredTrackers {
+            guard let categoryId = tracker.category else { continue }
+
+            if let category = categoriesDict[categoryId] {
+                var updatedTrackers = category.trackers
+                updatedTrackers.append(tracker)
+                categoriesDict[categoryId] = TrackerCategory(
+                    id: categoryId,
+                    title: category.title,
+                    trackers: updatedTrackers
+                )
+            } else {
+                if let title = dataProvider.getCategoryTitle(by: categoryId) {
+                    categoriesDict[categoryId] = TrackerCategory(
+                        id: categoryId,
+                        title: title,
+                        trackers: [tracker]
+                    )
+                }
             }
         }
+        self.filteredCategories = categoriesDict.values.sorted { $0.title < $1.title }
+
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+            self.updateStubVisibility()
+        }
+    }
+
+    private func fetchAllTrackersFromStore() -> [Tracker] {
+        return dataProvider.getAllTrackers()
     }
 
     private func updateStubVisibility() {
         let hasTrackers = !filteredCategories.isEmpty
-        collectionView.isHidden = !hasTrackers
-        UIView.animate(withDuration: 0.3) {
-            self.placeholderStackView.alpha = hasTrackers ? 0 : 1
-            self.placeholderStackView.transform = hasTrackers ?
-            CGAffineTransform(scaleX: 0.9, y: 0.9) : .identity
+        let isSearching = !searchText.isEmpty
+
+        if !hasTrackers && !isSearching {
+            collectionView.isHidden = true
+            mainPlaceholderView.configure(
+                image: UIImage(named: "placeholder"),
+                text: "Что будем отслеживать?"
+            )
+            mainPlaceholderView.isHidden = false
+            return
         }
+
+        if !hasTrackers && isSearching {
+            collectionView.isHidden = true
+            mainPlaceholderView.configure(
+                image: UIImage(named: "placeholder_notfound"),
+                text: "Ничего не найдено"
+            )
+            mainPlaceholderView.isHidden = false
+            return
+        }
+
+        collectionView.isHidden = false
+        mainPlaceholderView.isHidden = true
     }
 
     private func isTrackerCompleted(_ trackerID: UUID, for date: Date) -> Bool {
@@ -246,6 +251,13 @@ final class TrackersViewController: UIViewController {
             try? dataProvider.addRecord(for: tracker.id, date: selectedDate)
         }
         collectionView.reloadItems(at: [indexPath])
+    }
+}
+
+// MARK: - TrackerStoreDelegate
+extension TrackersViewController: TrackerStoreDelegate {
+    func didUpdateTrackers() {
+        updateVisibleTrackers()
     }
 }
 
@@ -331,4 +343,3 @@ extension TrackersViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
     }
 }
-

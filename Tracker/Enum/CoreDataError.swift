@@ -3,6 +3,7 @@ import Foundation
 // MARK: - CoreDataError Enum
 enum CoreDataError: Error {
     case categoryNotFound
+    case categoryNotSpecified
     case trackerNotFound
     case saveError(Error)
     case fetchError(Error)
@@ -18,6 +19,7 @@ extension CoreDataError: LocalizedError {
         case .trackerNotFound: "Трекер не найден"
         case .saveError(let error): "Ошибка сохранения: \(error.localizedDescription)"
         case .fetchError(let error): "Ошибка загрузки данных: \(error.localizedDescription)"
+        case .categoryNotSpecified: "Категория не указана"
         }
     }
     

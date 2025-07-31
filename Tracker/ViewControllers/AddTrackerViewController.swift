@@ -1,9 +1,13 @@
 import UIKit
 import SnapKit
 
-// MARK: - AddTrackerViewController
-final class AddTrackerViewController: UIViewController {
-    
+// MARK: - AddTrackerViewControllerDelegate Protocol (Объединённый делегат)
+protocol AddTrackerViewControllerDelegate: AnyObject {
+    func didSelectCategory(_ category: TrackerCategory)
+    func didSelectSchedule(_ selectedDays: Set<Weekday>)
+}
+
+final class AddTrackerViewController: UIViewController, CategorySelectionDelegate, ScheduleSelectionDelegate {
     // MARK: - Properties
     private let type: TrackerType
     private let dataProvider: TrackerDataProviderProtocol
@@ -12,9 +16,9 @@ final class AddTrackerViewController: UIViewController {
     private var selectedEmoji: String?
     private var selectedColor: UIColor?
     private var selectedCategoryId: UUID?
-    
+    private var selectedCategoryTitle: String?
     private var options: [String] {
-        type == .habit ? [TrackerConstants.Text.categoryOption, TrackerConstants.Text.scheduleOption] : [TrackerConstants.Text.categoryOption]
+        type == .habit ? ["Категория", "Расписание"] : ["Категория"]
     }
     
     // MARK: - UI Elements
@@ -42,17 +46,14 @@ final class AddTrackerViewController: UIViewController {
         field.layer.masksToBounds = true
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
         field.leftViewMode = .always
-        
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "xmark.circle.fill")
         config.baseForegroundColor = .ypGray
         config.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 12)
-        
         let clearButton = UIButton(configuration: config, primaryAction: UIAction { [weak self] _ in
             self?.titleTextField.text = ""
             self?.textFieldDidChange(self?.titleTextField ?? UITextField())
         })
-        
         field.rightView = clearButton
         field.rightViewMode = .whileEditing
         field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
@@ -147,10 +148,7 @@ final class AddTrackerViewController: UIViewController {
     }()
     
     // MARK: - Initialization
-    init(
-        type: TrackerType,
-        dataProvider: TrackerDataProviderProtocol = TrackerDataProvider()
-    ) {
+    init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
         self.type = type
         self.dataProvider = dataProvider
         super.init(nibName: nil, bundle: nil)
@@ -244,7 +242,7 @@ final class AddTrackerViewController: UIViewController {
         }
     }
     
-    // MARK: - Action Methods
+    // MARK: - Actions
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
         if text.count > TrackerConstants.maxTitleLength {
@@ -264,32 +262,39 @@ final class AddTrackerViewController: UIViewController {
     @objc private func didTapSave() {
         guard let emoji = selectedEmoji,
               let color = selectedColor,
-              !trackerTitle.isEmpty else {
+              !trackerTitle.isEmpty,
+              let categoryId = selectedCategoryId else {
             showAlert(title: "Ошибка", message: "Заполните все поля")
             return
         }
+        
+        if type == .habit && selectedDays.isEmpty {
+            showAlert(title: "Ошибка", message: "Выберите хотя бы один день для расписания")
+            return
+        }
+        
         let tracker = Tracker(
             id: UUID(),
             title: trackerTitle,
             color: color,
             emoji: emoji,
-            schedule: type == .habit ? selectedDays : [],
-            isPinned: false
+            schedule: type == .habit ? selectedDays : [], 
+            isPinned: false,
+            categoryId: categoryId
         )
         do {
-            try dataProvider.addTracker(tracker, categoryId: selectedCategoryId)
-            NotificationCenter.default.post(name: NSNotification.Name("TrackersUpdated"), object: nil)
+            try dataProvider.addTracker(tracker, categoryId: categoryId)
             dismiss(animated: true)
         } catch {
-            showAlert(title: "Ошибка", message: error.localizedDescription)
+            showAlert(title: "Ошибка", message: "Не удалось сохранить трекер: \(error.localizedDescription)")
         }
     }
     
     private func updateSaveButtonState() {
         let isValid = !trackerTitle.isEmpty &&
-        errorLabel.isHidden &&
         selectedEmoji != nil &&
-        selectedColor != nil
+        selectedColor != nil &&
+        selectedCategoryId != nil
         saveButton.isEnabled = isValid
         saveButton.backgroundColor = isValid ? .ypBlackDay : .ypGray
     }
@@ -315,9 +320,8 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
         cell.textLabel?.textColor = .ypBlackDay
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.detailTextLabel?.textColor = .ypGray
-        
         if indexPath.row == 0 {
-            cell.detailTextLabel?.text = "Без категории"
+            cell.detailTextLabel?.text = selectedCategoryTitle ?? "Не выбрана"
         } else if indexPath.row == 1 && !selectedDays.isEmpty {
             let sortedDays = selectedDays.sorted { $0.rawValue < $1.rawValue }
             cell.detailTextLabel?.text = sortedDays.map { $0.shortName }.joined(separator: ", ")
@@ -340,15 +344,13 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            let alert = UIAlertController(
-                title: "В разработке",
-                message: "Выбор категории будет доступен в следующей версии",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
+            let categoriesVC = CategoriesViewController()
+            // Теперь используем единый делегат
+            categoriesVC.delegate = self
+            navigationController?.pushViewController(categoriesVC, animated: true)
         } else if indexPath.row == 1 {
             let scheduleVC = ScheduleViewController(selectedDays: selectedDays)
+            // Теперь используем единый делегат
             scheduleVC.delegate = self
             navigationController?.pushViewController(scheduleVC, animated: true)
         }
@@ -367,7 +369,7 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
                 withReuseIdentifier: EmojiCell.reuseIdentifier,
                 for: indexPath
             ) as? EmojiCell else {
-                assertionFailure("Failed to dequeue EmojiCell. Make sure the cell is registered.")
+                assertionFailure("Failed to dequeue EmojiCell")
                 return UICollectionViewCell()
             }
             let emoji = TrackerConstants.emojis[indexPath.item]
@@ -378,8 +380,8 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
                 withReuseIdentifier: ColorCell.reuseIdentifier,
                 for: indexPath
             ) as? ColorCell else {
-                assertionFailure("Failed to dequeue ColorCell. Make sure the cell is registered.")
-                return UICollectionViewCell() 
+                assertionFailure("Failed to dequeue ColorCell")
+                return UICollectionViewCell()
             }
             let color = TrackerConstants.colors[indexPath.item]
             cell.configure(with: color, isSelected: color == selectedColor)
@@ -412,8 +414,16 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
     }
 }
 
-// MARK: - ScheduleSelectionDelegate
-extension AddTrackerViewController: ScheduleSelectionDelegate {
+// MARK: - AddTrackerViewControllerDelegate
+// Заменяет ScheduleSelectionDelegate и CategorySelectionDelegate
+extension AddTrackerViewController: AddTrackerViewControllerDelegate {
+    func didSelectCategory(_ category: TrackerCategory) {
+        selectedCategoryId = category.id
+        selectedCategoryTitle = category.title
+        optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+        updateSaveButtonState()
+    }
+    
     func didSelectSchedule(_ selectedDays: Set<Weekday>) {
         self.selectedDays = selectedDays
         optionsTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)

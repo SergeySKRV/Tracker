@@ -10,7 +10,10 @@ extension TrackerCoreData {
               let title = title,
               let emoji = emoji,
               let colorHex = color,
-              let color = UIColor(hex: colorHex) else {
+              let color = UIColor(hex: colorHex),
+              let category = category,
+              let categoryId = category.id
+        else {
             print("Failed to convert TrackerCoreData: Missing required fields")
             return nil
         }
@@ -23,7 +26,8 @@ extension TrackerCoreData {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            isPinned: isPinned
+            isPinned: isPinned,
+            categoryId: categoryId
         )
     }
     

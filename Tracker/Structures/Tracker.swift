@@ -36,7 +36,6 @@ enum Weekday: Int, CaseIterable, Codable {
         }
     }
 }
-
 // MARK: - Tracker Model
 struct Tracker {
     let id: UUID
@@ -45,15 +44,15 @@ struct Tracker {
     let emoji: String
     let schedule: Set<Weekday>
     let isPinned: Bool
-    let category: TrackerCategory?
-    
-    init(id: UUID, title: String, color: UIColor, emoji: String, schedule: Set<Weekday>, isPinned: Bool = false, category: TrackerCategory? = nil) {
+    let category: UUID?
+
+    init(id: UUID, title: String, color: UIColor, emoji: String, schedule: Set<Weekday>, isPinned: Bool = false, categoryId: UUID?) {
         self.id = id
         self.title = title
         self.color = color
         self.emoji = emoji
         self.schedule = schedule
         self.isPinned = isPinned
-        self.category = category
+        self.category = categoryId
     }
 }
