@@ -9,7 +9,8 @@ protocol TrackerDataProviderProtocol {
     func addRecord(for trackerID: UUID, date: Date) throws
     func deleteRecord(for trackerID: UUID, date: Date) throws
     func fetchRecords() -> [TrackerRecord]
-    
+    func deleteTracker(_ tracker: Tracker) throws
+    func updateTracker(_ tracker: Tracker, categoryId: UUID) throws
     func getAllTrackers() -> [Tracker]
     func getCategoryTitle(by id: UUID) -> String?
     func setTrackerStoreDelegate(_ delegate: TrackerStoreDelegate?)
@@ -90,7 +91,15 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
     func addTracker(_ tracker: Tracker, categoryId: UUID) throws {
         try trackerStore.addTracker(tracker, to: categoryId)
     }
+    
+    func updateTracker(_ tracker: Tracker, categoryId: UUID) throws {
+        try trackerStore.updateTracker(tracker, to: categoryId)
+    }
 
+    func deleteTracker(_ tracker: Tracker) throws {
+        try trackerStore.deleteTracker(tracker)
+    }
+    
     func fetchCategories() -> [TrackerCategory] {
         return categoryStore.fetchAllCategories()
     }

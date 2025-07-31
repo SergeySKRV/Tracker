@@ -97,6 +97,51 @@ final class TrackerStore: NSObject {
         }
     }
 
+    func deleteTracker(_ tracker: Tracker) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        guard let trackerCoreData = try context.fetch(request).first else {
+            throw CoreDataError.trackerNotFound
+        }
+        context.delete(trackerCoreData)
+        try context.save()
+    }
+    
+    func updateTracker(_ tracker: Tracker, to categoryId: UUID) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        guard let trackerCoreData = try context.fetch(request).first else {
+            throw CoreDataError.trackerNotFound
+        }
+     
+        trackerCoreData.title = tracker.title
+        trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.color = tracker.color.toHex()
+        trackerCoreData.isPinned = tracker.isPinned
+
+        if !tracker.schedule.isEmpty {
+            do {
+                trackerCoreData.schedule = try JSONEncoder().encode(Array(tracker.schedule))
+            } catch {
+                print("Ошибка кодирования расписания: \(error)")
+            }
+        } else {
+            trackerCoreData.schedule = nil
+        }
+        
+        do {
+            let categoryCoreData = try categoryStore.getCategoryCoreData(by: categoryId)
+            if trackerCoreData.category != categoryCoreData {
+                trackerCoreData.category?.removeFromTrackers(trackerCoreData)
+                categoryCoreData.addToTrackers(trackerCoreData)
+            }
+        } catch {
+            throw error
+        }
+        
+        try context.save()
+    }
+    
     func fetchTrackers() -> [Tracker] {
         guard let sections = fetchedResultsController?.sections else { return [] }
         return sections.flatMap { section in

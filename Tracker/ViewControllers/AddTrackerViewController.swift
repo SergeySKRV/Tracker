@@ -345,12 +345,10 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let categoriesVC = CategoriesViewController()
-            // Теперь используем единый делегат
             categoriesVC.delegate = self
             navigationController?.pushViewController(categoriesVC, animated: true)
         } else if indexPath.row == 1 {
             let scheduleVC = ScheduleViewController(selectedDays: selectedDays)
-            // Теперь используем единый делегат
             scheduleVC.delegate = self
             navigationController?.pushViewController(scheduleVC, animated: true)
         }
@@ -415,7 +413,6 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
 }
 
 // MARK: - AddTrackerViewControllerDelegate
-// Заменяет ScheduleSelectionDelegate и CategorySelectionDelegate
 extension AddTrackerViewController: AddTrackerViewControllerDelegate {
     func didSelectCategory(_ category: TrackerCategory) {
         selectedCategoryId = category.id

@@ -54,8 +54,6 @@ final class CategoryCell: UITableViewCell {
         }
         
         checkmarkImageView.image = UIImage(systemName: "checkmark")
-        
-        // Включаем маскирование
         containerView.layer.masksToBounds = true
     }
     
