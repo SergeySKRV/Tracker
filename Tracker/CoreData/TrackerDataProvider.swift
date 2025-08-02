@@ -93,7 +93,7 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
     }
     
     func updateTracker(_ tracker: Tracker, categoryId: UUID) throws {
-        try trackerStore.updateTracker(tracker, to: categoryId)
+        try trackerStore.updateTracker(tracker, categoryId: categoryId)
     }
 
     func deleteTracker(_ tracker: Tracker) throws {

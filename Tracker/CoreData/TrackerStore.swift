@@ -107,18 +107,18 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     
-    func updateTracker(_ tracker: Tracker, to categoryId: UUID) throws {
+    func updateTracker(_ tracker: Tracker, categoryId: UUID) throws {
         let request = TrackerCoreData.fetchRequest()
         request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
         guard let trackerCoreData = try context.fetch(request).first else {
             throw CoreDataError.trackerNotFound
         }
-     
+      
         trackerCoreData.title = tracker.title
         trackerCoreData.emoji = tracker.emoji
         trackerCoreData.color = tracker.color.toHex()
         trackerCoreData.isPinned = tracker.isPinned
-
+      
         if !tracker.schedule.isEmpty {
             do {
                 trackerCoreData.schedule = try JSONEncoder().encode(Array(tracker.schedule))
@@ -128,7 +128,7 @@ final class TrackerStore: NSObject {
         } else {
             trackerCoreData.schedule = nil
         }
-        
+  
         do {
             let categoryCoreData = try categoryStore.getCategoryCoreData(by: categoryId)
             if trackerCoreData.category != categoryCoreData {
@@ -140,6 +140,7 @@ final class TrackerStore: NSObject {
         }
         
         try context.save()
+        NotificationCenter.default.post(name: NSNotification.Name("TrackersUpdated"), object: nil)
     }
     
     func fetchTrackers() -> [Tracker] {

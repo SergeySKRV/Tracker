@@ -304,6 +304,12 @@ final class TrackersViewController: UIViewController {
         present(alert, animated: true)
     }
     
+    private func presentEditTrackerViewController(for tracker: Tracker, at indexPath: IndexPath) {
+        let editVC = EditTrackerViewController(tracker: tracker)
+        let navVC = UINavigationController(rootViewController: editVC)
+        present(navVC, animated: true)
+    }
+    
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -424,6 +430,12 @@ extension TrackersViewController: UICollectionViewDelegate {
                 self?.togglePinStatus(for: tracker, at: indexPath)
             }
             
+            let editAction = UIAction(
+                title: "Редактировать",
+            ) { [weak self] _ in
+                self?.presentEditTrackerViewController(for: tracker, at: indexPath)
+            }
+            
             let deleteAction = UIAction(
                 title: "Удалить",
                 attributes: .destructive
@@ -431,7 +443,7 @@ extension TrackersViewController: UICollectionViewDelegate {
                 self?.confirmDeleteTracker(tracker, at: indexPath)
             }
             
-            return UIMenu(title: "", children: [pinAction, deleteAction])
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         }
     }
 }

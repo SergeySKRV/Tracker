@@ -38,6 +38,7 @@ enum TrackerConstants {
         static let colorTitle = "Цвет"
         static let cancelButton = "Отменить"
         static let createButton = "Создать"
+        static let saveButton = "Сохранить"
         static let lengthError = "Ограничение 38 символов"
     }
 }

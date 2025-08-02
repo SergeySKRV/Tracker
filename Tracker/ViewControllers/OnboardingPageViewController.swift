@@ -1,9 +1,7 @@
 import UIKit
 import SnapKit
 
-// MARK: - Onboarding Page View Controller
 final class OnboardingPageViewController: UIViewController {
-    
     // MARK: - Properties
     private let imageView = UIImageView()
     private let titleLabel = UILabel()

@@ -1,9 +1,7 @@
 import UIKit
 import SnapKit
 
-// MARK: - Onboarding View Controller
 final class OnboardingViewController: UIViewController {
-    
     // MARK: - Properties
     private var pageViewController: UIPageViewController!
     private var pages: [UIViewController] = []

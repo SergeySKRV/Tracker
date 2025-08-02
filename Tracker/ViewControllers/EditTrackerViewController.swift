@@ -1,15 +1,9 @@
 import UIKit
 import SnapKit
 
-// MARK: - AddTrackerViewControllerDelegate Protocol (Объединённый делегат)
-protocol AddTrackerViewControllerDelegate: AnyObject {
-    func didSelectCategory(_ category: TrackerCategory)
-    func didSelectSchedule(_ selectedDays: Set<Weekday>)
-}
-
-final class AddTrackerViewController: UIViewController, CategorySelectionDelegate, ScheduleSelectionDelegate {
+final class EditTrackerViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Properties
-    private let type: TrackerType
+    private let tracker: Tracker
     private let dataProvider: TrackerDataProviderProtocol
     private var selectedDays: Set<Weekday> = []
     private var trackerTitle: String = ""
@@ -18,7 +12,7 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
     private var selectedCategoryId: UUID?
     private var selectedCategoryTitle: String?
     private var options: [String] {
-        type == .habit ? ["Категория", "Расписание"] : ["Категория"]
+        !tracker.schedule.isEmpty ? ["Категория", "Расписание"] : ["Категория"]
     }
     
     // MARK: - UI Elements
@@ -29,12 +23,20 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
     }()
     
     private lazy var contentView: UIView = UIView()
-    
     private lazy var textFieldContainer: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = TrackerConstants.Layout.smallSpacing
         return stack
+    }()
+    
+    private lazy var daysCountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0 дней"
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .ypBlackDay
+        label.textAlignment = .center
+        return label
     }()
     
     private lazy var titleTextField: UITextField = {
@@ -138,7 +140,7 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
     
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(TrackerConstants.Text.createButton, for: .normal)
+        button.setTitle(TrackerConstants.Text.saveButton, for: .normal)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
@@ -148,8 +150,8 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
     }()
     
     // MARK: - Initialization
-    init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
-        self.type = type
+    init(tracker: Tracker, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
+        self.tracker = tracker
         self.dataProvider = dataProvider
         super.init(nibName: nil, bundle: nil)
     }
@@ -166,15 +168,17 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
         setupConstraints()
         setupDelegates()
         navigationItem.setHidesBackButton(true, animated: false)
-        title = type == .habit ? TrackerConstants.Text.newHabitTitle : TrackerConstants.Text.newEventTitle
+        title = "Редактирование привычки"
         titleTextField.inputAssistantItem.leadingBarButtonGroups = []
         titleTextField.inputAssistantItem.trailingBarButtonGroups = []
         titleTextField.autocorrectionType = .no
+        configureInitialValues()
     }
     
     // MARK: - Setup Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
+        contentView.addSubview(daysCountLabel)
         textFieldContainer.addArrangedSubview(titleTextField)
         textFieldContainer.addArrangedSubview(errorLabel)
         buttonsStackView.addArrangedSubview(cancelButton)
@@ -203,11 +207,18 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
         }
         
         contentView.snp.makeConstraints { make in
-            make.edges.width.equalToSuperview()
+            make.edges.equalToSuperview()
+            make.width.equalToSuperview()
+        }
+        
+        daysCountLabel.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(TrackerConstants.Layout.sectionSpacing)
+            make.leading.trailing.equalToSuperview().inset(TrackerConstants.Layout.defaultSpacing)
+            make.height.equalTo(38)
         }
         
         textFieldContainer.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(TrackerConstants.Layout.sectionSpacing)
+            make.top.equalTo(daysCountLabel.snp.bottom).offset(40)
             make.leading.trailing.equalToSuperview().inset(TrackerConstants.Layout.defaultSpacing)
         }
         
@@ -277,33 +288,30 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
             return
         }
         
-        if type == .habit && selectedDays.isEmpty {
-            showAlert(title: "Ошибка", message: "Выберите хотя бы один день для расписания")
-            return
-        }
-        
-        let tracker = Tracker(
-            id: UUID(),
-            title: trackerTitle,
-            color: color,
-            emoji: emoji,
-            schedule: type == .habit ? selectedDays : [], 
-            isPinned: false,
-            categoryId: categoryId
-        )
         do {
-            try dataProvider.addTracker(tracker, categoryId: categoryId)
+            try dataProvider.updateTracker(
+                Tracker(
+                    id: tracker.id,
+                    title: trackerTitle,
+                    color: color,
+                    emoji: emoji,
+                    schedule: !tracker.schedule.isEmpty ? selectedDays : [],
+                    isPinned: tracker.isPinned,
+                    categoryId: categoryId
+                ),
+                categoryId: categoryId
+            )
             dismiss(animated: true)
         } catch {
-            showAlert(title: "Ошибка", message: "Не удалось сохранить трекер: \(error.localizedDescription)")
+            showAlert(title: "Ошибка", message: "Не удалось сохранить изменения: \(error.localizedDescription)")
         }
     }
     
     private func updateSaveButtonState() {
         let isValid = !trackerTitle.isEmpty &&
-        selectedEmoji != nil &&
-        selectedColor != nil &&
-        selectedCategoryId != nil
+                      selectedEmoji != nil &&
+                      selectedColor != nil &&
+                      selectedCategoryId != nil
         saveButton.isEnabled = isValid
         saveButton.backgroundColor = isValid ? .ypBlackDay : .ypGray
     }
@@ -313,10 +321,38 @@ final class AddTrackerViewController: UIViewController, CategorySelectionDelegat
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
+    
+    private func getTotalCompletionCount(for trackerID: UUID) -> Int {
+        return dataProvider.fetchRecords().filter { $0.trackerID == trackerID }.count
+    }
+    
+    private func configureInitialValues() {
+        titleTextField.text = tracker.title
+        selectedEmoji = tracker.emoji
+        selectedColor = tracker.color
+        selectedCategoryId = tracker.category
+        selectedCategoryTitle = dataProvider.getCategoryTitle(by: tracker.category ?? UUID()) ?? ""
+        selectedDays = tracker.schedule
+ 
+        let count = getTotalCompletionCount(for: tracker.id)
+        daysCountLabel.text = pluralizeDays(count: count)
+    }
+    
+    private func pluralizeDays(count: Int) -> String {
+        let remainder10 = count % 10
+        let remainder100 = count % 100
+        if remainder10 == 1 && remainder100 != 11 {
+            return "\(count) день"
+        } else if remainder10 >= 2 && remainder10 <= 4 && (remainder100 < 10 || remainder100 >= 20) {
+            return "\(count) дня"
+        } else {
+            return "\(count) дней"
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource & UITableViewDelegate
-extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
+extension EditTrackerViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         options.count
     }
@@ -365,7 +401,7 @@ extension AddTrackerViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 // MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
-extension AddTrackerViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension EditTrackerViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         collectionView == emojiCollectionView ? TrackerConstants.emojis.count : TrackerConstants.colors.count
     }
@@ -421,25 +457,20 @@ extension AddTrackerViewController: UICollectionViewDataSource, UICollectionView
     }
 }
 
-// MARK: - AddTrackerViewControllerDelegate
-extension AddTrackerViewController: AddTrackerViewControllerDelegate {
-    func didSelectCategory(_ category: TrackerCategory) {
-        selectedCategoryId = category.id
-        selectedCategoryTitle = category.title
-        optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
-        updateSaveButtonState()
-    }
-    
+// MARK: - ScheduleSelectionDelegate
+extension EditTrackerViewController: ScheduleSelectionDelegate {
     func didSelectSchedule(_ selectedDays: Set<Weekday>) {
         self.selectedDays = selectedDays
         optionsTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
     }
 }
 
-// MARK: - UITextFieldDelegate
-extension AddTrackerViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+// MARK: - CategorySelectionDelegate
+extension EditTrackerViewController: CategorySelectionDelegate {
+    func didSelectCategory(_ category: TrackerCategory) {
+        selectedCategoryId = category.id
+        selectedCategoryTitle = category.title
+        optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
+        updateSaveButtonState()
     }
 }

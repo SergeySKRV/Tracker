@@ -1,7 +1,6 @@
 import UIKit
 import SnapKit
 
-// MARK: - TrackerCategoryHeaderView
 final class TrackerCategoryHeaderView: UICollectionReusableView {
     static let identifier = "TrackerCategoryHeaderView"
     
