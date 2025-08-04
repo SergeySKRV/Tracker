@@ -1,8 +1,7 @@
 import UIKit
 
-// MARK: - TabBarController Class
+// MARK: - TabBarController
 final class TabBarController: UITabBarController {
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -11,7 +10,7 @@ final class TabBarController: UITabBarController {
         addTopBorder()
     }
     
-    // MARK: - Appearance Setup
+    // MARK: - Private Setup
     private func setupAppearance() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
@@ -20,7 +19,6 @@ final class TabBarController: UITabBarController {
         tabBar.standardAppearance = tabBarAppearance
     }
     
-    // MARK: - View Controllers Configuration
     private func configureViewControllers() {
         let trackersViewController = TrackersViewController()
         trackersViewController.tabBarItem = UITabBarItem(
@@ -36,18 +34,13 @@ final class TabBarController: UITabBarController {
             selectedImage: nil
         )
         
-        self.viewControllers = [trackersViewController, statisticsViewController]
+        viewControllers = [trackersViewController, statisticsViewController]
     }
+    
     private func addTopBorder() {
-           let borderLayer = CALayer()
-           borderLayer.backgroundColor = UIColor.ypGray.cgColor
-           borderLayer.frame = CGRect(
-               x: 0,
-               y: 0,
-               width: tabBar.frame.width,
-               height: 0.5
-           )
-           tabBar.layer.addSublayer(borderLayer)
-       }
+        let borderLayer = CALayer()
+        borderLayer.backgroundColor = UIColor.ypGray.cgColor
+        borderLayer.frame = CGRect(x: 0, y: 0, width: tabBar.frame.width, height: 0.5)
+        tabBar.layer.addSublayer(borderLayer)
+    }
 }
-

@@ -1,19 +1,22 @@
 import UIKit
 import SnapKit
 
+// MARK: - CategorySelectionDelegate
 protocol CategorySelectionDelegate: AnyObject {
     func didSelectCategory(_ category: TrackerCategory)
 }
 
+// MARK: - CategoriesViewController
 final class CategoriesViewController: UIViewController {
-    // MARK: - Properties
+    // MARK: - Private Properties
     private let viewModel: CategoriesViewModel
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let placeholderView = PlaceholderView()
     private let addButton = UIButton(type: .system)
+    
     weak var delegate: CategorySelectionDelegate?
     
-    // MARK: - Initialization
+    // MARK: - Lifecycle
     init(viewModel: CategoriesViewModel = CategoriesViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -24,15 +27,18 @@ final class CategoriesViewController: UIViewController {
         return nil
     }
     
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupBindings()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         viewModel.loadCategories()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Private Setup
     private func setupUI() {
         title = "Категория"
         view.backgroundColor = .ypWhiteDay
@@ -85,6 +91,7 @@ final class CategoriesViewController: UIViewController {
         }
     }
     
+    // MARK: - Private UI Logic
     private func updateUI() {
         let isEmpty = viewModel.numberOfCategories() == 0
         placeholderView.isHidden = !isEmpty
@@ -95,6 +102,7 @@ final class CategoriesViewController: UIViewController {
     
     private func presentEditCategoryViewController(for category: TrackerCategory, at indexPath: IndexPath) {
         let editVC = EditCategoryViewController(category: category, viewModel: viewModel)
+        editVC.delegate = self
         let navVC = UINavigationController(rootViewController: editVC)
         present(navVC, animated: true)
     }
@@ -121,12 +129,9 @@ final class CategoriesViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Отменить", style: .cancel))
         alert.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
-          
             do {
                 try self?.viewModel.deleteCategory(category)
-           
                 self?.updateUI()
-                
             } catch {
                 let errorAlert = UIAlertController(
                     title: "Ошибка",
@@ -136,9 +141,8 @@ final class CategoriesViewController: UIViewController {
                 errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(errorAlert, animated: true)
             }
-            
         })
-       
+        
         if let popover = alert.popoverPresentationController {
             popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.maxY, width: 0, height: 0)
             popover.permittedArrowDirections = []
@@ -158,19 +162,16 @@ final class CategoriesViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource & Delegate
+// MARK: - UITableViewDataSource, UITableViewDelegate
 extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfCategories()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: CategoryCell.identifier,
-            for: indexPath
-        ) as? CategoryCell else {
-            return UITableViewCell()
-        }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CategoryCell.identifier, for: indexPath) as? CategoryCell
+        else { return UITableViewCell() }
+        
         let isLastCell = indexPath.row == viewModel.numberOfCategories() - 1
         cell.configure(
             title: viewModel.categoryTitle(at: indexPath.row),
@@ -188,37 +189,33 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCategory = viewModel.category(at: indexPath.row)
         viewModel.selectCategory(selectedCategory)
+        tableView.reloadData()
         delegate?.didSelectCategory(selectedCategory)
         navigationController?.popViewController(animated: true)
     }
     
-    // MARK: - Context Menu
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let category = viewModel.category(at: indexPath.row)
         
-        return UIContextMenuConfiguration(
-            identifier: nil,
-            previewProvider: nil
-        ) { _ in
-            let editAction = UIAction(
-                title: "Редактировать",
-                handler: { [weak self] _ in
-                    guard let self = self else { return }
-                    let editVC = EditCategoryViewController(category: category, viewModel: self.viewModel)
-                    let navVC = UINavigationController(rootViewController: editVC)
-                    self.present(navVC, animated: true)
-                }
-            )
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
+            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+                self?.presentEditCategoryViewController(for: category, at: indexPath)
+            }
             
-            let deleteAction = UIAction(
-                title: "Удалить",
-                attributes: .destructive,
-                handler: { [weak self] _ in
-                    self?.deleteCategory(at: indexPath)
-                }
-            )
+            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+                self?.deleteCategory(at: indexPath)
+            }
             
             return UIMenu(title: "", children: [editAction, deleteAction])
         }
+    }
+}
+
+// MARK: - EditCategoryViewControllerDelegate
+extension CategoriesViewController: EditCategoryViewControllerDelegate {
+    func didUpdateCategory() {
+        viewModel.loadCategories()
+        tableView.reloadData()
+        NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidUpdate"), object: nil)
     }
 }

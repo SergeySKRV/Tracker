@@ -8,19 +8,19 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 // MARK: - TrackerRecordStore
 final class TrackerRecordStore: NSObject {
     
-    // MARK: Properties
+    // MARK: - Properties
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
     weak var delegate: TrackerRecordStoreDelegate?
     
-    // MARK: Initialization
+    // MARK: - Initialization
     init(context: NSManagedObjectContext = CoreDataStack.shared.viewContext) {
         self.context = context
         super.init()
         setupFetchedResultsController()
     }
     
-    // MARK: Private Methods
+    // MARK: - Private Methods
     private func setupFetchedResultsController() {
         let request = TrackerRecordCoreData.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
@@ -40,7 +40,7 @@ final class TrackerRecordStore: NSObject {
         }
     }
     
-    // MARK: Public Methods
+    // MARK: - Public Methods
     func addRecord(_ record: TrackerRecord) throws {
         let recordCoreData = TrackerRecordCoreData(context: context)
         recordCoreData.id = UUID()
@@ -53,7 +53,7 @@ final class TrackerRecordStore: NSObject {
     func deleteRecord(for trackerId: UUID, date: Date) throws {
         let calendar = Calendar.current
         let startDate = calendar.startOfDay(for: date)
-        let endDate = calendar.date(byAdding: .day, value: 1, to: startDate)!
+        guard let endDate = calendar.date(byAdding: .day, value: 1, to: startDate) else { return }
         
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(

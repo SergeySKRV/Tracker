@@ -1,6 +1,7 @@
 import UIKit
 import SnapKit
 
+// MARK: - EmojiCell
 final class EmojiCell: UICollectionViewCell {
     static let reuseIdentifier = "EmojiCell"
     
@@ -8,13 +9,13 @@ final class EmojiCell: UICollectionViewCell {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 32)
         label.textAlignment = .center
-        label.backgroundColor = .clear
         return label
     }()
     
+    // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupView()
+        setupViews()
         setupConstraints()
     }
     
@@ -23,28 +24,38 @@ final class EmojiCell: UICollectionViewCell {
         return nil
     }
     
-    private func setupView() {
-        contentView.backgroundColor = .clear
+    // MARK: - Private UI Setup
+    private func setupViews() {
         contentView.addSubview(emojiLabel)
+        contentView.backgroundColor = .clear
     }
     
     private func setupConstraints() {
         emojiLabel.snp.makeConstraints { make in
             make.center.equalToSuperview()
+            make.width.height.equalTo(40)
         }
     }
     
+    // MARK: - Public Methods
     func configure(with emoji: String, isSelected: Bool) {
         emojiLabel.text = emoji
-        contentView.backgroundColor = isSelected ? .ypLightGray : .clear
-        contentView.layer.cornerRadius = isSelected ? 16 : 0
-        contentView.layer.masksToBounds = isSelected
+        
+        if isSelected {
+            contentView.backgroundColor = .ypLightGray
+            contentView.layer.cornerRadius = 16
+            contentView.layer.masksToBounds = true
+        } else {
+            contentView.backgroundColor = .clear
+            contentView.layer.cornerRadius = 0
+        }
     }
     
+    // MARK: - Reuse
     override func prepareForReuse() {
         super.prepareForReuse()
+        emojiLabel.text = nil
         contentView.backgroundColor = .clear
         contentView.layer.cornerRadius = 0
-        contentView.layer.masksToBounds = false
     }
 }

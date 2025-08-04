@@ -38,10 +38,6 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
     }
 
     // MARK: - Public Methods
-    func getCategoryTitle(by id: UUID) -> String? {
-        return categoryStore.getCategoryTitle(by: id)
-    }
-
     func setTrackerStoreDelegate(_ delegate: TrackerStoreDelegate?) {
         trackerStore.delegate = delegate
     }
@@ -114,5 +110,9 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
 
     func fetchRecords() -> [TrackerRecord] {
         return recordStore.fetchRecords()
+    }
+
+    func getCategoryTitle(by id: UUID) -> String? {
+        return categoryStore.getCategoryTitle(by: id)
     }
 }

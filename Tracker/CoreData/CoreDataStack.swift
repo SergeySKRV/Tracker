@@ -6,7 +6,6 @@ final class CoreDataStack {
     // MARK: - Singleton
     static let shared = CoreDataStack()
     
-    // MARK: - Private Properties
     private init() {}
     
     // MARK: - Core Data Stack

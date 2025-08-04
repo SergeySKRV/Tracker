@@ -1,8 +1,9 @@
 import UIKit
 import SnapKit
 
+// MARK: - OnboardingViewController
 final class OnboardingViewController: UIViewController {
-    // MARK: - Properties
+    // MARK: - Private Properties
     private var pageViewController: UIPageViewController!
     private var pages: [UIViewController] = []
     private let doneButton = UIButton(type: .system)
@@ -17,7 +18,7 @@ final class OnboardingViewController: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Private Setup
     private func setupPages() {
         let page1 = OnboardingPageViewController(
             imageName: "onboarding1",
@@ -97,31 +98,28 @@ final class OnboardingViewController: UIViewController {
     }
 }
 
-// MARK: - UIPageViewController DataSource & Delegate
+// MARK: - Status Bar
+extension OnboardingViewController {
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .darkContent
+    }
+}
+
+// MARK: - Page View Controller
 extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
-        
-        if currentIndex == 0 {
-            return pages.last
-        } else {
-            return pages[currentIndex - 1]
-        }
+        guard let index = pages.firstIndex(of: viewController) else { return nil }
+        return index == 0 ? pages.last : pages[index - 1]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let currentIndex = pages.firstIndex(of: viewController) else { return nil }
-        
-        if currentIndex == pages.count - 1 {
-            return pages.first
-        } else {
-            return pages[currentIndex + 1]
-        }
+        guard let index = pages.firstIndex(of: viewController) else { return nil }
+        return index == pages.count - 1 ? pages.first : pages[index + 1]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if let currentViewController = pageViewController.viewControllers?.first,
-           let index = pages.firstIndex(of: currentViewController) {
+        if let current = pageViewController.viewControllers?.first,
+           let index = pages.firstIndex(of: current) {
             pageControl.currentPage = index
         }
     }

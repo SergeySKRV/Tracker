@@ -1,15 +1,14 @@
 import UIKit
 
-// MARK: - StatisticViewController Class
+// MARK: - StatisticsViewController
 final class StatisticsViewController: UIViewController {
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
     
-    // MARK: - Configure UI
+    // MARK: - Private UI Setup
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
     }

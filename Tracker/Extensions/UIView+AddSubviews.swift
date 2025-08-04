@@ -1,9 +1,7 @@
 import UIKit
 
-// MARK: - UIView Extension: Subviews Management
+// MARK: - UIView + Subviews
 extension UIView {
-    
-    // MARK: - Public Methods
     func addSubviews(_ views: UIView...) {
         views.forEach { addSubview($0) }
     }

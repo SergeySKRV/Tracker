@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-// MARK: - Weekday Enum
+// MARK: - Weekday
 enum Weekday: Int, CaseIterable, Codable {
     case monday = 0
     case tuesday = 1
@@ -11,7 +11,6 @@ enum Weekday: Int, CaseIterable, Codable {
     case saturday = 5
     case sunday = 6
     
-    // MARK: Computed Properties
     var shortName: String {
         switch self {
         case .monday: return "Пн"
@@ -36,7 +35,8 @@ enum Weekday: Int, CaseIterable, Codable {
         }
     }
 }
-// MARK: - Tracker Model
+
+// MARK: - Tracker
 struct Tracker {
     let id: UUID
     let title: String
@@ -45,8 +45,16 @@ struct Tracker {
     let schedule: Set<Weekday>
     let isPinned: Bool
     let category: UUID?
-
-    init(id: UUID, title: String, color: UIColor, emoji: String, schedule: Set<Weekday>, isPinned: Bool = false, categoryId: UUID?) {
+    
+    init(
+        id: UUID,
+        title: String,
+        color: UIColor,
+        emoji: String,
+        schedule: Set<Weekday>,
+        isPinned: Bool = false,
+        categoryId: UUID?
+    ) {
         self.id = id
         self.title = title
         self.color = color

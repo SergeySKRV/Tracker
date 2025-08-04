@@ -1,16 +1,17 @@
 import UIKit
 import SnapKit
 
+// MARK: - OnboardingPageViewController
 final class OnboardingPageViewController: UIViewController {
-    // MARK: - Properties
+    // MARK: - Private Properties
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
     
-    // MARK: - Initialization
+    // MARK: - Lifecycle
     init(imageName: String, title: String) {
         super.init(nibName: nil, bundle: nil)
-        imageView.image = UIImage(named: imageName)
-        titleLabel.text = title
+        self.imageView.image = UIImage(named: imageName)
+        self.titleLabel.text = title
     }
     
     required init?(coder: NSCoder) {
@@ -18,14 +19,13 @@ final class OnboardingPageViewController: UIViewController {
         return nil
     }
     
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Private UI Setup
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         

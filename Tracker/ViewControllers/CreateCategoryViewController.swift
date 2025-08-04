@@ -1,12 +1,13 @@
 import UIKit
 import SnapKit
 
+// MARK: - CreateCategoryViewController
 final class CreateCategoryViewController: UIViewController {
     // MARK: - Properties
     var onCategoryCreated: (() -> Void)?
+    
     private let viewModel: CategoriesViewModel
     
-    // MARK: - UI Elements
     private let textField: UITextField = {
         let field = UITextField()
         field.placeholder = "Введите название категории"
@@ -29,7 +30,7 @@ final class CreateCategoryViewController: UIViewController {
         return button
     }()
     
-    // MARK: - Initialization
+    // MARK: - Lifecycle
     init(viewModel: CategoriesViewModel = CategoriesViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -40,7 +41,6 @@ final class CreateCategoryViewController: UIViewController {
         return nil
     }
     
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -48,7 +48,7 @@ final class CreateCategoryViewController: UIViewController {
         setupActions()
     }
     
-    // MARK: - Setup Methods
+    // MARK: - Private Setup
     private func setupUI() {
         title = "Новая категория"
         view.backgroundColor = .ypWhiteDay
@@ -63,10 +63,11 @@ final class CreateCategoryViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(75)
         }
+        
         createButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
             make.height.equalTo(60)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
         }
     }
     
@@ -78,7 +79,7 @@ final class CreateCategoryViewController: UIViewController {
     // MARK: - Public Methods
     func configure(with title: String) {
         textField.text = title
-        textFieldDidChange() 
+        textFieldDidChange()
     }
     
     // MARK: - Actions
@@ -90,8 +91,15 @@ final class CreateCategoryViewController: UIViewController {
     
     @objc private func createButtonTapped() {
         guard let title = textField.text, !title.isEmpty else { return }
+        
         viewModel.addCategory(title: title)
         onCategoryCreated?()
+        
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CategoriesDidUpdate"),
+            object: nil
+        )
+        
         dismiss(animated: true)
     }
 }

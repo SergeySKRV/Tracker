@@ -1,9 +1,12 @@
 import UIKit
+import SnapKit
 
+// MARK: - PlaceholderView
 final class PlaceholderView: UIView {
     private let imageView = UIImageView()
     private let label = UILabel()
     
+    // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -14,8 +17,16 @@ final class PlaceholderView: UIView {
         return nil
     }
     
+    // MARK: - Public Methods
+    func configure(image: UIImage?, text: String) {
+        imageView.image = image
+        label.text = text
+    }
+    
+    // MARK: - Private UI Setup
     private func setupUI() {
         imageView.contentMode = .scaleAspectFit
+        
         label.numberOfLines = 0
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12)
@@ -33,10 +44,5 @@ final class PlaceholderView: UIView {
             make.top.equalTo(imageView.snp.bottom).offset(8)
             make.leading.trailing.bottom.equalToSuperview()
         }
-    }
-    
-    func configure(image: UIImage?, text: String) {
-        imageView.image = image
-        label.text = text
     }
 }

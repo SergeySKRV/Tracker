@@ -1,13 +1,14 @@
 import UIKit
 import SnapKit
 
+// MARK: - CategoryCell
 final class CategoryCell: UITableViewCell {
     static let identifier = "CategoryCell"
     
-    // MARK: - UI Elements
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .ypBackgroundDay
+        view.layer.masksToBounds = true
         return view
     }()
     
@@ -24,15 +25,17 @@ final class CategoryCell: UITableViewCell {
         imageView.contentMode = .center
         imageView.tintColor = .ypBlue
         imageView.isHidden = true
+        imageView.image = UIImage(systemName: "checkmark")
         return imageView
     }()
     
     private let separatorView: UIView = {
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .ypLightGray
         return view
     }()
     
+    // MARK: - Lifecycle
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupUI()
@@ -44,17 +47,14 @@ final class CategoryCell: UITableViewCell {
         return nil
     }
     
+    // MARK: - Private UI Setup
     private func setupUI() {
         selectionStyle = .none
         backgroundColor = .clear
         
         contentView.addSubview(containerView)
-        [titleLabel, checkmarkImageView, separatorView].forEach {
-            containerView.addSubview($0)
-        }
-        
-        checkmarkImageView.image = UIImage(systemName: "checkmark")
-        containerView.layer.masksToBounds = true
+        [titleLabel, checkmarkImageView].forEach { containerView.addSubview($0) }
+        contentView.addSubview(separatorView)
     }
     
     private func setupConstraints() {
@@ -79,14 +79,14 @@ final class CategoryCell: UITableViewCell {
             make.leading.equalTo(containerView).offset(16)
             make.trailing.equalTo(containerView).offset(-16)
             make.bottom.equalTo(containerView)
-            make.height.equalTo(0.5)
+            make.height.equalTo(1)
         }
     }
     
+    // MARK: - Public Methods
     func configure(title: String, isSelected: Bool, isFirstCell: Bool = false, isLastCell: Bool = false) {
         titleLabel.text = title
         checkmarkImageView.isHidden = !isSelected
-        
         separatorView.isHidden = isLastCell
         
         var maskedCorners: CACornerMask = []
@@ -106,11 +106,9 @@ final class CategoryCell: UITableViewCell {
         
         containerView.layer.maskedCorners = maskedCorners
         containerView.layer.cornerRadius = cornerRadius
-        
-        self.setNeedsLayout()
-        self.layoutIfNeeded()
     }
     
+    // MARK: - Reuse
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = nil

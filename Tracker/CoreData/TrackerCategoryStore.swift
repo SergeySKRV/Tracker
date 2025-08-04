@@ -84,36 +84,41 @@ final class TrackerCategoryStore {
     }
     
     func addCategory(title: String) throws {
-            let category = TrackerCategory(title: title)
-            try addCategory(category)
-        }
-        
-        func addCategory(_ category: TrackerCategory) throws {
-            let categoryCoreData = TrackerCategoryCoreData(context: context)
-            categoryCoreData.id = category.id
-            categoryCoreData.title = category.title
-            try context.save()
-        }
+        let category = TrackerCategory(title: title)
+        try addCategory(category)
+    }
+    
+    func addCategory(_ category: TrackerCategory) throws {
+        let categoryCoreData = TrackerCategoryCoreData(context: context)
+        categoryCoreData.id = category.id
+        categoryCoreData.title = category.title
+        try context.save()
+    }
     
     func getCategoryCoreData(by id: UUID) throws -> TrackerCategoryCoreData {
-            let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
-            
-            do {
-                let categories = try context.fetch(request)
-                guard let category = categories.first else {
-                    throw CoreDataError.categoryNotFound
-                }
-                return category
-            } catch {
-                throw error
+        let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        
+        do {
+            let categories = try context.fetch(request)
+            guard let category = categories.first else {
+                throw CoreDataError.categoryNotFound
             }
+            return category
+        } catch {
+            throw error
         }
-
+    }
+    
     func updateCategory(_ category: TrackerCategory, with newTitle: String) throws {
         let categoryCoreData = try getCategoryCoreData(by: category.id)
         categoryCoreData.title = newTitle
         try context.save()
+        
+        NotificationCenter.default.post(
+            name: NSNotification.Name("CoreDataCategoriesDidChange"),
+            object: nil
+        )
     }
     
     func deleteCategory(_ category: TrackerCategory) throws {
