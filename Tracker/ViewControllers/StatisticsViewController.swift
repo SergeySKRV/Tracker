@@ -1,6 +1,6 @@
 import UIKit
 
-// MARK: - StatisticViewController Class
+// MARK: - StatisticsViewController
 final class StatisticsViewController: UIViewController {
     
     // MARK: - Lifecycle
@@ -9,7 +9,7 @@ final class StatisticsViewController: UIViewController {
         setupUI()
     }
     
-    // MARK: - Configure UI
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
     }

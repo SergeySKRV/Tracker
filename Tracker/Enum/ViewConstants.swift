@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - Constants
+// MARK: - TrackersViewController + Constants
 extension TrackersViewController {
     struct ViewConstants {
         static let sidesIndent: CGFloat = 16

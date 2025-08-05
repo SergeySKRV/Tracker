@@ -3,27 +3,116 @@ import UIKit
 
 // MARK: - TrackerStoreDelegate Protocol
 protocol TrackerStoreDelegate: AnyObject {
-    func didUpdateTrackers(_ updates: [IndexPath]?)
+    func didUpdateTrackers()
 }
 
 // MARK: - TrackerStore
 final class TrackerStore: NSObject {
     
-    // MARK: Properties
+    // MARK: - Properties
     private let context: NSManagedObjectContext
     private let categoryStore: TrackerCategoryStore
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     weak var delegate: TrackerStoreDelegate?
     
-    // MARK: Initialization
-    init(context: NSManagedObjectContext = CoreDataStack.shared.viewContext, categoryStore: TrackerCategoryStore = TrackerCategoryStore()) {
+    // MARK: - Lifecycle
+    init(
+        context: NSManagedObjectContext = CoreDataStack.shared.viewContext,
+        categoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    ) {
         self.context = context
         self.categoryStore = categoryStore
         super.init()
         setupFetchedResultsController()
     }
     
-    // MARK: Private Methods
+    // MARK: - Public Methods
+    func addTracker(_ tracker: Tracker, to categoryId: UUID) throws {
+        let trackerCoreData = TrackerCoreData(context: context)
+        trackerCoreData.id = tracker.id
+        trackerCoreData.title = tracker.title
+        trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.color = tracker.color.toHex()
+        trackerCoreData.isPinned = tracker.isPinned
+        
+        if !tracker.schedule.isEmpty {
+            do {
+                trackerCoreData.schedule = try JSONEncoder().encode(Array(tracker.schedule))
+            } catch {
+                print("Ошибка кодирования расписания: \(error)")
+            }
+        }
+        
+        do {
+            let categoryCoreData = try categoryStore.getCategoryCoreData(by: categoryId)
+            categoryCoreData.addToTrackers(trackerCoreData)
+            try context.save()
+            
+            NotificationCenter.default.post(name: NSNotification.Name("TrackersUpdated"), object: nil)
+        } catch {
+            context.delete(trackerCoreData)
+            throw error
+        }
+    }
+    
+    func deleteTracker(_ tracker: Tracker) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        guard let trackerCoreData = try context.fetch(request).first else {
+            throw CoreDataError.trackerNotFound
+        }
+        context.delete(trackerCoreData)
+        try context.save()
+    }
+    
+    func updateTracker(_ tracker: Tracker, categoryId: UUID) throws {
+        let request = TrackerCoreData.fetchRequest()
+        request.predicate = NSPredicate(format: "id == %@", tracker.id as CVarArg)
+        guard let trackerCoreData = try context.fetch(request).first else {
+            throw CoreDataError.trackerNotFound
+        }
+        
+        trackerCoreData.title = tracker.title
+        trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.color = tracker.color.toHex()
+        trackerCoreData.isPinned = tracker.isPinned
+        
+        if !tracker.schedule.isEmpty {
+            do {
+                trackerCoreData.schedule = try JSONEncoder().encode(Array(tracker.schedule))
+            } catch {
+                print("Ошибка кодирования расписания: \(error)")
+            }
+        } else {
+            trackerCoreData.schedule = nil
+        }
+        
+        do {
+            let categoryCoreData = try categoryStore.getCategoryCoreData(by: categoryId)
+            if trackerCoreData.category != categoryCoreData {
+                trackerCoreData.category?.removeFromTrackers(trackerCoreData)
+                categoryCoreData.addToTrackers(trackerCoreData)
+            }
+        } catch {
+            throw error
+        }
+        
+        try context.save()
+        NotificationCenter.default.post(name: NSNotification.Name("TrackersUpdated"), object: nil)
+    }
+    
+    func fetchTrackers() -> [Tracker] {
+        guard let sections = fetchedResultsController?.sections else { return [] }
+        
+        return sections.flatMap { section in
+            section.objects?.compactMap { object in
+                guard let trackerCoreData = object as? TrackerCoreData else { return nil }
+                return trackerFromCoreData(trackerCoreData)
+            } ?? []
+        }
+    }
+    
+    // MARK: - Private Methods
     private func setupFetchedResultsController() {
         let request = TrackerCoreData.fetchRequest()
         request.sortDescriptors = [
@@ -31,7 +120,6 @@ final class TrackerStore: NSObject {
             NSSortDescriptor(key: "title", ascending: true)
         ]
         request.predicate = NSPredicate(format: "category != nil")
-        
         fetchedResultsController = NSFetchedResultsController(
             fetchRequest: request,
             managedObjectContext: context,
@@ -39,7 +127,6 @@ final class TrackerStore: NSObject {
             cacheName: nil
         )
         fetchedResultsController?.delegate = self
-        
         do {
             try fetchedResultsController?.performFetch()
         } catch {
@@ -52,7 +139,10 @@ final class TrackerStore: NSObject {
               let title = coreData.title,
               let emoji = coreData.emoji,
               let colorHex = coreData.color,
-              let color = UIColor.fromHex(colorHex) else {
+              let color = UIColor.fromHex(colorHex),
+              let category = coreData.category,
+              let categoryId = category.id
+        else {
             return nil
         }
         
@@ -67,70 +157,18 @@ final class TrackerStore: NSObject {
             color: color,
             emoji: emoji,
             schedule: schedule,
-            isPinned: coreData.isPinned
+            isPinned: coreData.isPinned,
+            categoryId: categoryId
         )
-    }
-    
-    // MARK: Public Methods
-    func addTracker(_ tracker: Tracker, to categoryId: UUID? = nil) throws {
-        let trackerCoreData = TrackerCoreData(context: context)
-        trackerCoreData.id = tracker.id
-        trackerCoreData.title = tracker.title
-        trackerCoreData.emoji = tracker.emoji
-        trackerCoreData.color = tracker.color.toHex()
-        trackerCoreData.schedule = try? JSONEncoder().encode(Array(tracker.schedule))
-        trackerCoreData.isPinned = tracker.isPinned
-        
-        let category: TrackerCategoryCoreData
-        if let categoryId = categoryId {
-            let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", categoryId as CVarArg)
-            guard let existingCategory = try context.fetch(request).first else {
-                throw CoreDataError.categoryNotFound
-            }
-            category = existingCategory
-        } else {
-            category = try categoryStore.getDefaultCategory()
-        }
-        
-        category.addToTrackers(trackerCoreData)
-        try context.save()
-    }
-    
-    func fetchTrackers() -> [Tracker] {
-        guard let sections = fetchedResultsController?.sections else { return [] }
-        return sections.flatMap { section in
-            section.objects?.compactMap { object in
-                guard let trackerCoreData = object as? TrackerCoreData else { return nil }
-                return trackerFromCoreData(trackerCoreData)
-            } ?? []
-        }
     }
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
 extension TrackerStore: NSFetchedResultsControllerDelegate {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                   didChange anObject: Any,
-                   at indexPath: IndexPath?,
-                   for type: NSFetchedResultsChangeType,
-                   newIndexPath: IndexPath?) {
-        var updates: [IndexPath] = []
-        
-        switch type {
-        case .insert: if let newIndexPath = newIndexPath { updates.append(newIndexPath) }
-        case .delete: if let indexPath = indexPath { updates.append(indexPath) }
-        case .update: if let indexPath = indexPath { updates.append(indexPath) }
-        case .move:
-            if let indexPath = indexPath { updates.append(indexPath) }
-            if let newIndexPath = newIndexPath { updates.append(newIndexPath) }
-        @unknown default: break
-        }
-        
-        delegate?.didUpdateTrackers(updates.isEmpty ? nil : updates)
-    }
-    
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.didUpdateTrackers(nil)
+        DispatchQueue.main.async {
+            self.delegate?.didUpdateTrackers()
+            NotificationCenter.default.post(name: NSNotification.Name("TrackerDataDidChange"), object: nil)
+        }
     }
 }

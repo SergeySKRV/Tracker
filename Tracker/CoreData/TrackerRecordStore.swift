@@ -8,39 +8,19 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 // MARK: - TrackerRecordStore
 final class TrackerRecordStore: NSObject {
     
-    // MARK: Properties
+    // MARK: - Properties
     private let context: NSManagedObjectContext
     private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>?
     weak var delegate: TrackerRecordStoreDelegate?
     
-    // MARK: Initialization
+    // MARK: - Lifecycle
     init(context: NSManagedObjectContext = CoreDataStack.shared.viewContext) {
         self.context = context
         super.init()
         setupFetchedResultsController()
     }
     
-    // MARK: Private Methods
-    private func setupFetchedResultsController() {
-        let request = TrackerRecordCoreData.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
-        
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: request,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        fetchedResultsController?.delegate = self
-        
-        do {
-            try fetchedResultsController?.performFetch()
-        } catch {
-            print("Failed to initialize FetchedResultsController: \(error)")
-        }
-    }
-    
-    // MARK: Public Methods
+    // MARK: - Public Methods
     func addRecord(_ record: TrackerRecord) throws {
         let recordCoreData = TrackerRecordCoreData(context: context)
         recordCoreData.id = UUID()
@@ -53,7 +33,7 @@ final class TrackerRecordStore: NSObject {
     func deleteRecord(for trackerId: UUID, date: Date) throws {
         let calendar = Calendar.current
         let startDate = calendar.startOfDay(for: date)
-        let endDate = calendar.date(byAdding: .day, value: 1, to: startDate)!
+        guard let endDate = calendar.date(byAdding: .day, value: 1, to: startDate) else { return }
         
         let request = TrackerRecordCoreData.fetchRequest()
         request.predicate = NSPredicate(
@@ -73,16 +53,37 @@ final class TrackerRecordStore: NSObject {
         guard let records = fetchedResultsController?.fetchedObjects else { return [] }
         return records.compactMap { $0.toTrackerRecord() }
     }
+    
+    // MARK: - Private Methods
+    private func setupFetchedResultsController() {
+        let request = TrackerRecordCoreData.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        fetchedResultsController?.delegate = self
+        
+        do {
+            try fetchedResultsController?.performFetch()
+        } catch {
+            print("Failed to initialize FetchedResultsController: \(error)")
+        }
+    }
 }
 
 // MARK: - NSFetchedResultsControllerDelegate
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                   didChange anObject: Any,
-                   at indexPath: IndexPath?,
-                   for type: NSFetchedResultsChangeType,
-                   newIndexPath: IndexPath?) {
-        
+    func controller(
+        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
+        didChange anObject: Any,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
         var updates: [IndexPath] = []
         
         switch type {

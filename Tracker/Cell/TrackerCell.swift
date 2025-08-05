@@ -1,14 +1,15 @@
 import UIKit
 import SnapKit
 
-// MARK: - TrackerCell Class
+// MARK: - TrackerCell
 final class TrackerCell: UICollectionViewCell {
+    
+    // MARK: - Static Constants
     static let reuseIdentifier = "TrackerCell"
     
     // MARK: - Properties
     var onCheckButtonTapped: (() -> Void)?
     
-    // MARK: - UI Elements
     private let cardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -56,6 +57,17 @@ final class TrackerCell: UICollectionViewCell {
         return button
     }()
     
+    private let pinImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "pin.fill")
+        imageView.tintColor = .ypWhiteDay
+        imageView.isHidden = true
+        imageView.backgroundColor = .ypWhiteDay
+        imageView.layer.cornerRadius = 4
+        imageView.layer.masksToBounds = true
+        return imageView
+    }()
+    
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,7 +86,7 @@ final class TrackerCell: UICollectionViewCell {
         emojiLabel.text = tracker.emoji
         titleLabel.text = tracker.title
         daysCountLabel.text = pluralizeDays(count: completionCount)
-
+        
         let image = isCompleted ? UIImage(systemName: "checkmark") : UIImage(systemName: "plus")
         checkButton.setImage(image, for: .normal)
         checkButton.backgroundColor = tracker.color.withAlphaComponent(isCompleted ? 0.3 : 1.0)
@@ -82,16 +94,15 @@ final class TrackerCell: UICollectionViewCell {
         let canMark = selectedDate <= Date()
         checkButton.isEnabled = canMark
         checkButton.alpha = canMark ? 1.0 : 0.3
+        
+        pinImageView.backgroundColor = tracker.color
+        pinImageView.isHidden = !tracker.isPinned
     }
     
     // MARK: - Private Methods
     private func setupUI() {
-        [cardView, daysCountLabel, checkButton].forEach {
-            contentView.addSubview($0)
-        }
-        [emojiBackground, titleLabel].forEach {
-            cardView.addSubview($0)
-        }
+        [cardView, daysCountLabel, checkButton, pinImageView].forEach { contentView.addSubview($0) }
+        [emojiBackground, titleLabel].forEach { cardView.addSubview($0) }
         emojiBackground.addSubview(emojiLabel)
     }
     
@@ -126,12 +137,17 @@ final class TrackerCell: UICollectionViewCell {
             make.trailing.equalToSuperview().offset(-16)
             make.width.height.equalTo(34)
         }
+        
+        pinImageView.snp.makeConstraints { make in
+            make.top.equalTo(cardView).offset(18)
+            make.trailing.equalTo(cardView).offset(-12)
+            make.width.height.equalTo(12)
+        }
     }
     
     private func pluralizeDays(count: Int) -> String {
         let remainder10 = count % 10
         let remainder100 = count % 100
-        
         if remainder10 == 1 && remainder100 != 11 {
             return "\(count) день"
         } else if remainder10 >= 2 && remainder10 <= 4 && (remainder100 < 10 || remainder100 >= 20) {
@@ -141,7 +157,6 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
-    // MARK: - Actions
     @objc private func checkButtonTapped() {
         onCheckButtonTapped?()
     }

@@ -1,22 +1,29 @@
 import UIKit
 import SnapKit
 
-// MARK: - AddTrackerViewController
-final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
+// MARK: - EditTrackerViewController
+final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
     
     // MARK: - Properties
-    private let addViewModel: AddTrackerViewModel
+    private let editViewModel: EditTrackerViewModel
     private let formVC: TrackerFormViewController
-    private let trackerType: TrackerType
     
     // MARK: - Lifecycle
-    init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
-        self.trackerType = type
-        self.addViewModel = AddTrackerViewModel(type: type, dataProvider: dataProvider)
+    init(
+        tracker: Tracker,
+        categoryTitle: String,
+        dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared
+    ) {
+        self.editViewModel = EditTrackerViewModel(
+            tracker: tracker,
+            categoryTitle: categoryTitle,
+            dataProvider: dataProvider
+        )
         self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
         
         setupForm()
+        setupInitialValues()
     }
     
     required init?(coder: NSCoder) {
@@ -32,17 +39,16 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     // MARK: - Private Methods
     private func setupForm() {
         formVC.delegate = self
-        formVC.viewModel = addViewModel
+        formVC.viewModel = editViewModel
         
-        title = trackerType == .habit ?
-            TrackerConstants.Text.newHabitTitle :
-            TrackerConstants.Text.newEventTitle
-        
-        formVC.saveButton.setTitle(
-            TrackerConstants.Text.createButton,
-            for: .normal
-        )
-        navigationItem.setHidesBackButton(true, animated: false)
+        formVC.daysCountLabel = createDaysCountLabel()
+        title = "Редактирование привычки"
+        formVC.saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
+    }
+    
+    private func setupInitialValues() {
+        formVC.titleTextField.text = editViewModel.trackerTitle
+        formVC.selectedCategoryTitle = editViewModel.selectedCategoryTitle
     }
     
     private func addChildViewController() {
@@ -50,6 +56,15 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         view.addSubview(formVC.view)
         formVC.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         formVC.didMove(toParent: self)
+    }
+    
+    private func createDaysCountLabel() -> UILabel {
+        let label = UILabel()
+        label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .ypBlackDay
+        label.textAlignment = .center
+        return label
     }
     
     // MARK: - TrackerFormDelegate
@@ -60,7 +75,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         schedule: Set<Weekday>,
         categoryId: UUID
     ) {
-        addViewModel.saveTracker(
+        editViewModel.saveTracker(
             title: title,
             emoji: emoji,
             color: color,
