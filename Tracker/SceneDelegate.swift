@@ -2,6 +2,7 @@ import UIKit
 
 // MARK: - SceneDelegate
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
+    
     // MARK: - Properties
     var window: UIWindow?
     

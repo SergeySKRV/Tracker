@@ -3,6 +3,8 @@ import UIKit
 
 // MARK: - Weekday
 enum Weekday: Int, CaseIterable, Codable {
+    
+    // MARK: Cases
     case monday = 0
     case tuesday = 1
     case wednesday = 2
@@ -11,6 +13,7 @@ enum Weekday: Int, CaseIterable, Codable {
     case saturday = 5
     case sunday = 6
     
+    // MARK: Properties
     var shortName: String {
         switch self {
         case .monday: return "Пн"
@@ -38,6 +41,8 @@ enum Weekday: Int, CaseIterable, Codable {
 
 // MARK: - Tracker
 struct Tracker {
+    
+    // MARK: Properties
     let id: UUID
     let title: String
     let color: UIColor
@@ -46,6 +51,7 @@ struct Tracker {
     let isPinned: Bool
     let category: UUID?
     
+    // MARK: Initialization
     init(
         id: UUID,
         title: String,

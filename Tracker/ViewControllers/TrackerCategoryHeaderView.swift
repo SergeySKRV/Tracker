@@ -3,7 +3,8 @@ import SnapKit
 
 // MARK: - TrackerCategoryHeaderView
 final class TrackerCategoryHeaderView: UICollectionReusableView {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 19)
@@ -22,7 +23,12 @@ final class TrackerCategoryHeaderView: UICollectionReusableView {
         return nil
     }
     
-    // MARK: - Private UI Setup
+    // MARK: - Public Methods
+    func configure(with title: String) {
+        titleLabel.text = title
+    }
+    
+    // MARK: - Private Methods
     private func setupViews() {
         addSubview(titleLabel)
         
@@ -31,10 +37,5 @@ final class TrackerCategoryHeaderView: UICollectionReusableView {
             make.top.bottom.equalToSuperview()
             make.trailing.lessThanOrEqualToSuperview().offset(-16)
         }
-    }
-    
-    // MARK: - Public Methods
-    func configure(with title: String) {
-        titleLabel.text = title
     }
 }

@@ -3,7 +3,8 @@ import UIKit
 // MARK: - AppDelegate
 @main
 final class AppDelegate: UIResponder, UIApplicationDelegate {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let coreDataStack = CoreDataStack.shared
     
     // MARK: - UIApplicationDelegate

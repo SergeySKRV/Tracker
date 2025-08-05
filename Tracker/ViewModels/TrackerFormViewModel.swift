@@ -9,13 +9,14 @@ protocol TrackerFormViewModelProtocol {
     var selectedCategoryId: UUID? { get set }
     var selectedCategoryTitle: String? { get set }
     var selectedDays: Set<Weekday> { get set }
-    var options: [String] { get }
+    var options: [String] { get set }
     
     func updateSaveButtonState() -> Bool
 }
 
 // MARK: - TrackerFormViewModel
 class TrackerFormViewModel: TrackerFormViewModelProtocol {
+    
     // MARK: - Properties
     var trackerTitle: String = ""
     var selectedEmoji: String?
@@ -24,7 +25,7 @@ class TrackerFormViewModel: TrackerFormViewModelProtocol {
     var selectedCategoryTitle: String?
     var selectedDays: Set<Weekday> = []
     
-    var options: [String] { [] }
+    var options: [String] = []
     
     // MARK: - Public Methods
     func updateSaveButtonState() -> Bool {

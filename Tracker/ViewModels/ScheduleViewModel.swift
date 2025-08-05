@@ -2,12 +2,15 @@ import Foundation
 
 // MARK: - ScheduleViewModel
 final class ScheduleViewModel {
+    
+    // MARK: - Properties
     private let daysOfWeek = Weekday.allCases
     var selectedDays: Set<Weekday>
     
     // MARK: - Output
     var onSelectionChanged: (() -> Void)?
     
+    // MARK: - Lifecycle
     init(selectedDays: Set<Weekday> = []) {
         self.selectedDays = selectedDays
     }

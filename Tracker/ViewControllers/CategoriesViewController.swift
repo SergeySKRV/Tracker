@@ -8,7 +8,8 @@ protocol CategorySelectionDelegate: AnyObject {
 
 // MARK: - CategoriesViewController
 final class CategoriesViewController: UIViewController {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let viewModel: CategoriesViewModel
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let placeholderView = PlaceholderView()
@@ -38,7 +39,7 @@ final class CategoriesViewController: UIViewController {
         viewModel.loadCategories()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupUI() {
         title = "Категория"
         view.backgroundColor = .ypWhiteDay
@@ -91,7 +92,6 @@ final class CategoriesViewController: UIViewController {
         }
     }
     
-    // MARK: - Private UI Logic
     private func updateUI() {
         let isEmpty = viewModel.numberOfCategories() == 0
         placeholderView.isHidden = !isEmpty
@@ -164,6 +164,7 @@ final class CategoriesViewController: UIViewController {
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfCategories()
     }

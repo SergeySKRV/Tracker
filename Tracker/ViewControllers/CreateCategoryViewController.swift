@@ -3,6 +3,7 @@ import SnapKit
 
 // MARK: - CreateCategoryViewController
 final class CreateCategoryViewController: UIViewController {
+    
     // MARK: - Properties
     var onCategoryCreated: (() -> Void)?
     
@@ -48,7 +49,13 @@ final class CreateCategoryViewController: UIViewController {
         setupActions()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Public Methods
+    func configure(with title: String) {
+        textField.text = title
+        textFieldDidChange()
+    }
+    
+    // MARK: - Private Methods
     private func setupUI() {
         title = "Новая категория"
         view.backgroundColor = .ypWhiteDay
@@ -74,12 +81,6 @@ final class CreateCategoryViewController: UIViewController {
     private func setupActions() {
         createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
-    }
-    
-    // MARK: - Public Methods
-    func configure(with title: String) {
-        textField.text = title
-        textFieldDidChange()
     }
     
     // MARK: - Actions

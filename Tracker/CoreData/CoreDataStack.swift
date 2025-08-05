@@ -3,9 +3,10 @@ import CoreData
 // MARK: - CoreDataStack
 final class CoreDataStack {
     
-    // MARK: - Singleton
+    // MARK: - Static Constants
     static let shared = CoreDataStack()
     
+    // MARK: - Lifecycle
     private init() {}
     
     // MARK: - Core Data Stack
@@ -27,6 +28,11 @@ final class CoreDataStack {
         persistentContainer.viewContext
     }
     
+    // MARK: - Background Context
+    func newBackgroundContext() -> NSManagedObjectContext {
+        return persistentContainer.newBackgroundContext()
+    }
+    
     // MARK: - Saving Methods
     func saveContext() {
         guard viewContext.hasChanges else { return }
@@ -37,10 +43,5 @@ final class CoreDataStack {
             let nserror = error as NSError
             assertionFailure("Unresolved error \(nserror), \(nserror.userInfo)")
         }
-    }
-    
-    // MARK: - Background Context
-    func newBackgroundContext() -> NSManagedObjectContext {
-        return persistentContainer.newBackgroundContext()
     }
 }

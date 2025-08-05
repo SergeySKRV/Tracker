@@ -2,6 +2,8 @@ import UIKit
 
 // MARK: - UIColor + Hex
 extension UIColor {
+    
+    // MARK: - Initialization
     convenience init?(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
         hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
@@ -31,15 +33,16 @@ extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: a)
     }
     
+    // MARK: - Public Methods
+    static func fromHex(_ hex: String) -> UIColor? {
+        return UIColor(hex: hex)
+    }
+    
     func toHex() -> String {
         var r: CGFloat = 0, g: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
         guard getRed(&r, green: &g, blue: &b, alpha: &a) else { return "#000000" }
         let rgb: Int = (Int)(r * 255) << 16 | (Int)(g * 255) << 8 | (Int)(b * 255)
         return String(format: "#%06x", rgb)
-    }
-    
-    static func fromHex(_ hex: String) -> UIColor? {
-        return UIColor(hex: hex)
     }
     
     func isEqual(to color: UIColor, tolerance: CGFloat = 0.001) -> Bool {

@@ -8,6 +8,7 @@ protocol ScheduleSelectionDelegate: AnyObject {
 
 // MARK: - ScheduleViewController
 final class ScheduleViewController: UIViewController {
+    
     // MARK: - Properties
     private let viewModel: ScheduleViewModel
     weak var delegate: ScheduleSelectionDelegate?
@@ -45,7 +46,7 @@ final class ScheduleViewController: UIViewController {
         bindViewModel()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -95,6 +96,7 @@ final class ScheduleViewController: UIViewController {
 
 // MARK: - UITableViewDataSource, UITableViewDelegate
 extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.numberOfDays()
     }

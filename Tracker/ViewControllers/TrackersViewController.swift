@@ -3,7 +3,8 @@ import SnapKit
 
 // MARK: - TrackersViewController
 final class TrackersViewController: UIViewController {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
     private var filteredCategories: [TrackerCategory] = []
     private var searchText: String = ""
@@ -84,7 +85,9 @@ final class TrackersViewController: UIViewController {
         dataProvider.setTrackerStoreDelegate(self)
     }
     
-    // MARK: - Private Setup
+    // MARK: - Public Methods
+    
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         view.addSubviews(addTrackerButton, trackersLabel, datePicker, searchBar, collectionView, mainPlaceholderView)
@@ -97,24 +100,29 @@ final class TrackersViewController: UIViewController {
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(1)
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(6)
         }
+        
         trackersLabel.snp.makeConstraints { make in
             make.leading.equalTo(view.safeAreaLayoutGuide.snp.leading).offset(16)
             make.top.equalTo(addTrackerButton.snp.bottom).offset(1)
         }
+        
         datePicker.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(5)
             make.trailing.equalTo(view.safeAreaLayoutGuide.snp.trailing).offset(-16)
             make.width.equalTo(101)
         }
+        
         searchBar.snp.makeConstraints { make in
             make.top.equalTo(trackersLabel.snp.bottom).offset(7)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide).inset(8)
             make.height.equalTo(36)
         }
+        
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(34)
             make.leading.trailing.bottom.equalTo(view.safeAreaLayoutGuide)
         }
+        
         mainPlaceholderView.snp.makeConstraints { make in
             make.centerY.equalToSuperview().offset(40)
             make.centerX.equalToSuperview()
@@ -126,13 +134,13 @@ final class TrackersViewController: UIViewController {
         updateVisibleTrackers()
     }
     
-    // MARK: - Private Tracking Logic
     private func updateVisibleTrackers() {
         let allTrackers = dataProvider.getAllTrackers()
         let calendar = Calendar.current
         let dayOfWeek = calendar.component(.weekday, from: currentDate)
         let weekDayIndex = dayOfWeek == 1 ? 6 : dayOfWeek - 2
         guard let weekday = Weekday(rawValue: weekDayIndex) else { return }
+        
         let filteredTrackers = allTrackers.filter { tracker in
             let isEvent = tracker.schedule.isEmpty
             let isHabitForToday = !tracker.schedule.isEmpty && tracker.schedule.contains(weekday)
@@ -140,12 +148,15 @@ final class TrackersViewController: UIViewController {
             let searchMatches = searchText.isEmpty || tracker.title.localizedCaseInsensitiveContains(searchText)
             return dayMatches && searchMatches
         }
+        
         let pinnedTrackers = filteredTrackers.filter(\.isPinned)
         let unpinnedTrackers = filteredTrackers.filter { !$0.isPinned }
+        
         var resultCategories = [TrackerCategory]()
         if !pinnedTrackers.isEmpty {
             resultCategories.append(TrackerCategory(id: UUID(), title: "Закрепленные", trackers: pinnedTrackers))
         }
+        
         var categoriesDict = [UUID: TrackerCategory]()
         for tracker in unpinnedTrackers {
             guard let categoryId = tracker.category else { continue }
@@ -157,9 +168,12 @@ final class TrackersViewController: UIViewController {
                 categoriesDict[categoryId] = TrackerCategory(id: categoryId, title: title, trackers: [tracker])
             }
         }
+        
         let sortedCategories = categoriesDict.values.sorted { $0.title < $1.title }
         resultCategories.append(contentsOf: sortedCategories)
+        
         filteredCategories = resultCategories
+        
         DispatchQueue.main.async {
             self.collectionView.reloadData()
             self.updateStubVisibility()
@@ -169,6 +183,7 @@ final class TrackersViewController: UIViewController {
     private func updateStubVisibility() {
         let hasTrackers = !filteredCategories.isEmpty
         let isSearching = !searchText.isEmpty
+        
         if !hasTrackers && !isSearching {
             collectionView.isHidden = true
             mainPlaceholderView.configure(image: UIImage(named: "placeholder"), text: "Что будем отслеживать?")
@@ -211,11 +226,13 @@ final class TrackersViewController: UIViewController {
     private func toggleTrackerCompletion(at indexPath: IndexPath) {
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
         let selectedDate = currentDate
+        
         if isTrackerCompleted(tracker.id, for: selectedDate) {
             try? dataProvider.deleteRecord(for: tracker.id, date: selectedDate)
         } else if selectedDate <= Date() {
             try? dataProvider.addRecord(for: tracker.id, date: selectedDate)
         }
+        
         collectionView.reloadItems(at: [indexPath])
     }
     
@@ -229,6 +246,7 @@ final class TrackersViewController: UIViewController {
             isPinned: !tracker.isPinned,
             categoryId: tracker.category
         )
+        
         do {
             try dataProvider.updateTracker(updatedTracker, categoryId: tracker.category ?? UUID())
             updateVisibleTrackers()
@@ -243,6 +261,7 @@ final class TrackersViewController: UIViewController {
             message: "Уверены что хотите удалить трекер?",
             preferredStyle: .actionSheet
         )
+        
         alert.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
             do {
                 try self?.dataProvider.deleteTracker(tracker)
@@ -250,11 +269,14 @@ final class TrackersViewController: UIViewController {
                 self?.showAlert(title: "Ошибка", message: "Не удалось удалить трекер")
             }
         })
+        
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
+        
         if let popover = alert.popoverPresentationController {
             popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.maxY, width: 0, height: 0)
             popover.permittedArrowDirections = []
         }
+        
         present(alert, animated: true)
     }
     
@@ -299,18 +321,22 @@ extension TrackersViewController: UICollectionViewDataSource {
         ) as? TrackerCell else {
             return UICollectionViewCell()
         }
+        
         let tracker = filteredCategories[indexPath.section].trackers[indexPath.row]
         let isCompleted = isTrackerCompleted(tracker.id, for: currentDate)
         let totalCompletions = getTotalCompletionCount(for: tracker.id)
+        
         cell.configure(
             with: tracker,
             isCompleted: isCompleted,
             completionCount: totalCompletions,
             selectedDate: currentDate
         )
+        
         cell.onCheckButtonTapped = { [weak self] in
             self?.toggleTrackerCompletion(at: indexPath)
         }
+        
         return cell
     }
     
@@ -326,6 +352,7 @@ extension TrackersViewController: UICollectionViewDataSource {
         ) as? TrackerCategoryHeaderView else {
             return UICollectionReusableView()
         }
+        
         let category = filteredCategories[indexPath.section]
         header.configure(with: category.title)
         return header

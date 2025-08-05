@@ -2,6 +2,8 @@ import Foundation
 
 // MARK: - CategoriesViewModel
 final class CategoriesViewModel {
+    
+    // MARK: - Properties
     var didUpdateCategories: (() -> Void)?
     
     private let categoryStore: TrackerCategoryStore
@@ -110,7 +112,6 @@ final class CategoriesViewModel {
         return categories
     }
     
-    // MARK: - Private Helpers
     func hasCategory(with title: String, excludingId: UUID? = nil) -> Bool {
         return categories.contains { $0.title == title && $0.id != excludingId }
     }

@@ -1,8 +1,29 @@
-import Foundation
+import UIKit
+
+// MARK: - AddTrackerViewModelProtocol
+protocol AddTrackerViewModelProtocol: TrackerFormViewModelProtocol {
+    func saveTracker(
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: Set<Weekday>,
+        categoryId: UUID,
+        completion: @escaping (Result<Void, Error>) -> Void
+    )
+}
 
 // MARK: - AddTrackerViewModel
-final class AddTrackerViewModel: TrackerFormViewModel {
-    // MARK: - Private Properties
+final class AddTrackerViewModel: AddTrackerViewModelProtocol {
+    
+    // MARK: - Properties
+    var trackerTitle: String = ""
+    var selectedEmoji: String?
+    var selectedColor: UIColor?
+    var selectedDays: Set<Weekday> = []
+    var selectedCategoryId: UUID?
+    var options: [String]
+    var selectedCategoryTitle: String?
+    
     private let type: TrackerType
     private let dataProvider: TrackerDataProviderProtocol
     
@@ -10,34 +31,36 @@ final class AddTrackerViewModel: TrackerFormViewModel {
     init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
         self.type = type
         self.dataProvider = dataProvider
-    }
-    
-    // MARK: - Override Properties
-    override var options: [String] {
-        type == .habit ? ["Категория", "Расписание"] : ["Категория"]
+        self.options = type == .habit ? ["Категория", "Расписание"] : ["Категория"]
     }
     
     // MARK: - Public Methods
-    func saveTracker(completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let emoji = selectedEmoji,
-              let color = selectedColor,
-              !trackerTitle.isEmpty,
-              let categoryId = selectedCategoryId else {
-            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Заполните все поля"])))
-            return
-        }
+    func updateSaveButtonState() -> Bool {
+        let isValid = !trackerTitle.isEmpty &&
+                      selectedEmoji != nil &&
+                      selectedColor != nil &&
+                      selectedCategoryId != nil
         
-        if type == .habit && selectedDays.isEmpty {
-            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Выберите хотя бы один день для расписания"])))
-            return
+        if type == .habit {
+            return isValid && !selectedDays.isEmpty
         }
-        
+        return isValid
+    }
+    
+    func saveTracker(
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: Set<Weekday>,
+        categoryId: UUID,
+        completion: @escaping (Result<Void, Error>) -> Void
+    ) {
         let tracker = Tracker(
             id: UUID(),
-            title: trackerTitle,
+            title: title,
             color: color,
             emoji: emoji,
-            schedule: type == .habit ? selectedDays : [],
+            schedule: schedule,
             isPinned: false,
             categoryId: categoryId
         )

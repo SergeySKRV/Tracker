@@ -1,9 +1,12 @@
 import UIKit
+import SnapKit
 
 // MARK: - EditTrackerViewController
-final class EditTrackerViewController: TrackerFormViewController {
-    // MARK: - Private Properties
+final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
+    
+    // MARK: - Properties
     private let editViewModel: EditTrackerViewModel
+    private let formVC: TrackerFormViewController
     
     // MARK: - Lifecycle
     init(
@@ -16,20 +19,11 @@ final class EditTrackerViewController: TrackerFormViewController {
             categoryTitle: categoryTitle,
             dataProvider: dataProvider
         )
+        self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        self.viewModel = editViewModel
         
-        self.daysCountLabel = {
-            let label = UILabel()
-            label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
-            label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-            label.textColor = .ypBlackDay
-            label.textAlignment = .center
-            return label
-        }()
-        
-        title = "Редактирование привычки"
-        saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
+        setupForm()
+        setupInitialValues()
     }
     
     required init?(coder: NSCoder) {
@@ -39,21 +33,67 @@ final class EditTrackerViewController: TrackerFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        titleTextField.text = editViewModel.trackerTitle
-        selectedCategoryTitle = editViewModel.selectedCategoryTitle
+        addChildViewController()
     }
     
-    // MARK: - Actions
-    @objc override func didTapSave() {
-        editViewModel.saveTracker { [weak self] result in
+    // MARK: - Private Methods
+    private func setupForm() {
+        formVC.delegate = self
+        formVC.viewModel = editViewModel
+        
+        formVC.daysCountLabel = createDaysCountLabel()
+        title = "Редактирование привычки"
+        formVC.saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
+    }
+    
+    private func setupInitialValues() {
+        formVC.titleTextField.text = editViewModel.trackerTitle
+        formVC.selectedCategoryTitle = editViewModel.selectedCategoryTitle
+    }
+    
+    private func addChildViewController() {
+        addChild(formVC)
+        view.addSubview(formVC.view)
+        formVC.view.snp.makeConstraints { $0.edges.equalToSuperview() }
+        formVC.didMove(toParent: self)
+    }
+    
+    private func createDaysCountLabel() -> UILabel {
+        let label = UILabel()
+        label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
+        label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
+        label.textColor = .ypBlackDay
+        label.textAlignment = .center
+        return label
+    }
+    
+    // MARK: - TrackerFormDelegate
+    func didRequestSave(
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: Set<Weekday>,
+        categoryId: UUID
+    ) {
+        editViewModel.saveTracker(
+            title: title,
+            emoji: emoji,
+            color: color,
+            schedule: schedule,
+            categoryId: categoryId
+        ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
                 }
             }
         }
+    }
+    
+    func didRequestCancel() {
+        dismiss(animated: true)
     }
 }

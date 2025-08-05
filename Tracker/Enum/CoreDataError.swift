@@ -11,6 +11,8 @@ enum CoreDataError: Error {
 
 // MARK: - CoreDataError + LocalizedError
 extension CoreDataError: LocalizedError {
+    
+    // MARK: - Properties
     var errorDescription: String? {
         switch self {
         case .categoryNotFound:
@@ -26,6 +28,7 @@ extension CoreDataError: LocalizedError {
         }
     }
     
+    // MARK: - Public Methods
     func log() {
         print("CoreData Error: \(errorDescription ?? "Неизвестная ошибка")")
     }

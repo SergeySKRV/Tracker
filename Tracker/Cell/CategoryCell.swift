@@ -3,8 +3,11 @@ import SnapKit
 
 // MARK: - CategoryCell
 final class CategoryCell: UITableViewCell {
+    
+    // MARK: - Static Constants
     static let identifier = "CategoryCell"
     
+    // MARK: - Properties
     private let containerView: UIView = {
         let view = UIView()
         view.backgroundColor = .ypBackgroundDay
@@ -47,42 +50,6 @@ final class CategoryCell: UITableViewCell {
         return nil
     }
     
-    // MARK: - Private UI Setup
-    private func setupUI() {
-        selectionStyle = .none
-        backgroundColor = .clear
-        
-        contentView.addSubview(containerView)
-        [titleLabel, checkmarkImageView].forEach { containerView.addSubview($0) }
-        contentView.addSubview(separatorView)
-    }
-    
-    private func setupConstraints() {
-        containerView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.leading.trailing.equalTo(contentView)
-        }
-        
-        titleLabel.snp.makeConstraints { make in
-            make.leading.equalTo(containerView).offset(16)
-            make.centerY.equalTo(containerView)
-            make.trailing.lessThanOrEqualTo(checkmarkImageView.snp.leading).offset(-16)
-        }
-        
-        checkmarkImageView.snp.makeConstraints { make in
-            make.trailing.equalTo(containerView).offset(-24)
-            make.centerY.equalTo(containerView)
-            make.width.height.equalTo(30)
-        }
-        
-        separatorView.snp.makeConstraints { make in
-            make.leading.equalTo(containerView).offset(16)
-            make.trailing.equalTo(containerView).offset(-16)
-            make.bottom.equalTo(containerView)
-            make.height.equalTo(1)
-        }
-    }
-    
     // MARK: - Public Methods
     func configure(title: String, isSelected: Bool, isFirstCell: Bool = false, isLastCell: Bool = false) {
         titleLabel.text = title
@@ -116,5 +83,41 @@ final class CategoryCell: UITableViewCell {
         separatorView.isHidden = false
         containerView.layer.maskedCorners = []
         containerView.layer.cornerRadius = 0
+    }
+    
+    // MARK: - Private Methods
+    private func setupUI() {
+        selectionStyle = .none
+        backgroundColor = .clear
+        
+        contentView.addSubview(containerView)
+        [titleLabel, checkmarkImageView].forEach { containerView.addSubview($0) }
+        contentView.addSubview(separatorView)
+    }
+    
+    private func setupConstraints() {
+        containerView.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview()
+            make.leading.trailing.equalTo(contentView)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(containerView).offset(16)
+            make.centerY.equalTo(containerView)
+            make.trailing.lessThanOrEqualTo(checkmarkImageView.snp.leading).offset(-16)
+        }
+        
+        checkmarkImageView.snp.makeConstraints { make in
+            make.trailing.equalTo(containerView).offset(-24)
+            make.centerY.equalTo(containerView)
+            make.width.height.equalTo(30)
+        }
+        
+        separatorView.snp.makeConstraints { make in
+            make.leading.equalTo(containerView).offset(16)
+            make.trailing.equalTo(containerView).offset(-16)
+            make.bottom.equalTo(containerView)
+            make.height.equalTo(1)
+        }
     }
 }

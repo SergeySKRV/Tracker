@@ -3,7 +3,8 @@ import SnapKit
 
 // MARK: - TrackerTypeViewController
 final class TrackerTypeViewController: UIViewController {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
     
     private lazy var habitButton: UIButton = {
@@ -45,7 +46,7 @@ final class TrackerTypeViewController: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - Private UI Setup
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         title = "Создание трекера"

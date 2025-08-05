@@ -3,8 +3,11 @@ import SnapKit
 
 // MARK: - TrackerCell
 final class TrackerCell: UICollectionViewCell {
+    
+    // MARK: - Static Constants
     static let reuseIdentifier = "TrackerCell"
     
+    // MARK: - Properties
     var onCheckButtonTapped: (() -> Void)?
     
     private let cardView: UIView = {
@@ -96,7 +99,7 @@ final class TrackerCell: UICollectionViewCell {
         pinImageView.isHidden = !tracker.isPinned
     }
     
-    // MARK: - Private UI Setup
+    // MARK: - Private Methods
     private func setupUI() {
         [cardView, daysCountLabel, checkButton, pinImageView].forEach { contentView.addSubview($0) }
         [emojiBackground, titleLabel].forEach { cardView.addSubview($0) }
@@ -142,7 +145,6 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
-    // MARK: - Private Helpers
     private func pluralizeDays(count: Int) -> String {
         let remainder10 = count % 10
         let remainder100 = count % 100

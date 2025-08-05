@@ -2,10 +2,11 @@ import CoreData
 import UIKit
 
 final class TrackerCategoryStore {
+    
     // MARK: - Properties
     private let context: NSManagedObjectContext
     
-    // MARK: - Initialization
+    // MARK: - Lifecycle
     init(context: NSManagedObjectContext = CoreDataStack.shared.viewContext) {
         self.context = context
     }
@@ -14,56 +15,10 @@ final class TrackerCategoryStore {
     func fetchAllCategories() -> [TrackerCategory] {
         let request: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        
+
         do {
             let coreDataCategories = try context.fetch(request)
-            var result: [TrackerCategory] = []
-            
-            for coreDataCategory in coreDataCategories {
-                guard let categoryId = coreDataCategory.id,
-                      let title = coreDataCategory.title else {
-                    continue
-                }
-                
-                var trackers: [Tracker] = []
-                
-                if let coreDataTrackers = coreDataCategory.trackers as? Set<TrackerCoreData> {
-                    for trackerCoreData in coreDataTrackers {
-                        guard let trackerId = trackerCoreData.id,
-                              let trackerTitle = trackerCoreData.title,
-                              let emoji = trackerCoreData.emoji,
-                              let colorHex = trackerCoreData.color,
-                              let color = UIColor(hex: colorHex) else {
-                            continue
-                        }
-               
-                        let schedule: Set<Weekday> = {
-                            guard let data = trackerCoreData.schedule else { return [] }
-                            do {
-                                return try JSONDecoder().decode([Weekday].self, from: data).reduce(into: Set()) { $0.insert($1) }
-                            } catch {
-                                print("Ошибка декодирования расписания: \(error)")
-                                return []
-                            }
-                        }()
-                        
-                        let tracker = Tracker(
-                            id: trackerId,
-                            title: trackerTitle,
-                            color: color,
-                            emoji: emoji,
-                            schedule: schedule,
-                            isPinned: trackerCoreData.isPinned,
-                            categoryId: categoryId
-                        )
-                        
-                        trackers.append(tracker)
-                    }
-                }
-                result.append(TrackerCategory(id: categoryId, title: title, trackers: trackers))
-            }
-            
-            return result
+            return coreDataCategories.compactMap(makeCategory)
         } catch {
             print("Ошибка загрузки категорий: \(error)")
             return []
@@ -125,5 +80,49 @@ final class TrackerCategoryStore {
         let categoryCoreData = try getCategoryCoreData(by: category.id)
         context.delete(categoryCoreData)
         try context.save()
+    }
+    
+    // MARK: - Private Methods
+    private func makeCategory(from coreDataCategory: TrackerCategoryCoreData) -> TrackerCategory? {
+        guard let categoryId = coreDataCategory.id,
+              let title = coreDataCategory.title else {
+            return nil
+        }
+
+        let trackers = (coreDataCategory.trackers as? Set<TrackerCoreData>)?
+            .compactMap(makeTracker(from:)) ?? []
+
+        return TrackerCategory(id: categoryId, title: title, trackers: trackers)
+    }
+
+    private func makeTracker(from trackerData: TrackerCoreData) -> Tracker? {
+        guard let id = trackerData.id,
+              let title = trackerData.title,
+              let emoji = trackerData.emoji,
+              let colorHex = trackerData.color,
+              let color = UIColor(hex: colorHex) else {
+            return nil
+        }
+
+        let schedule: Set<Weekday> = {
+            guard let data = trackerData.schedule else { return [] }
+            do {
+                let weekdays = try JSONDecoder().decode([Weekday].self, from: data)
+                return Set(weekdays)
+            } catch {
+                print("Ошибка декодирования расписания: \(error)")
+                return []
+            }
+        }()
+
+        return Tracker(
+            id: id,
+            title: title,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            isPinned: trackerData.isPinned,
+            categoryId: trackerData.category?.id ?? UUID()
+        )
     }
 }

@@ -8,6 +8,7 @@ protocol EditCategoryViewControllerDelegate: AnyObject {
 
 // MARK: - EditCategoryViewController
 final class EditCategoryViewController: UIViewController {
+    
     // MARK: - Properties
     weak var delegate: EditCategoryViewControllerDelegate?
     
@@ -57,7 +58,7 @@ final class EditCategoryViewController: UIViewController {
         setupNavigation()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupUI() {
         title = "Редактирование категории"
         view.backgroundColor = .ypWhiteDay
@@ -89,7 +90,6 @@ final class EditCategoryViewController: UIViewController {
         navigationItem.hidesBackButton = true
     }
     
-    // MARK: - Private UI Logic
     private func configureUI() {
         textField.text = category.title
         updateSaveButtonState()

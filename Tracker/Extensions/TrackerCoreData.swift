@@ -3,6 +3,8 @@ import CoreData
 
 // MARK: - TrackerCoreData + Conversion
 extension TrackerCoreData {
+    
+    // MARK: - Conversion Methods
     func toTracker() -> Tracker? {
         guard let id = id,
               let title = title,
@@ -43,6 +45,8 @@ extension TrackerCoreData {
 
 // MARK: - TrackerRecordCoreData + Conversion
 extension TrackerRecordCoreData {
+    
+    // MARK: - Conversion Methods
     func toTrackerRecord() -> TrackerRecord? {
         guard let trackerID = trackerID, let date = date else {
             print("Failed to convert TrackerRecordCoreData: Missing required fields")

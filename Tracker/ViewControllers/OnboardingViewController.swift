@@ -3,7 +3,8 @@ import SnapKit
 
 // MARK: - OnboardingViewController
 final class OnboardingViewController: UIViewController {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private var pageViewController: UIPageViewController!
     private var pages: [UIViewController] = []
     private let doneButton = UIButton(type: .system)
@@ -18,7 +19,7 @@ final class OnboardingViewController: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupPages() {
         let page1 = OnboardingPageViewController(
             imageName: "onboarding1",
@@ -105,8 +106,9 @@ extension OnboardingViewController {
     }
 }
 
-// MARK: - Page View Controller
+// MARK: - UIPageViewControllerDelegate
 extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController) else { return nil }
         return index == 0 ? pages.last : pages[index - 1]
@@ -117,7 +119,12 @@ extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewCo
         return index == pages.count - 1 ? pages.first : pages[index + 1]
     }
     
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    func pageViewController(
+        _ pageViewController: UIPageViewController,
+        didFinishAnimating finished: Bool,
+        previousViewControllers: [UIViewController],
+        transitionCompleted completed: Bool
+    ) {
         if let current = pageViewController.viewControllers?.first,
            let index = pages.firstIndex(of: current) {
             pageControl.currentPage = index

@@ -3,7 +3,8 @@ import SnapKit
 
 // MARK: - OnboardingPageViewController
 final class OnboardingPageViewController: UIViewController {
-    // MARK: - Private Properties
+    
+    // MARK: - Properties
     private let imageView = UIImageView()
     private let titleLabel = UILabel()
     
@@ -25,7 +26,7 @@ final class OnboardingPageViewController: UIViewController {
         setupConstraints()
     }
     
-    // MARK: - Private UI Setup
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         

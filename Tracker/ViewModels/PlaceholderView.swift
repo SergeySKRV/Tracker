@@ -3,6 +3,8 @@ import SnapKit
 
 // MARK: - PlaceholderView
 final class PlaceholderView: UIView {
+    
+    // MARK: - Properties
     private let imageView = UIImageView()
     private let label = UILabel()
     
@@ -23,7 +25,7 @@ final class PlaceholderView: UIView {
         label.text = text
     }
     
-    // MARK: - Private UI Setup
+    // MARK: - Private Methods
     private func setupUI() {
         imageView.contentMode = .scaleAspectFit
         

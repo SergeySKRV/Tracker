@@ -9,6 +9,8 @@ enum CategoryError: Error {
 
 // MARK: - CategoryError + LocalizedError
 extension CategoryError: LocalizedError {
+    
+    // MARK: - Properties
     var errorDescription: String? {
         switch self {
         case .duplicateName:

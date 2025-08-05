@@ -8,67 +8,25 @@ protocol TrackerStoreDelegate: AnyObject {
 
 // MARK: - TrackerStore
 final class TrackerStore: NSObject {
+    
+    // MARK: - Properties
     private let context: NSManagedObjectContext
     private let categoryStore: TrackerCategoryStore
     private var fetchedResultsController: NSFetchedResultsController<TrackerCoreData>?
     weak var delegate: TrackerStoreDelegate?
     
-    init(context: NSManagedObjectContext = CoreDataStack.shared.viewContext, categoryStore: TrackerCategoryStore = TrackerCategoryStore()) {
+    // MARK: - Lifecycle
+    init(
+        context: NSManagedObjectContext = CoreDataStack.shared.viewContext,
+        categoryStore: TrackerCategoryStore = TrackerCategoryStore()
+    ) {
         self.context = context
         self.categoryStore = categoryStore
         super.init()
         setupFetchedResultsController()
     }
     
-    private func setupFetchedResultsController() {
-        let request = TrackerCoreData.fetchRequest()
-        request.sortDescriptors = [
-            NSSortDescriptor(key: "category.title", ascending: true),
-            NSSortDescriptor(key: "title", ascending: true)
-        ]
-        request.predicate = NSPredicate(format: "category != nil")
-        fetchedResultsController = NSFetchedResultsController(
-            fetchRequest: request,
-            managedObjectContext: context,
-            sectionNameKeyPath: "category.title",
-            cacheName: nil
-        )
-        fetchedResultsController?.delegate = self
-        do {
-            try fetchedResultsController?.performFetch()
-        } catch {
-            print("Failed to initialize FetchedResultsController: \(error)")
-        }
-    }
-    
-    private func trackerFromCoreData(_ coreData: TrackerCoreData) -> Tracker? {
-        guard let id = coreData.id,
-              let title = coreData.title,
-              let emoji = coreData.emoji,
-              let colorHex = coreData.color,
-              let color = UIColor.fromHex(colorHex),
-              let category = coreData.category,
-              let categoryId = category.id
-        else {
-            return nil
-        }
-        
-        let schedule: Set<Weekday> = {
-            guard let data = coreData.schedule else { return [] }
-            return (try? JSONDecoder().decode([Weekday].self, from: data)).map { Set($0) } ?? []
-        }()
-        
-        return Tracker(
-            id: id,
-            title: title,
-            color: color,
-            emoji: emoji,
-            schedule: schedule,
-            isPinned: coreData.isPinned,
-            categoryId: categoryId
-        )
-    }
-    
+    // MARK: - Public Methods
     func addTracker(_ tracker: Tracker, to categoryId: UUID) throws {
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.id = tracker.id
@@ -152,6 +110,56 @@ final class TrackerStore: NSObject {
                 return trackerFromCoreData(trackerCoreData)
             } ?? []
         }
+    }
+    
+    // MARK: - Private Methods
+    private func setupFetchedResultsController() {
+        let request = TrackerCoreData.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(key: "category.title", ascending: true),
+            NSSortDescriptor(key: "title", ascending: true)
+        ]
+        request.predicate = NSPredicate(format: "category != nil")
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: "category.title",
+            cacheName: nil
+        )
+        fetchedResultsController?.delegate = self
+        do {
+            try fetchedResultsController?.performFetch()
+        } catch {
+            print("Failed to initialize FetchedResultsController: \(error)")
+        }
+    }
+    
+    private func trackerFromCoreData(_ coreData: TrackerCoreData) -> Tracker? {
+        guard let id = coreData.id,
+              let title = coreData.title,
+              let emoji = coreData.emoji,
+              let colorHex = coreData.color,
+              let color = UIColor.fromHex(colorHex),
+              let category = coreData.category,
+              let categoryId = category.id
+        else {
+            return nil
+        }
+        
+        let schedule: Set<Weekday> = {
+            guard let data = coreData.schedule else { return [] }
+            return (try? JSONDecoder().decode([Weekday].self, from: data)).map { Set($0) } ?? []
+        }()
+        
+        return Tracker(
+            id: id,
+            title: title,
+            color: color,
+            emoji: emoji,
+            schedule: schedule,
+            isPinned: coreData.isPinned,
+            categoryId: categoryId
+        )
     }
 }
 

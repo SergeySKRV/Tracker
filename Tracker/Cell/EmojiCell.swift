@@ -3,8 +3,11 @@ import SnapKit
 
 // MARK: - EmojiCell
 final class EmojiCell: UICollectionViewCell {
+    
+    // MARK: - Static Constants
     static let reuseIdentifier = "EmojiCell"
     
+    // MARK: - Properties
     private let emojiLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 32)
@@ -22,19 +25,6 @@ final class EmojiCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
         return nil
-    }
-    
-    // MARK: - Private UI Setup
-    private func setupViews() {
-        contentView.addSubview(emojiLabel)
-        contentView.backgroundColor = .clear
-    }
-    
-    private func setupConstraints() {
-        emojiLabel.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.height.equalTo(40)
-        }
     }
     
     // MARK: - Public Methods
@@ -57,5 +47,18 @@ final class EmojiCell: UICollectionViewCell {
         emojiLabel.text = nil
         contentView.backgroundColor = .clear
         contentView.layer.cornerRadius = 0
+    }
+    
+    // MARK: - Private Methods
+    private func setupViews() {
+        contentView.addSubview(emojiLabel)
+        contentView.backgroundColor = .clear
+    }
+    
+    private func setupConstraints() {
+        emojiLabel.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(40)
+        }
     }
 }

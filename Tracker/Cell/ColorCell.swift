@@ -3,8 +3,11 @@ import SnapKit
 
 // MARK: - ColorCell
 final class ColorCell: UICollectionViewCell {
+    
+    // MARK: - Static Constants
     static let reuseIdentifier = "ColorCell"
     
+    // MARK: - Properties
     private let colorView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
@@ -26,19 +29,6 @@ final class ColorCell: UICollectionViewCell {
         return nil
     }
     
-    // MARK: - Private UI Setup
-    private func setupViews() {
-        contentView.addSubview(colorView)
-        contentView.backgroundColor = .clear
-    }
-    
-    private func setupConstraints() {
-        colorView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-            make.width.height.equalTo(40)
-        }
-    }
-    
     // MARK: - Public Methods
     func configure(with color: UIColor, isSelected: Bool) {
         colorView.backgroundColor = color
@@ -58,5 +48,18 @@ final class ColorCell: UICollectionViewCell {
         colorView.backgroundColor = nil
         contentView.layer.borderWidth = 0
         contentView.layer.borderColor = nil
+    }
+    
+    // MARK: - Private Methods
+    private func setupViews() {
+        contentView.addSubview(colorView)
+        contentView.backgroundColor = .clear
+    }
+    
+    private func setupConstraints() {
+        colorView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalTo(40)
+        }
     }
 }

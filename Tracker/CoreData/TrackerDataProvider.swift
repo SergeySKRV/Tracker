@@ -18,13 +18,17 @@ protocol TrackerDataProviderProtocol {
 
 // MARK: - TrackerDataProvider
 final class TrackerDataProvider: TrackerDataProviderProtocol {
+    
+    // MARK: - Static Constants
     static let shared = TrackerDataProvider()
     
+    // MARK: - Properties
     private let context: NSManagedObjectContext
     private let trackerStore: TrackerStore
     private let categoryStore: TrackerCategoryStore
     private let recordStore: TrackerRecordStore
-
+    
+    // MARK: - Lifecycle
     private init(
         context: NSManagedObjectContext = CoreDataStack.shared.viewContext,
         trackerStore: TrackerStore = TrackerStore(context: CoreDataStack.shared.viewContext),
@@ -36,16 +40,16 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
         self.categoryStore = categoryStore
         self.recordStore = recordStore
     }
-
+    
     // MARK: - Public Methods
     func setTrackerStoreDelegate(_ delegate: TrackerStoreDelegate?) {
         trackerStore.delegate = delegate
     }
-
+    
     func getAllTrackers() -> [Tracker] {
         return trackerStore.fetchTrackers()
     }
-
+    
     func fetchTrackers(for date: Date, searchText: String, completion: @escaping ([Tracker]) -> Void) {
         DispatchQueue.global().async {
             let calendar = Calendar.current
@@ -83,7 +87,7 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
             }
         }
     }
-
+    
     func addTracker(_ tracker: Tracker, categoryId: UUID) throws {
         try trackerStore.addTracker(tracker, to: categoryId)
     }
@@ -91,7 +95,7 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
     func updateTracker(_ tracker: Tracker, categoryId: UUID) throws {
         try trackerStore.updateTracker(tracker, categoryId: categoryId)
     }
-
+    
     func deleteTracker(_ tracker: Tracker) throws {
         try trackerStore.deleteTracker(tracker)
     }
@@ -99,19 +103,19 @@ final class TrackerDataProvider: TrackerDataProviderProtocol {
     func fetchCategories() -> [TrackerCategory] {
         return categoryStore.fetchAllCategories()
     }
-
+    
     func addRecord(for trackerID: UUID, date: Date) throws {
         try recordStore.addRecord(TrackerRecord(trackerID: trackerID, date: date))
     }
-
+    
     func deleteRecord(for trackerID: UUID, date: Date) throws {
         try recordStore.deleteRecord(for: trackerID, date: date)
     }
-
+    
     func fetchRecords() -> [TrackerRecord] {
         return recordStore.fetchRecords()
     }
-
+    
     func getCategoryTitle(by id: UUID) -> String? {
         return categoryStore.getCategoryTitle(by: id)
     }

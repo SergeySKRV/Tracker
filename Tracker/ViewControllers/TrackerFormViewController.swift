@@ -1,12 +1,26 @@
 import UIKit
 import SnapKit
 
+// MARK: - TrackerFormDelegate
+protocol TrackerFormDelegate: AnyObject {
+    func didRequestSave(
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: Set<Weekday>,
+        categoryId: UUID
+    )
+    func didRequestCancel()
+}
+
 // MARK: - TrackerFormViewController
-class TrackerFormViewController: UIViewController {
+final class TrackerFormViewController: UIViewController {
+    
     // MARK: - Properties
     var viewModel: TrackerFormViewModelProtocol!
     var selectedCategoryTitle: String?
     var daysCountLabel: UILabel?
+    weak var delegate: TrackerFormDelegate?
     
     // MARK: - UI Elements
     lazy var scrollView: UIScrollView = {
@@ -146,7 +160,7 @@ class TrackerFormViewController: UIViewController {
         titleTextField.autocorrectionType = .no
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         if let daysCountLabel = daysCountLabel {
@@ -244,12 +258,25 @@ class TrackerFormViewController: UIViewController {
         updateSaveButtonState()
     }
     
-    @objc private func didTapCancel() {
-        dismiss(animated: true)
+    @objc private func didTapSave() {
+        guard let emoji = viewModel.selectedEmoji,
+              let color = viewModel.selectedColor,
+              !viewModel.trackerTitle.isEmpty,
+              let categoryId = viewModel.selectedCategoryId else {
+            showAlert(title: "Ошибка", message: "Заполните все поля")
+            return
+        }
+        delegate?.didRequestSave(
+            title: viewModel.trackerTitle,
+            emoji: emoji,
+            color: color,
+            schedule: viewModel.selectedDays,
+            categoryId: categoryId
+        )
     }
     
-    @objc func didTapSave() {
-        assertionFailure("Subclass must implement this method")
+    @objc private func didTapCancel() {
+        delegate?.didRequestCancel()
     }
     
     // MARK: - Private Helpers
@@ -265,8 +292,9 @@ class TrackerFormViewController: UIViewController {
     }
 }
 
-// MARK: - UITableViewDataSource & UITableViewDelegate
+// MARK: - UITableViewDataSource, UITableViewDelegate
 extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel.options.count
     }
@@ -294,7 +322,7 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == viewModel.options.count - 1 {
-            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 1000)
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
         } else {
             cell.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         }
@@ -315,8 +343,9 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     }
 }
 
-// MARK: - UICollectionViewDataSource & UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDataSource, UICollectionViewDelegateFlowLayout
 extension TrackerFormViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         collectionView == emojiCollectionView ? TrackerConstants.emojis.count : TrackerConstants.colors.count
     }
@@ -349,29 +378,29 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-            let totalInsets = TrackerConstants.Layout.defaultSpacing * 2
-            let totalSpacing = TrackerConstants.interItemSpacing * CGFloat(TrackerConstants.columnsCount - 1)
-            let availableWidth = collectionView.bounds.width - totalInsets - totalSpacing
-            let cellWidth = availableWidth / CGFloat(TrackerConstants.columnsCount)
-            return CGSize(width: cellWidth, height: 52)
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-            return TrackerConstants.interItemSpacing
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-            return 0
-        }
-        
-        func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-            return UIEdgeInsets(
-                top: 0,
-                left: TrackerConstants.Layout.defaultSpacing,
-                bottom: 0,
-                right: TrackerConstants.Layout.defaultSpacing
-            )
-        }
+        let totalInsets = TrackerConstants.Layout.defaultSpacing * 2
+        let totalSpacing = TrackerConstants.interItemSpacing * CGFloat(TrackerConstants.columnsCount - 1)
+        let availableWidth = collectionView.bounds.width - totalInsets - totalSpacing
+        let cellWidth = availableWidth / CGFloat(TrackerConstants.columnsCount)
+        return CGSize(width: cellWidth, height: 52)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        TrackerConstants.interItemSpacing
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        UIEdgeInsets(
+            top: 0,
+            left: TrackerConstants.Layout.defaultSpacing,
+            bottom: 0,
+            right: TrackerConstants.Layout.defaultSpacing
+        )
+    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {

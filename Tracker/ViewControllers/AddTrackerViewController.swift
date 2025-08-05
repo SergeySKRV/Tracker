@@ -1,17 +1,22 @@
 import UIKit
+import SnapKit
 
 // MARK: - AddTrackerViewController
-final class AddTrackerViewController: TrackerFormViewController {
-    // MARK: - Private Properties
+final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
+    
+    // MARK: - Properties
     private let addViewModel: AddTrackerViewModel
+    private let formVC: TrackerFormViewController
+    private let trackerType: TrackerType
     
     // MARK: - Lifecycle
     init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
+        self.trackerType = type
         self.addViewModel = AddTrackerViewModel(type: type, dataProvider: dataProvider)
+        self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        self.viewModel = addViewModel
-        title = type == .habit ? TrackerConstants.Text.newHabitTitle : TrackerConstants.Text.newEventTitle
-        saveButton.setTitle(TrackerConstants.Text.createButton, for: .normal)
+        
+        setupForm()
     }
     
     required init?(coder: NSCoder) {
@@ -21,19 +26,59 @@ final class AddTrackerViewController: TrackerFormViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addChildViewController()
     }
     
-    // MARK: - Actions
-    @objc override func didTapSave() {
-        addViewModel.saveTracker { [weak self] result in
+    // MARK: - Private Methods
+    private func setupForm() {
+        formVC.delegate = self
+        formVC.viewModel = addViewModel
+        
+        title = trackerType == .habit ?
+            TrackerConstants.Text.newHabitTitle :
+            TrackerConstants.Text.newEventTitle
+        
+        formVC.saveButton.setTitle(
+            TrackerConstants.Text.createButton,
+            for: .normal
+        )
+        navigationItem.setHidesBackButton(true, animated: false)
+    }
+    
+    private func addChildViewController() {
+        addChild(formVC)
+        view.addSubview(formVC.view)
+        formVC.view.snp.makeConstraints { $0.edges.equalToSuperview() }
+        formVC.didMove(toParent: self)
+    }
+    
+    // MARK: - TrackerFormDelegate
+    func didRequestSave(
+        title: String,
+        emoji: String,
+        color: UIColor,
+        schedule: Set<Weekday>,
+        categoryId: UUID
+    ) {
+        addViewModel.saveTracker(
+            title: title,
+            emoji: emoji,
+            color: color,
+            schedule: schedule,
+            categoryId: categoryId
+        ) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
                 }
             }
         }
+    }
+    
+    func didRequestCancel() {
+        dismiss(animated: true)
     }
 }

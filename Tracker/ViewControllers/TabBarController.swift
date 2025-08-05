@@ -2,6 +2,7 @@ import UIKit
 
 // MARK: - TabBarController
 final class TabBarController: UITabBarController {
+    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -10,7 +11,7 @@ final class TabBarController: UITabBarController {
         addTopBorder()
     }
     
-    // MARK: - Private Setup
+    // MARK: - Private Methods
     private func setupAppearance() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
