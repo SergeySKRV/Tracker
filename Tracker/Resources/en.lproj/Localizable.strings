@@ -6,6 +6,7 @@
 "Поиск" = "Search";
 "Что будем отслеживать?" = "What would you like to track?";
 "Ничего не найдено" = "Nothing found";
+"Фильтры" = "Filters";
 
 // MARK: - Categories
 "Категория" = "Category";
