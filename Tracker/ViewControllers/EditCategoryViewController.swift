@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import AppMetricaCore
 
 // MARK: - EditCategoryViewControllerDelegate
 protocol EditCategoryViewControllerDelegate: AnyObject {
@@ -56,6 +57,26 @@ final class EditCategoryViewController: UIViewController {
         setupActions()
         configureUI()
         setupNavigation()
+
+        let openEvent = [
+            "event": "open",
+            "screen": "EditCategory",
+            "category_name": category.title
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
+        print("Analytics: \(openEvent)")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+   
+        let closeEvent = [
+            "event": "close",
+            "screen": "EditCategory",
+            "category_name": category.title
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
+        print("Analytics: \(closeEvent)")
     }
     
     // MARK: - Private Methods
@@ -106,15 +127,46 @@ final class EditCategoryViewController: UIViewController {
     // MARK: - Actions
     @objc private func textFieldDidChange() {
         updateSaveButtonState()
+   
+        let text = textField.text ?? ""
+        let textEvent = [
+            "event": "click",
+            "screen": "EditCategory",
+            "item": "text_changed",
+            "text_length": text.count,
+            "has_changes": text != category.title
+        ] as [String : Any]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: textEvent)
+        print("Analytics: \(textEvent)")
     }
     
     @objc private func saveButtonTapped() {
         guard let newTitle = textField.text, !newTitle.isEmpty else { return }
         
         if viewModel.hasCategory(with: newTitle, excludingId: category.id) {
+
+            let duplicateEvent = [
+                "event": "click",
+                "screen": "EditCategory",
+                "item": "duplicate_category",
+                "category_name": newTitle
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: duplicateEvent)
+            print("Analytics: \(duplicateEvent)")
+            
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Категория с таким названием уже существует", comment: ""))
             return
         }
+
+        let saveEvent = [
+            "event": "click",
+            "screen": "EditCategory",
+            "item": "save_category",
+            "old_name": category.title,
+            "new_name": newTitle
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
+        print("Analytics: \(saveEvent)")
         
         do {
             try viewModel.updateCategory(category, with: newTitle)
@@ -122,6 +174,11 @@ final class EditCategoryViewController: UIViewController {
             dismiss(animated: true)
         } catch {
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Не удалось обновить категорию", comment: ""))
+       
+            AppMetrica.reportEvent(name: "Category Update Failed", parameters: [
+                "error": error.localizedDescription,
+                "category_name": newTitle
+            ])
         }
     }
     
@@ -137,6 +194,15 @@ final class EditCategoryViewController: UIViewController {
 extension EditCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+
+        let returnEvent = [
+            "event": "click",
+            "screen": "EditCategory",
+            "item": "return_key"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
+        print("Analytics: \(returnEvent)")
+        
         return true
     }
 }

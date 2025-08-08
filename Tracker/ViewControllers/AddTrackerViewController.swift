@@ -1,6 +1,11 @@
 import UIKit
 import SnapKit
 
+// MARK: - AddTrackerViewControllerDelegate
+protocol AddTrackerViewControllerDelegate: AnyObject {
+    func addTrackerViewControllerDidCreateTracker(_ controller: AddTrackerViewController)
+}
+
 // MARK: - AddTrackerViewController
 final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     
@@ -8,6 +13,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     private let addViewModel: AddTrackerViewModel
     private let formVC: TrackerFormViewController
     private let trackerType: TrackerType
+    weak var delegate: AddTrackerViewControllerDelegate?
     
     // MARK: - Lifecycle
     init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
@@ -70,6 +76,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
+                    self?.delegate?.addTrackerViewControllerDidCreateTracker(self!)
                     self?.dismiss(animated: true)
                 case .failure(let error):
                     self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)

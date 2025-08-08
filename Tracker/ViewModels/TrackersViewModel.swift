@@ -49,7 +49,8 @@ final class TrackersViewModel: TrackersViewModelProtocol{
 
     // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
-
+    private var dataObserver: NSObjectProtocol?
+    
     var currentDate = Date()
     var searchText: String = ""
     var currentFilter: FilterType = .all {
@@ -98,7 +99,22 @@ final class TrackersViewModel: TrackersViewModelProtocol{
     // MARK: - Initialization
     init(dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
         self.dataProvider = dataProvider
+        
+        dataObserver = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSManagedObjectContextDidSave,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.loadData()
+        }
+        
         loadData()
+    }
+
+    deinit {
+        if let observer = dataObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     // MARK: - Public Methods
@@ -232,7 +248,7 @@ final class TrackersViewModel: TrackersViewModelProtocol{
     func deleteTracker(_ tracker: Tracker, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try dataProvider.deleteTracker(tracker)
-            loadData() // Перезагружаем данные после удаления
+            loadData() 
             completion(.success(()))
         } catch {
             completion(.failure(error))

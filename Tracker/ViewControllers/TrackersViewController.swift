@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import AppMetricaCore
 
 // MARK: - TrackersViewController
 final class TrackersViewController: UIViewController {
@@ -100,11 +101,46 @@ final class TrackersViewController: UIViewController {
         setupUI()
         setupConstraints()
         bindViewModel()
+     
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDataChanged),
+            name: NSNotification.Name("TrackerDataChanged"),
+            object: nil
+        )
+        
+        let openEvent = [
+            "event": "open",
+            "screen": "Main"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
+        print("Analytics: \(openEvent)")
+    }
+
+    @objc private func handleDataChanged() {
+        viewModel.updateVisibleCategories()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        let closeEvent = [
+            "event": "close",
+            "screen": "Main"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
+        print("Analytics: \(closeEvent)")
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.updateVisibleCategories()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            self.viewModel.updateVisibleCategories()
+        }
     }
 
     // MARK: - Private Methods
@@ -219,13 +255,10 @@ final class TrackersViewController: UIViewController {
     }
 
     private func updateFilterButtonColor() {
-    
         let textColor: UIColor = viewModel.isFilterActive ? .ypRed : .ypWhiteDayNight
         
         var config = filterButton.configuration
-  
         config?.baseForegroundColor = textColor
-    
         filterButton.configuration = config
     }
 
@@ -249,16 +282,27 @@ final class TrackersViewController: UIViewController {
         )
         
         alert.addAction(UIAlertAction(title: NSLocalizedString("Удалить", comment: ""), style: .destructive) { [weak self] _ in
+    
+            let deleteEvent = [
+                "event": "click",
+                "screen": "Main",
+                "item": "delete"
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: deleteEvent)
+            print("Analytics: \(deleteEvent)")
+            
             self?.viewModel.deleteTracker(tracker) { result in
                 DispatchQueue.main.async {
                     switch result {
                     case .success:
+                        self?.viewModel.updateVisibleCategories()
                         break
                     case .failure(let error):
-                        self?.showAlert(
-                            title: NSLocalizedString("Ошибка", comment: ""),
-                            message: error.localizedDescription
-                        )
+                    
+                        AppMetrica.reportEvent(name: "Tracker Deletion Failed", parameters: [
+                            "error": error.localizedDescription,
+                            "tracker_id": tracker.id.uuidString
+                        ])
                     }
                 }
             }
@@ -282,12 +326,31 @@ final class TrackersViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapAddTrackerButton() {
+
+        let addTrackEvent = [
+            "event": "click",
+            "screen": "Main",
+            "item": "add_track"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: addTrackEvent)
+        print("Analytics: \(addTrackEvent)")
+        
         let typeVC = TrackerTypeViewController()
+        typeVC.delegate = self
         let navVC = UINavigationController(rootViewController: typeVC)
         present(navVC, animated: true)
     }
 
     @objc private func didTapFilterButton() {
+
+        let filterEvent = [
+            "event": "click",
+            "screen": "Main",
+            "item": "filter"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: filterEvent)
+        print("Analytics: \(filterEvent)")
+        
         let allFilters = TrackersViewModel.FilterType.allCases
         let filterVC = FilterViewController(currentFilter: viewModel.currentFilter, allFilters: allFilters)
         filterVC.delegate = self
@@ -300,6 +363,13 @@ final class TrackersViewController: UIViewController {
 
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         viewModel.updateCurrentDate(sender.date)
+    }
+}
+
+// MARK: - TrackerTypeViewControllerDelegate
+extension TrackersViewController: TrackerTypeViewControllerDelegate {
+    func trackerTypeViewControllerDidCreateTracker(_ controller: TrackerTypeViewController) {
+        viewModel.updateVisibleCategories()
     }
 }
 
@@ -342,6 +412,15 @@ extension TrackersViewController: UICollectionViewDataSource {
         )
 
         cell.onCheckButtonTapped = { [weak self] in
+       
+            let trackEvent = [
+                "event": "click",
+                "screen": "Main",
+                "item": "track"
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: trackEvent)
+            print("Analytics: \(trackEvent)")
+            
             self?.viewModel.toggleTrackerCompletion(tracker, for: self?.viewModel.currentDate ?? Date())
         }
 
@@ -408,6 +487,15 @@ extension TrackersViewController: UISearchBarDelegate {
 extension TrackersViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let tracker = viewModel.visibleCategories[indexPath.section].trackers[indexPath.row]
+   
+        let trackEvent = [
+            "event": "click",
+            "screen": "Main",
+            "item": "track"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: trackEvent)
+        print("Analytics: \(trackEvent)")
+        
         viewModel.toggleTrackerCompletion(tracker, for: viewModel.currentDate)
     }
 
@@ -417,8 +505,19 @@ extension TrackersViewController: UICollectionViewDelegate {
             let isPinned = tracker.isPinned
             let pinAction = UIAction(title: isPinned ? NSLocalizedString("Открепить", comment: "") : NSLocalizedString("Закрепить", comment: "")) { [weak self] _ in
                 self?.viewModel.togglePinStatus(for: tracker)
+                // Обновляем данные после изменения закрепления
+                self?.viewModel.updateVisibleCategories()
             }
             let editAction = UIAction(title: NSLocalizedString("Редактировать", comment: "")) { [weak self] _ in
+    
+                let editEvent = [
+                    "event": "click",
+                    "screen": "Main",
+                    "item": "edit"
+                ]
+                AppMetrica.reportEvent(name: "Screen Event", parameters: editEvent)
+                print("Analytics: \(editEvent)")
+                
                 self?.presentEditTrackerViewController(for: tracker)
             }
             let deleteAction = UIAction(title: NSLocalizedString("Удалить", comment: ""), attributes: .destructive) { [weak self] _ in

@@ -1,11 +1,17 @@
 import UIKit
 import SnapKit
 
+// MARK: - TrackerTypeViewControllerDelegate
+protocol TrackerTypeViewControllerDelegate: AnyObject {
+    func trackerTypeViewControllerDidCreateTracker(_ controller: TrackerTypeViewController)
+}
+
 // MARK: - TrackerTypeViewController
 final class TrackerTypeViewController: UIViewController {
     
     // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
+    weak var delegate: TrackerTypeViewControllerDelegate?
     
     private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
@@ -71,11 +77,20 @@ final class TrackerTypeViewController: UIViewController {
     // MARK: - Actions
     @objc private func didTapHabitButton() {
         let vc = AddTrackerViewController(type: .habit, dataProvider: dataProvider)
+        vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didTapEventButton() {
         let vc = AddTrackerViewController(type: .event, dataProvider: dataProvider)
+        vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+// MARK: - AddTrackerViewControllerDelegate
+extension TrackerTypeViewController: AddTrackerViewControllerDelegate {
+    func addTrackerViewControllerDidCreateTracker(_ controller: AddTrackerViewController) {
+        delegate?.trackerTypeViewControllerDidCreateTracker(self)
     }
 }

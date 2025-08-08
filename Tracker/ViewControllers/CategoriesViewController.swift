@@ -1,5 +1,6 @@
 import UIKit
 import SnapKit
+import AppMetricaCore
 
 // MARK: - CategorySelectionDelegate
 protocol CategorySelectionDelegate: AnyObject {
@@ -32,6 +33,24 @@ final class CategoriesViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupBindings()
+        
+        let openEvent = [
+            "event": "open",
+            "screen": "Categories"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
+        print("Analytics: \(openEvent)")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        let closeEvent = [
+            "event": "close",
+            "screen": "Categories"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
+        print("Analytics: \(closeEvent)")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -127,8 +146,28 @@ final class CategoriesViewController: UIViewController {
             preferredStyle: .actionSheet
         )
         
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Отменить", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Отменить", comment: ""), style: .cancel) { _ in
+
+            let cancelEvent = [
+                "event": "click",
+                "screen": "Categories",
+                "item": "delete_cancel"
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: cancelEvent)
+            print("Analytics: \(cancelEvent)")
+        })
+        
         alert.addAction(UIAlertAction(title: NSLocalizedString("Удалить", comment: ""), style: .destructive) { [weak self] _ in
+
+            let deleteEvent = [
+                "event": "click",
+                "screen": "Categories",
+                "item": "delete_category",
+                "category_name": category.title
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: deleteEvent)
+            print("Analytics: \(deleteEvent)")
+            
             do {
                 try self?.viewModel.deleteCategory(category)
                 self?.updateUI()
@@ -140,6 +179,11 @@ final class CategoriesViewController: UIViewController {
                 )
                 errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(errorAlert, animated: true)
+        
+                AppMetrica.reportEvent(name: "Category Deletion Failed", parameters: [
+                    "error": error.localizedDescription,
+                    "category_name": category.title
+                ])
             }
         })
         
@@ -153,9 +197,26 @@ final class CategoriesViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func addCategoryTapped() {
+
+        let addEvent = [
+            "event": "click",
+            "screen": "Categories",
+            "item": "add_category"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: addEvent)
+        print("Analytics: \(addEvent)")
+        
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         createCategoryVC.onCategoryCreated = { [weak self] in
             self?.viewModel.loadCategories()
+
+            let createEvent = [
+                "event": "click",
+                "screen": "Categories",
+                "item": "category_created"
+            ]
+            AppMetrica.reportEvent(name: "Screen Event", parameters: createEvent)
+            print("Analytics: \(createEvent)")
         }
         let navVC = UINavigationController(rootViewController: createCategoryVC)
         present(navVC, animated: true)
@@ -192,6 +253,16 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         viewModel.selectCategory(selectedCategory)
         tableView.reloadData()
         delegate?.didSelectCategory(selectedCategory)
+        
+        let selectEvent = [
+            "event": "click",
+            "screen": "Categories",
+            "item": "select_category",
+            "category_name": selectedCategory.title
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: selectEvent)
+        print("Analytics: \(selectEvent)")
+        
         navigationController?.popViewController(animated: true)
     }
     
@@ -200,6 +271,16 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let editAction = UIAction(title: NSLocalizedString("Редактировать", comment: "")) { [weak self] _ in
+
+                let editEvent = [
+                    "event": "click",
+                    "screen": "Categories",
+                    "item": "edit_category",
+                    "category_name": category.title
+                ]
+                AppMetrica.reportEvent(name: "Screen Event", parameters: editEvent)
+                print("Analytics: \(editEvent)")
+                
                 self?.presentEditCategoryViewController(for: category, at: indexPath)
             }
             
@@ -218,5 +299,13 @@ extension CategoriesViewController: EditCategoryViewControllerDelegate {
         viewModel.loadCategories()
         tableView.reloadData()
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidUpdate"), object: nil)
+        
+        let updateEvent = [
+            "event": "click",
+            "screen": "Categories",
+            "item": "category_updated"
+        ]
+        AppMetrica.reportEvent(name: "Screen Event", parameters: updateEvent)
+        print("Analytics: \(updateEvent)")
     }
 }

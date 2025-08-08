@@ -67,6 +67,7 @@ final class AddTrackerViewModel: AddTrackerViewModelProtocol {
         
         do {
             try dataProvider.addTracker(tracker, categoryId: categoryId)
+            NotificationCenter.default.post(name: NSNotification.Name("TrackerDataChanged"), object: nil)
             completion(.success(()))
         } catch {
             completion(.failure(error))
