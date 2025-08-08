@@ -7,7 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9001C9372E1DA7A300ADD50C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9001C9362E1DA7A300ADD50C /* SnapKit */; };
+		90399FF72E44E30B00B82EC1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 90399FF52E44E30B00B82EC1 /* Localizable.strings */; };
+		9039A0002E451B1600B82EC1 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */; };
+		9039A0042E451B8B00B82EC1 /* LocalizedDaysCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */; };
+		9039A0112E4535A400B82EC1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A0102E4535A400B82EC1 /* SnapKit */; };
+		9039A0352E455C6600B82EC1 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A0342E455C6600B82EC1 /* InlineSnapshotTesting */; };
+		9039A0372E455C6600B82EC1 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A0362E455C6600B82EC1 /* SnapshotTesting */; };
+		9039A0392E455C6600B82EC1 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A0382E455C6600B82EC1 /* SnapshotTestingCustomDump */; };
 		903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98A82E1C589D00A130BD /* ColorCell.swift */; };
 		903A98AB2E1C58FE00A130BD /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98AA2E1C58FE00A130BD /* EmojiCell.swift */; };
 		904170DD2E06F50300638E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904170D32E06F50300638E71 /* AppDelegate.swift */; };
@@ -72,6 +78,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		90399FF62E44E30B00B82EC1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FF82E44E35600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		90399FF92E44E35600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FFA2E44E35D00B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		90399FFB2E44E35F00B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FFF2E451B1600B82EC1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0012E451B2600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0022E451B2700B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedDaysCount.swift; sourceTree = "<group>"; };
 		903A98A82E1C589D00A130BD /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		903A98AA2E1C58FE00A130BD /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		9041709F2E06E7D500638E71 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,7 +142,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9001C9372E1DA7A300ADD50C /* SnapKit in Frameworks */,
+				9039A0112E4535A400B82EC1 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +150,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9039A0392E455C6600B82EC1 /* SnapshotTestingCustomDump in Frameworks */,
+				9039A0352E455C6600B82EC1 /* InlineSnapshotTesting in Frameworks */,
+				9039A0372E455C6600B82EC1 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,6 +171,15 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		90399FF42E44E2DF00B82EC1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				90399FF52E44E30B00B82EC1 /* Localizable.strings */,
+				90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		904170962E06E7D500638E71 = {
@@ -177,6 +204,7 @@
 		904170DC2E06F50300638E71 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				90399FF42E44E2DF00B82EC1 /* Resources */,
 				9058DE682E230065000A1365 /* Enum */,
 				9058DE3F2E216EA5000A1365 /* CoreData */,
 				904171312E08856800638E71 /* Structures */,
@@ -221,6 +249,7 @@
 				9058DE642E22E139000A1365 /* UIView+AddSubviews.swift */,
 				9058DE5E2E22CF7D000A1365 /* TrackerCoreData.swift */,
 				9058DE602E22CFA7000A1365 /* UIColor+Hex.swift */,
+				9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -299,7 +328,7 @@
 			);
 			name = Tracker;
 			packageProductDependencies = (
-				9001C9362E1DA7A300ADD50C /* SnapKit */,
+				9039A0102E4535A400B82EC1 /* SnapKit */,
 			);
 			productName = Tracker;
 			productReference = 9041709F2E06E7D500638E71 /* Tracker.app */;
@@ -320,6 +349,9 @@
 			);
 			name = TrackerTests;
 			packageProductDependencies = (
+				9039A0342E455C6600B82EC1 /* InlineSnapshotTesting */,
+				9039A0362E455C6600B82EC1 /* SnapshotTesting */,
+				9039A0382E455C6600B82EC1 /* SnapshotTestingCustomDump */,
 			);
 			productName = TrackerTests;
 			productReference = 904170B52E06E7D800638E71 /* TrackerTests.xctest */;
@@ -374,11 +406,14 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
+				ru,
 			);
 			mainGroup = 904170962E06E7D500638E71;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */,
+				9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				9039A0332E455C6600B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 904170A02E06E7D500638E71 /* Products */;
@@ -398,6 +433,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				904170E02E06F50300638E71 /* Assets.xcassets in Resources */,
+				9039A0002E451B1600B82EC1 /* Localizable.stringsdict in Resources */,
+				90399FF72E44E30B00B82EC1 /* Localizable.strings in Resources */,
 				904170E22E06F50300638E71 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -448,6 +485,7 @@
 				9058DEEF2E40EE8E000A1365 /* EditTrackerViewModel.swift in Sources */,
 				9058DE612E22CFA7000A1365 /* UIColor+Hex.swift in Sources */,
 				903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */,
+				9039A0042E451B8B00B82EC1 /* LocalizedDaysCount.swift in Sources */,
 				904171372E08869700638E71 /* TrackerRecord.swift in Sources */,
 				9058DECD2E36AEC0000A1365 /* PlaceholderView.swift in Sources */,
 				9058DED32E3BFA76000A1365 /* EditTrackerViewController.swift in Sources */,
@@ -498,10 +536,32 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		90399FF52E44E30B00B82EC1 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90399FF62E44E30B00B82EC1 /* en */,
+				90399FF92E44E35600B82EC1 /* de */,
+				90399FFB2E44E35F00B82EC1 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90399FFF2E451B1600B82EC1 /* en */,
+				9039A0012E451B2600B82EC1 /* de */,
+				9039A0022E451B2700B82EC1 /* ru */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		904170D72E06F50300638E71 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				904170D62E06F50300638E71 /* Base */,
+				90399FF82E44E35600B82EC1 /* de */,
+				90399FFA2E44E35D00B82EC1 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -572,6 +632,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -636,6 +697,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -802,7 +864,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -810,13 +872,36 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		9039A0332E455C6600B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.6;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9001C9362E1DA7A300ADD50C /* SnapKit */ = {
+		9039A0102E4535A400B82EC1 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		9039A0342E455C6600B82EC1 /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A0332E455C6600B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		9039A0362E455C6600B82EC1 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A0332E455C6600B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		9039A0382E455C6600B82EC1 /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A0332E455C6600B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
 		};
 /* End XCSwiftPackageProductDependency section */
 

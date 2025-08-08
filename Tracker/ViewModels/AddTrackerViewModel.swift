@@ -31,7 +31,7 @@ final class AddTrackerViewModel: AddTrackerViewModelProtocol {
     init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
         self.type = type
         self.dataProvider = dataProvider
-        self.options = type == .habit ? ["Категория", "Расписание"] : ["Категория"]
+        self.options = type == .habit ? [NSLocalizedString("Категория", comment: ""), NSLocalizedString("Расписание", comment: "")] : [NSLocalizedString("Категория", comment: "")]
     }
     
     // MARK: - Public Methods

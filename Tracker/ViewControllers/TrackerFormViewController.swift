@@ -263,7 +263,7 @@ final class TrackerFormViewController: UIViewController {
               let color = viewModel.selectedColor,
               !viewModel.trackerTitle.isEmpty,
               let categoryId = viewModel.selectedCategoryId else {
-            showAlert(title: "Ошибка", message: "Заполните все поля")
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Заполните все поля", comment: ""))
             return
         }
         delegate?.didRequestSave(
@@ -308,7 +308,7 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.detailTextLabel?.textColor = .ypGray
         if indexPath.row == 0 {
-            cell.detailTextLabel?.text = selectedCategoryTitle ?? "Не выбрана"
+            cell.detailTextLabel?.text = selectedCategoryTitle ?? NSLocalizedString("Не выбрана", comment: "")
         } else if indexPath.row == 1 && !viewModel.selectedDays.isEmpty {
             let sortedDays = viewModel.selectedDays.sorted { $0.rawValue < $1.rawValue }
             cell.detailTextLabel?.text = sortedDays.map { $0.shortName }.joined(separator: ", ")

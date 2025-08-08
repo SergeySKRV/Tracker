@@ -9,7 +9,7 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("Привычка", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypBlackDay
         button.tintColor = .ypWhiteDay
@@ -20,7 +20,7 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var eventButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Нерегулярное событие", for: .normal)
+        button.setTitle(NSLocalizedString("Нерегулярное событие", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypBlackDay
         button.tintColor = .ypWhiteDay
@@ -49,7 +49,7 @@ final class TrackerTypeViewController: UIViewController {
     // MARK: - Private Methods
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
-        title = "Создание трекера"
+        title = NSLocalizedString("Создание трекера", comment: "")
         navigationItem.hidesBackButton = true
         view.addSubviews(habitButton, eventButton)
     }

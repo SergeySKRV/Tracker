@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Property 1=stats@1x.png",
+      "filename" : "stats@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Property 1=stats@2x.png",
+      "filename" : "stats@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Property 1=stats@3x.png",
+      "filename" : "stats@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

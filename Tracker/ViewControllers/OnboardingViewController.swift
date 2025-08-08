@@ -23,12 +23,12 @@ final class OnboardingViewController: UIViewController {
     private func setupPages() {
         let page1 = OnboardingPageViewController(
             imageName: "onboarding1",
-            title: "Отслеживайте только то, что хотите"
+            title: NSLocalizedString("Отслеживайте только то, что хотите", comment: "")
         )
         
         let page2 = OnboardingPageViewController(
             imageName: "onboarding2",
-            title: "Даже если это не литры воды и йога"
+            title: NSLocalizedString("Даже если это не литры воды и йога", comment: "")
         )
         
         pages = [page1, page2]
@@ -58,7 +58,7 @@ final class OnboardingViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .ypWhiteDay
         
-        doneButton.setTitle("Вот это технологии!", for: .normal)
+        doneButton.setTitle(NSLocalizedString("Вот это технологии!", comment: ""), for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         doneButton.setTitleColor(.ypWhiteDay, for: .normal)
         doneButton.backgroundColor = .ypBlackDay

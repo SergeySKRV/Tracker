@@ -47,7 +47,7 @@ final class EditTrackerViewModel: EditTrackerViewModelProtocol {
         self.selectedDays = tracker.schedule
         self.selectedCategoryId = tracker.category
         self.selectedCategoryTitle = dataProvider.getCategoryTitle(by: tracker.category ?? UUID()) ?? categoryTitle
-        self.options = tracker.schedule.isEmpty ? ["Категория"] : ["Категория", "Расписание"]
+        self.options = tracker.schedule.isEmpty ? [NSLocalizedString("Категория", comment: "")] : [NSLocalizedString("Категория", comment: ""), NSLocalizedString("Расписание", comment: "")]
     }
     
     // MARK: - Public Methods
@@ -59,16 +59,7 @@ final class EditTrackerViewModel: EditTrackerViewModelProtocol {
     }
     
     func pluralizeDays(count: Int) -> String {
-        let remainder10 = count % 10
-        let remainder100 = count % 100
-        
-        if remainder10 == 1 && remainder100 != 11 {
-            return "\(count) день"
-        } else if remainder10 >= 2 && remainder10 <= 4 && (remainder100 < 10 || remainder100 >= 20) {
-            return "\(count) дня"
-        } else {
-            return "\(count) дней"
-        }
+        return localizedDaysCount(count)
     }
     
     func saveTracker(

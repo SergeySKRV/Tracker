@@ -42,7 +42,7 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         formVC.viewModel = editViewModel
         
         formVC.daysCountLabel = createDaysCountLabel()
-        title = "Редактирование привычки"
+        title = NSLocalizedString("Редактирование привычки", comment: "")
         formVC.saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
     }
     
@@ -87,7 +87,7 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
                 case .success:
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
         }

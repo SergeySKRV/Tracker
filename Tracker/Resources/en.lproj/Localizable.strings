@@ -1,0 +1,63 @@
+// MARK: - General
+"Трекеры" = "Trackers";
+"Статистика" = "Statistics";
+"Привычка" = "Habit";
+"Нерегулярное событие" = "Irregular event";
+"Поиск" = "Search";
+"Что будем отслеживать?" = "What would you like to track?";
+"Ничего не найдено" = "Nothing found";
+
+// MARK: - Categories
+"Категория" = "Category";
+"Категория с таким названием уже существует" = "A category with this name already exists";
+"Категория не найдена" = "Category not found";
+"Удалить трекер" = "Delete tracker";
+"Уверены что хотите удалить трекер?" = "Are you sure you want to delete this tracker?";
+"Невозможно удалить" = "Cannot delete";
+"Категория содержит трекеры. Удалите их сначала." = "This category contains trackers. Please delete them first.";
+"Эта категория точно не нужна?" = "Do you really want to delete this category?";
+"Редактирование категории" = "Edit category";
+"Введите название категории" = "Enter category name";
+"Добавить категорию" = "Add category";
+"Новая категория" = "New category";
+"Не выбрана" = "Not selected";
+
+// MARK: - Trackers
+"Закрепленные" = "Pinned";
+"Закрепить" = "Pin";
+"Открепить" = "Unpin";
+"Редактирование привычки" = "Edit habit";
+"Редактировать" = "Edit";
+"Удалить" = "Delete";
+"Отмена" = "Cancel";
+
+// MARK: - Form
+"Создание трекера" = "Creating a tracker";
+"Новая привычка" = "New habit";
+"Новое нерегулярное событие" = "New irregular event";
+"Введите название трекера" = "Enter tracker name";
+"Категория" = "Category";
+"Расписание" = "Schedule";
+"Emoji" = "Emoji";
+"Цвет" = "Color";
+"Отменить" = "Cancel";
+"Создать" = "Create";
+"Готово" = "Done";
+"Сохранить" = "Save";
+"Ограничение 38 символов" = "Limit 38 characters";
+"Заполните все поля" = "Please fill in all fields";
+"Ошибка" = "Error";
+
+// MARK: - Schedule
+"Расписание" = "Schedule";
+
+// MARK: - Onboarding
+"Отслеживайте только то, что хотите" = "Track only what you want";
+"Даже если это не литры воды и йога" = "Even if it's not water intake or yoga";
+"Вот это технологии!" = "Now that's technology!";
+
+// MARK: - Alerts
+"Не удалось изменить закрепление: %@" = "Failed to pin/unpin: %@";
+"Не удалось удалить трекер" = "Failed to delete tracker";
+"Не удалось обновить категорию" = "Failed to update category";
+"Не удалось удалить категорию: %@" = "Failed to delete category: %@";

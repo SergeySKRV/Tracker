@@ -11,7 +11,7 @@ final class CreateCategoryViewController: UIViewController {
     
     private let textField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название категории"
+        field.placeholder = NSLocalizedString("Введите название категории", comment: "")
         field.backgroundColor = .ypBackgroundDay
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
@@ -23,7 +23,7 @@ final class CreateCategoryViewController: UIViewController {
     
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
@@ -57,7 +57,7 @@ final class CreateCategoryViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        title = "Новая категория"
+        title = NSLocalizedString("Новая категория", comment: "")
         view.backgroundColor = .ypWhiteDay
         view.addSubview(textField)
         view.addSubview(createButton)

@@ -72,7 +72,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
                 case .success:
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
         }

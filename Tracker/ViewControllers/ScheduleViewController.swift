@@ -18,7 +18,7 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .ypBlackDay
@@ -74,7 +74,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func setupNavigation() {
-        title = "Расписание"
+        title = NSLocalizedString("Расписание", comment: "")
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.hidesBackButton = true
     }

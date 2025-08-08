@@ -17,7 +17,7 @@ final class EditCategoryViewController: UIViewController {
     
     private let textField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название категории"
+        field.placeholder = NSLocalizedString("Введите название категории", comment: "")
         field.backgroundColor = .ypBackgroundDay
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
@@ -29,7 +29,7 @@ final class EditCategoryViewController: UIViewController {
     
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
+        button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
         button.setTitleColor(.ypWhiteDay, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
@@ -60,7 +60,7 @@ final class EditCategoryViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        title = "Редактирование категории"
+        title = NSLocalizedString("Редактирование категории", comment: "")
         view.backgroundColor = .ypWhiteDay
         view.addSubview(textField)
         view.addSubview(saveButton)
@@ -112,7 +112,7 @@ final class EditCategoryViewController: UIViewController {
         guard let newTitle = textField.text, !newTitle.isEmpty else { return }
         
         if viewModel.hasCategory(with: newTitle, excludingId: category.id) {
-            showAlert(title: "Ошибка", message: "Категория с таким названием уже существует")
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Категория с таким названием уже существует", comment: ""))
             return
         }
         
@@ -121,7 +121,7 @@ final class EditCategoryViewController: UIViewController {
             delegate?.didUpdateCategory()
             dismiss(animated: true)
         } catch {
-            showAlert(title: "Ошибка", message: "Не удалось обновить категорию")
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Не удалось обновить категорию", comment: ""))
         }
     }
     

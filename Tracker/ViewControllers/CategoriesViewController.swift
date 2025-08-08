@@ -41,7 +41,7 @@ final class CategoriesViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        title = "Категория"
+        title = NSLocalizedString("Категория", comment: "")
         view.backgroundColor = .ypWhiteDay
         
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
@@ -56,11 +56,11 @@ final class CategoriesViewController: UIViewController {
         
         placeholderView.configure(
             image: UIImage(named: "placeholder"),
-            text: "Привычки и события можно\nобъединить по смыслу"
+            text: NSLocalizedString("Привычки и события можно\nобъединить по смыслу", comment: "")
         )
         view.addSubview(placeholderView)
         
-        addButton.setTitle("Добавить категорию", for: .normal)
+        addButton.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
         addButton.setTitleColor(.ypWhiteDay, for: .normal)
         addButton.backgroundColor = .ypBlackDay
         addButton.layer.cornerRadius = 16
@@ -112,8 +112,8 @@ final class CategoriesViewController: UIViewController {
         
         if !category.trackers.isEmpty {
             let alert = UIAlertController(
-                title: "Невозможно удалить",
-                message: "Категория содержит трекеры. Удалите их сначала.",
+                title: NSLocalizedString("Невозможно удалить", comment: ""),
+                message: NSLocalizedString("Категория содержит трекеры. Удалите их сначала.", comment: ""),
                 preferredStyle: .actionSheet
             )
             alert.addAction(UIAlertAction(title: "ОК", style: .default))
@@ -122,20 +122,20 @@ final class CategoriesViewController: UIViewController {
         }
         
         let alert = UIAlertController(
-            title: "Эта категория точно не нужна?",
+            title: NSLocalizedString("Эта категория точно не нужна?", comment: ""),
             message: nil,
             preferredStyle: .actionSheet
         )
         
-        alert.addAction(UIAlertAction(title: "Отменить", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Отменить", comment: ""), style: .cancel))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Удалить", comment: ""), style: .destructive) { [weak self] _ in
             do {
                 try self?.viewModel.deleteCategory(category)
                 self?.updateUI()
             } catch {
                 let errorAlert = UIAlertController(
-                    title: "Ошибка",
-                    message: "Не удалось удалить категорию: \(error.localizedDescription)",
+                    title: NSLocalizedString("Ошибка", comment: ""),
+                    message: NSLocalizedString("Не удалось удалить категорию: \(error.localizedDescription)", comment: ""),
                     preferredStyle: .alert
                 )
                 errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -199,11 +199,11 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         let category = viewModel.category(at: indexPath.row)
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+            let editAction = UIAction(title: NSLocalizedString("Редактировать", comment: "")) { [weak self] _ in
                 self?.presentEditCategoryViewController(for: category, at: indexPath)
             }
             
-            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(title: NSLocalizedString("Удалить", comment: ""), attributes: .destructive) { [weak self] _ in
                 self?.deleteCategory(at: indexPath)
             }
             
