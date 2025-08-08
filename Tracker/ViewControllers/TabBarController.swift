@@ -15,13 +15,17 @@ final class TabBarController: UITabBarController {
     private func setupAppearance() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithOpaqueBackground()
-        tabBarAppearance.backgroundColor = .ypWhiteDay
+        tabBarAppearance.backgroundColor = .ypWhiteDayNight
         tabBarAppearance.stackedLayoutAppearance.selected.iconColor = .ypBlue
         tabBar.standardAppearance = tabBarAppearance
+        if #available(iOS 15.0, *) {
+            tabBar.scrollEdgeAppearance = tabBarAppearance
+        }
     }
     
     private func configureViewControllers() {
-        let trackersViewController = TrackersViewController()
+        let trackersViewModel = TrackersViewModel()
+        let trackersViewController = TrackersViewController(viewModel: trackersViewModel)
         trackersViewController.tabBarItem = UITabBarItem(
             title: NSLocalizedString("Трекеры", comment: ""),
             image: UIImage(resource: .trackers),

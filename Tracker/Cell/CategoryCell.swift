@@ -10,7 +10,7 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Properties
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .ypBackgroundDay
+        view.backgroundColor = .ypBackground
         view.layer.masksToBounds = true
         return view
     }()
@@ -18,7 +18,7 @@ final class CategoryCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         label.numberOfLines = 1
         return label
     }()

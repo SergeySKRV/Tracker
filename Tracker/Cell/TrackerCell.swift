@@ -43,14 +43,14 @@ final class TrackerCell: UICollectionViewCell {
     private let daysCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
     private lazy var checkButton: UIButton = {
         let button = UIButton(type: .custom)
         button.layer.cornerRadius = 17
-        button.tintColor = .white
+        button.tintColor = .ypWhiteDayNight
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.imageView?.contentMode = .center
         button.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
@@ -60,9 +60,9 @@ final class TrackerCell: UICollectionViewCell {
     private let pinImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "pin.fill")
-        imageView.tintColor = .ypWhiteDay
+        imageView.tintColor = .ypWhiteDayNight
         imageView.isHidden = true
-        imageView.backgroundColor = .ypWhiteDay
+        imageView.backgroundColor = .ypWhiteDayNight
         imageView.layer.cornerRadius = 4
         imageView.layer.masksToBounds = true
         return imageView

@@ -42,7 +42,7 @@ final class TrackerFormViewController: UIViewController {
         let field = UITextField()
         field.placeholder = TrackerConstants.Text.trackerNamePlaceholder
         field.font = UIFont.systemFont(ofSize: 17)
-        field.backgroundColor = .ypBackgroundDay
+        field.backgroundColor = .ypBackground
         field.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         field.layer.masksToBounds = true
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
@@ -77,7 +77,7 @@ final class TrackerFormViewController: UIViewController {
         table.isScrollEnabled = false
         table.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         table.layer.masksToBounds = true
-        table.backgroundColor = .ypBackgroundDay
+        table.backgroundColor = .ypBackground
         table.separatorColor = .ypGray
         return table
     }()
@@ -86,7 +86,7 @@ final class TrackerFormViewController: UIViewController {
         let label = UILabel()
         label.text = TrackerConstants.Text.emojiTitle
         label.font = UIFont.boldSystemFont(ofSize: 19)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
@@ -104,7 +104,7 @@ final class TrackerFormViewController: UIViewController {
         let label = UILabel()
         label.text = TrackerConstants.Text.colorTitle
         label.font = UIFont.boldSystemFont(ofSize: 19)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
@@ -140,7 +140,7 @@ final class TrackerFormViewController: UIViewController {
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(TrackerConstants.Text.createButton, for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         button.isEnabled = false
@@ -162,7 +162,7 @@ final class TrackerFormViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         if let daysCountLabel = daysCountLabel {
             contentView.addSubview(daysCountLabel)
         }
@@ -282,7 +282,7 @@ final class TrackerFormViewController: UIViewController {
     // MARK: - Private Helpers
     func updateSaveButtonState() {
         saveButton.isEnabled = viewModel.updateSaveButtonState()
-        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDay : .ypGray
+        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
     }
     
     func showAlert(title: String, message: String) {
@@ -301,10 +301,10 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = viewModel.options[indexPath.row]
-        cell.textLabel?.textColor = .ypBlackDay
+        cell.textLabel?.textColor = .ypBlackDayNight
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.detailTextLabel?.textColor = .ypGray
         if indexPath.row == 0 {

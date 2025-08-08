@@ -62,7 +62,7 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         let label = UILabel()
         label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         label.textAlignment = .center
         return label
     }

@@ -12,7 +12,7 @@ final class CreateCategoryViewController: UIViewController {
     private let textField: UITextField = {
         let field = UITextField()
         field.placeholder = NSLocalizedString("Введите название категории", comment: "")
-        field.backgroundColor = .ypBackgroundDay
+        field.backgroundColor = .ypBackground
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
         field.leftViewMode = .always
@@ -24,7 +24,7 @@ final class CreateCategoryViewController: UIViewController {
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
         button.isEnabled = false
@@ -58,7 +58,7 @@ final class CreateCategoryViewController: UIViewController {
     // MARK: - Private Methods
     private func setupUI() {
         title = NSLocalizedString("Новая категория", comment: "")
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         view.addSubview(textField)
         view.addSubview(createButton)
         textField.delegate = self
@@ -87,7 +87,7 @@ final class CreateCategoryViewController: UIViewController {
     @objc private func textFieldDidChange() {
         let text = textField.text ?? ""
         createButton.isEnabled = !text.isEmpty
-        createButton.backgroundColor = !text.isEmpty ? .ypBlackDay : .ypGray
+        createButton.backgroundColor = !text.isEmpty ? .ypBlackDayNight : .ypGray
     }
     
     @objc private func createButtonTapped() {

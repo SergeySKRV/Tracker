@@ -32,7 +32,7 @@ final class PlaceholderView: UIView {
         label.numberOfLines = 0
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 12)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         
         addSubview(imageView)
         addSubview(label)

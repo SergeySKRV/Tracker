@@ -5,12 +5,12 @@ import SnapKit
 final class TrackersViewController: UIViewController {
 
     // MARK: - Properties
-    private let viewModel: TrackersViewModel
+    private let viewModel: TrackersViewModelProtocol
 
     private lazy var addTrackerButton: UIButton = {
         let button = UIButton(type: .custom)
         button.setImage(UIImage(systemName: "plus"), for: .normal)
-        button.tintColor = .ypBlackDay
+        button.tintColor = .ypBlackDayNight
         button.addTarget(self, action: #selector(didTapAddTrackerButton), for: .touchUpInside)
         return button
     }()
@@ -19,7 +19,7 @@ final class TrackersViewController: UIViewController {
         let label = UILabel()
         label.text = NSLocalizedString("Трекеры", comment: "")
         label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
 
@@ -45,7 +45,7 @@ final class TrackersViewController: UIViewController {
         layout.scrollDirection = .vertical
         layout.sectionInsetReference = .fromSafeArea
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .ypWhiteDay
+        collectionView.backgroundColor = .ypWhiteDayNight
      
         collectionView.alwaysBounceVertical = true
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: TrackerCell.reuseIdentifier)
@@ -70,7 +70,7 @@ final class TrackersViewController: UIViewController {
         config.title = NSLocalizedString("Фильтры", comment: "")
    
         config.baseBackgroundColor = .ypBlue
-        config.baseForegroundColor = .ypWhiteDay
+        config.baseForegroundColor = .ypWhiteDayNight
         let font = UIFont.systemFont(ofSize: 17, weight: .regular)
         let attributedTitle = AttributedString(NSLocalizedString("Фильтры", comment: ""), attributes: AttributeContainer([NSAttributedString.Key.font: font]))
         config.attributedTitle = attributedTitle
@@ -85,7 +85,7 @@ final class TrackersViewController: UIViewController {
     }()
 
     // MARK: - Lifecycle
-    init(viewModel: TrackersViewModel = TrackersViewModel()) {
+    init(viewModel: TrackersViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -109,7 +109,7 @@ final class TrackersViewController: UIViewController {
 
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         view.addSubviews(
             addTrackerButton,
             trackersLabel,
@@ -150,7 +150,6 @@ final class TrackersViewController: UIViewController {
         collectionView.snp.makeConstraints { make in
             make.top.equalTo(searchBar.snp.bottom).offset(34)
             make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            // Занимает всё пространство до safeArea
             make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
 
@@ -162,7 +161,6 @@ final class TrackersViewController: UIViewController {
 
         filterButton.snp.makeConstraints { make in
             make.centerX.equalTo(view.snp.centerX)
-            // Размещаем внизу safe area
             make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
             make.width.equalTo(114)
             make.height.equalTo(50)
@@ -222,7 +220,7 @@ final class TrackersViewController: UIViewController {
 
     private func updateFilterButtonColor() {
     
-        let textColor: UIColor = viewModel.isFilterActive ? .ypRed : .ypWhiteDay
+        let textColor: UIColor = viewModel.isFilterActive ? .ypRed : .ypWhiteDayNight
         
         var config = filterButton.configuration
   

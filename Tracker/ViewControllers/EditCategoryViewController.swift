@@ -18,7 +18,7 @@ final class EditCategoryViewController: UIViewController {
     private let textField: UITextField = {
         let field = UITextField()
         field.placeholder = NSLocalizedString("Введите название категории", comment: "")
-        field.backgroundColor = .ypBackgroundDay
+        field.backgroundColor = .ypBackground
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
         field.leftViewMode = .always
@@ -30,7 +30,7 @@ final class EditCategoryViewController: UIViewController {
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
         button.isEnabled = false
@@ -61,7 +61,7 @@ final class EditCategoryViewController: UIViewController {
     // MARK: - Private Methods
     private func setupUI() {
         title = NSLocalizedString("Редактирование категории", comment: "")
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         view.addSubview(textField)
         view.addSubview(saveButton)
         textField.delegate = self
@@ -100,7 +100,7 @@ final class EditCategoryViewController: UIViewController {
         let hasChanges = text != category.title
         let isUnique = !viewModel.getAllCategories().contains { $0.title == text && $0.id != category.id }
         saveButton.isEnabled = !text.isEmpty && hasChanges && isUnique
-        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDay : .ypGray
+        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
     }
     
     // MARK: - Actions

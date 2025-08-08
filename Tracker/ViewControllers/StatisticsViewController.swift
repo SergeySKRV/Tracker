@@ -11,6 +11,6 @@ final class StatisticsViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
     }
 }

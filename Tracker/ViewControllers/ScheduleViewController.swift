@@ -19,9 +19,9 @@ final class ScheduleViewController: UIViewController {
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .ypBlackDay
+        button.backgroundColor = .ypBlackDayNight
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         return button
@@ -48,12 +48,12 @@ final class ScheduleViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 75
-        tableView.backgroundColor = .ypWhiteDay
+        tableView.backgroundColor = .ypWhiteDayNight
         tableView.separatorColor = .ypGray
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         view.addSubviews(tableView, doneButton)
@@ -109,7 +109,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         content.text = day.fullName
         content.textProperties.font = UIFont.systemFont(ofSize: 17)
         cell.contentConfiguration = content
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         
         let switchView = UISwitch()
         switchView.onTintColor = .ypBlue

@@ -42,7 +42,7 @@ final class CategoriesViewController: UIViewController {
     // MARK: - Private Methods
     private func setupUI() {
         title = NSLocalizedString("Категория", comment: "")
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         tableView.dataSource = self
@@ -61,8 +61,8 @@ final class CategoriesViewController: UIViewController {
         view.addSubview(placeholderView)
         
         addButton.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
-        addButton.setTitleColor(.ypWhiteDay, for: .normal)
-        addButton.backgroundColor = .ypBlackDay
+        addButton.setTitleColor(.ypWhiteDayNight, for: .normal)
+        addButton.backgroundColor = .ypBlackDayNight
         addButton.layer.cornerRadius = 16
         addButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         addButton.addTarget(self, action: #selector(addCategoryTapped), for: .touchUpInside)

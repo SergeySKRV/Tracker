@@ -56,12 +56,12 @@ final class OnboardingViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         
         doneButton.setTitle(NSLocalizedString("Вот это технологии!", comment: ""), for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        doneButton.setTitleColor(.ypWhiteDay, for: .normal)
-        doneButton.backgroundColor = .ypBlackDay
+        doneButton.setTitleColor(.ypWhiteDayNight, for: .normal)
+        doneButton.backgroundColor = .ypBlackDayNight
         doneButton.layer.cornerRadius = 16
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         view.addSubview(doneButton)
@@ -69,7 +69,7 @@ final class OnboardingViewController: UIViewController {
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = .ypGray
-        pageControl.currentPageIndicatorTintColor = .ypBlackDay
+        pageControl.currentPageIndicatorTintColor = .ypBlackDayNight
         view.addSubview(pageControl)
     }
     

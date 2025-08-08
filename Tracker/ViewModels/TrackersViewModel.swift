@@ -1,8 +1,30 @@
 import UIKit
 import SnapKit
 
+protocol TrackersViewModelProtocol: AnyObject {
+    var currentDate: Date { get set }
+    var searchText: String { get set }
+    var currentFilter: TrackersViewModel.FilterType { get set }
+    var visibleCategories: [TrackerCategory] { get }
+    var hasTrackersOnSelectedDate: Bool { get }
+    var isFilterActive: Bool { get }
+    var onFilterChanged: (() -> Void)? { get set }
+    var onDataUpdate: (() -> Void)? { get set }
+    
+    func loadData()
+    func updateVisibleCategories()
+    func isTrackerCompleted(_ trackerID: UUID, for date: Date) -> Bool
+    func getTotalCompletionCount(for trackerID: UUID) -> Int
+    func getCategoryTitle(for categoryId: UUID) -> String?
+    func toggleTrackerCompletion(_ tracker: Tracker, for date: Date)
+    func updateSearchText(_ text: String)
+    func updateCurrentDate(_ date: Date)
+    func togglePinStatus(for tracker: Tracker)
+    func deleteTracker(_ tracker: Tracker, completion: @escaping (Result<Void, Error>) -> Void)
+}
+
 // MARK: - TrackersViewModel
-final class TrackersViewModel {
+final class TrackersViewModel: TrackersViewModelProtocol{
 
     // MARK: - Filter Type Enum
     enum FilterType: CaseIterable {

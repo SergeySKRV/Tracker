@@ -39,7 +39,7 @@ final class FilterViewController: UIViewController {
     // MARK: - Private Methods
     private func setupUI() {
         title = NSLocalizedString("Фильтры", comment: "")
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
 
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "FilterCell")
         tableView.dataSource = self
@@ -78,7 +78,7 @@ extension FilterViewController: UITableViewDataSource {
             cell.accessoryType = .checkmark
         }
 
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         cell.selectionStyle = .default
 
         return cell
