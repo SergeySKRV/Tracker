@@ -4,12 +4,12 @@ import AppMetricaCore
 
 // MARK: - CreateCategoryViewController
 final class CreateCategoryViewController: UIViewController {
-    
+
     // MARK: - Properties
     var onCategoryCreated: (() -> Void)?
-    
+
     private let viewModel: CategoriesViewModel
-    
+
     private let textField: UITextField = {
         let field = UITextField()
         field.placeholder = NSLocalizedString("Введите название категории", comment: "")
@@ -21,7 +21,7 @@ final class CreateCategoryViewController: UIViewController {
         field.returnKeyType = .done
         return field
     }()
-    
+
     private let createButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
@@ -31,24 +31,23 @@ final class CreateCategoryViewController: UIViewController {
         button.isEnabled = false
         return button
     }()
-    
+
     // MARK: - Lifecycle
     init(viewModel: CategoriesViewModel = CategoriesViewModel()) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
         return nil
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
         setupActions()
-    
         let openEvent = [
             "event": "open",
             "screen": "CreateCategory"
@@ -56,10 +55,9 @@ final class CreateCategoryViewController: UIViewController {
         AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
         print("Analytics: \(openEvent)")
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-       
         let closeEvent = [
             "event": "close",
             "screen": "CreateCategory"
@@ -67,13 +65,7 @@ final class CreateCategoryViewController: UIViewController {
         AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
         print("Analytics: \(closeEvent)")
     }
-    
-    // MARK: - Public Methods
-    func configure(with title: String) {
-        textField.text = title
-        textFieldDidChange()
-    }
-    
+
     // MARK: - Private Methods
     private func setupUI() {
         title = NSLocalizedString("Новая категория", comment: "")
@@ -82,32 +74,29 @@ final class CreateCategoryViewController: UIViewController {
         view.addSubview(createButton)
         textField.delegate = self
     }
-    
+
     private func setupConstraints() {
         textField.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).offset(24)
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(75)
         }
-        
         createButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
             make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-16)
         }
     }
-    
+
     private func setupActions() {
         createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         textField.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
-    
-    // MARK: - Actions
+
     @objc private func textFieldDidChange() {
         let text = textField.text ?? ""
         createButton.isEnabled = !text.isEmpty
         createButton.backgroundColor = !text.isEmpty ? .ypBlackDayNight : .ypGray
-    
         if !text.isEmpty {
             let textEvent = [
                 "event": "click",
@@ -119,10 +108,9 @@ final class CreateCategoryViewController: UIViewController {
             print("Analytics: \(textEvent)")
         }
     }
-    
+
     @objc private func createButtonTapped() {
         guard let title = textField.text, !title.isEmpty else { return }
-        
         let createEvent = [
             "event": "click",
             "screen": "CreateCategory",
@@ -131,15 +119,12 @@ final class CreateCategoryViewController: UIViewController {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: createEvent)
         print("Analytics: \(createEvent)")
-        
         viewModel.addCategory(title: title)
         onCategoryCreated?()
-        
         NotificationCenter.default.post(
             name: NSNotification.Name("CategoriesDidUpdate"),
             object: nil
         )
-        
         dismiss(animated: true)
     }
 }
@@ -148,7 +133,6 @@ final class CreateCategoryViewController: UIViewController {
 extension CreateCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-
         let returnEvent = [
             "event": "click",
             "screen": "CreateCategory",
@@ -156,7 +140,6 @@ extension CreateCategoryViewController: UITextFieldDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
         print("Analytics: \(returnEvent)")
-        
         return true
     }
 }

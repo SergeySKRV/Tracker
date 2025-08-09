@@ -1,6 +1,7 @@
 import UIKit
 import SnapKit
 
+// MARK: - TrackersViewModelProtocol
 protocol TrackersViewModelProtocol: AnyObject {
     var currentDate: Date { get set }
     var searchText: String { get set }
@@ -137,7 +138,7 @@ final class TrackersViewModel: TrackersViewModelProtocol{
         
         do {
             try dataProvider.updateTracker(updatedTracker, categoryId: tracker.category ?? UUID())
-            loadData() 
+            loadData()
         } catch {
             print("Failed to toggle pin status: \(error)")
         }
@@ -248,12 +249,13 @@ final class TrackersViewModel: TrackersViewModelProtocol{
     func deleteTracker(_ tracker: Tracker, completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try dataProvider.deleteTracker(tracker)
-            loadData() 
+            loadData()
             completion(.success(()))
         } catch {
             completion(.failure(error))
         }
     }
+
     // MARK: - Private Methods
     private func rebuildAllCategories() {
         var categoriesDict = [UUID: TrackerCategory]()
@@ -270,4 +272,3 @@ final class TrackersViewModel: TrackersViewModelProtocol{
         allCategories = categoriesDict.values.sorted { $0.title < $1.title }
     }
 }
-

@@ -7,7 +7,7 @@ final class EmojiCell: UICollectionViewCell {
     // MARK: - Static Constants
     static let reuseIdentifier = "EmojiCell"
     
-    // MARK: - Properties
+    // MARK: - UI Properties
     private let emojiLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 32)
@@ -27,6 +27,14 @@ final class EmojiCell: UICollectionViewCell {
         return nil
     }
     
+    // MARK: - Override Methods
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        emojiLabel.text = nil
+        contentView.backgroundColor = .clear
+        contentView.layer.cornerRadius = 0
+    }
+    
     // MARK: - Public Methods
     func configure(with emoji: String, isSelected: Bool) {
         emojiLabel.text = emoji
@@ -39,14 +47,6 @@ final class EmojiCell: UICollectionViewCell {
             contentView.backgroundColor = .clear
             contentView.layer.cornerRadius = 0
         }
-    }
-    
-    // MARK: - Reuse
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        emojiLabel.text = nil
-        contentView.backgroundColor = .clear
-        contentView.layer.cornerRadius = 0
     }
     
     // MARK: - Private Methods

@@ -1,12 +1,11 @@
 // MARK: - Allgemein
 "Трекеры" = "Tracker";
-"Статистика" = "Statistik";
 "Привычка" = "Gepflogenheit";
 "Нерегулярное событие" = "Unregelmäßiges Ereignis";
 "Поиск" = "Suche";
 "Что будем отслеживать?" = "Was möchten Sie verfolgen?";
 "Ничего не найдено" = "Nichts gefunden";
-"Фильтры" = "Filter";
+"Анализировать пока нечего" = "Es gibt noch nichts zu analysieren";
 
 // MARK: - Kategorien
 "Категория" = "Kategorie";
@@ -22,6 +21,14 @@
 "Добавить категорию" = "Kategorie hinzufügen";
 "Новая категория" = "Neue Kategorie";
 "Не выбрана" = "Nicht ausgewählt";
+"Привычки и события можно\nобъединить по смыслу" = "Gewohnheiten und Ereignisse\nkönnen nach Bedeutung gruppiert werden";
+
+// MARK: - Filter
+"Фильтры" = "Filter";
+"Все трекеры" = "Alle Tracker";
+"Трекеры на сегодня" = "Tracker für heute";
+"Завершённые" = "Abgeschlossen";
+"Незавершённые" = "Unvollendet";
 
 // MARK: - Tracker
 "Закрепленные" = "Angeheftet";
@@ -50,7 +57,29 @@
 "Ошибка" = "Fehler";
 
 // MARK: - Zeitplan
-"Расписание" = "Zeitplan";
+"Schedule" = "Zeitplan";
+"weekday_mon_short" = "Mo";
+"weekday_tue_short" = "Di";
+"weekday_wed_short" = "Mi";
+"weekday_thu_short" = "Do";
+"weekday_fri_short" = "Fr";
+"weekday_sat_short" = "Sa";
+"weekday_sun_short" = "So";
+
+"weekday_mon_full" = "Montag";
+"weekday_tue_full" = "Dienstag";
+"weekday_wed_full" = "Mittwoch";
+"weekday_thu_full" = "Donnerstag";
+"weekday_fri_full" = "Freitag";
+"weekday_sat_full" = "Samstag";
+"weekday_sun_full" = "Sonntag";
+
+// MARK: - Statistik
+"Статистика" = "Statistik";
+"Лучший период" = "Beste Periode";
+"Идеальные дни" = "Perfekte Tage";
+"Трекеров завершено" = "Tracker abgeschlossen";
+"Среднее значение" = "Mittelwert";
 
 // MARK: - Onboarding
 "Отслеживайте только то, что хотите" = "Verfolgen Sie nur, was Sie möchten";

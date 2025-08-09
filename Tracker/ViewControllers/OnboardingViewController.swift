@@ -5,11 +5,13 @@ import AppMetricaCore
 // MARK: - OnboardingViewController
 final class OnboardingViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - UI Elements
     private var pageViewController: UIPageViewController!
-    private var pages: [UIViewController] = []
     private let doneButton = UIButton(type: .system)
     private let pageControl = UIPageControl()
+    
+    // MARK: - Properties
+    private var pages: [UIViewController] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -36,6 +38,11 @@ final class OnboardingViewController: UIViewController {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
         print("Analytics: \(closeEvent)")
+    }
+    
+    // MARK: - Override Methods
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .darkContent
     }
     
     // MARK: - Private Methods
@@ -126,14 +133,7 @@ final class OnboardingViewController: UIViewController {
     }
 }
 
-// MARK: - Status Bar
-extension OnboardingViewController {
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .darkContent
-    }
-}
-
-// MARK: - UIPageViewControllerDelegate
+// MARK: - UIPageViewControllerDataSource
 extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {

@@ -18,7 +18,7 @@ final class FilterViewController: UIViewController {
     private let currentFilter: TrackersViewModel.FilterType
     weak var delegate: FilterViewControllerDelegate?
 
-    // MARK: - Initialization
+    // MARK: - Lifecycle
     init(currentFilter: TrackersViewModel.FilterType, allFilters: [TrackersViewModel.FilterType]) {
         self.currentFilter = currentFilter
         self.filters = allFilters
@@ -30,12 +30,10 @@ final class FilterViewController: UIViewController {
         return nil
     }
 
-    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
-   
         let openEvent = [
             "event": "open",
             "screen": "Filter"
@@ -46,7 +44,6 @@ final class FilterViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
         let closeEvent = [
             "event": "close",
             "screen": "Filter"
@@ -59,13 +56,11 @@ final class FilterViewController: UIViewController {
     private func setupUI() {
         title = NSLocalizedString("Фильтры", comment: "")
         view.backgroundColor = .ypWhiteDayNight
-
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "FilterCell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.backgroundColor = .clear
         tableView.separatorColor = .ypGray
-
         view.addSubview(tableView)
     }
 
@@ -85,21 +80,16 @@ extension FilterViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "FilterCell", for: indexPath)
         let filter = filters[indexPath.row]
-
         var content = cell.defaultContentConfiguration()
         content.text = filter.title
         cell.contentConfiguration = content
-
         cell.accessoryType = .none
         cell.tintColor = .ypBlue
-
         if currentFilter == filter && filter.shouldShowCheckmark {
             cell.accessoryType = .checkmark
         }
-
         cell.backgroundColor = .ypBackground
         cell.selectionStyle = .default
-
         return cell
     }
 }
@@ -109,7 +99,6 @@ extension FilterViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedFilter = filters[indexPath.row]
-   
         let filterEvent = [
             "event": "click",
             "screen": "Filter",
@@ -117,7 +106,6 @@ extension FilterViewController: UITableViewDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: filterEvent)
         print("Analytics: \(filterEvent)")
-        
         delegate?.filterViewController(self, didSelect: selectedFilter)
     }
     

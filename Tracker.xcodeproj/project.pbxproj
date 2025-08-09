@@ -21,6 +21,9 @@
 		9039A2FE2E46813100B82EC1 /* AppMetricaCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2FD2E46813100B82EC1 /* AppMetricaCrashes */; };
 		9039A3002E46813100B82EC1 /* AppMetricaLibraryAdapter in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2FF2E46813100B82EC1 /* AppMetricaLibraryAdapter */; };
 		9039A3022E46813100B82EC1 /* AppMetricaScreenshot in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A3012E46813100B82EC1 /* AppMetricaScreenshot */; };
+		9039A3042E46A90D00B82EC1 /* StatisticViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */; };
+		9039A3062E46AE0D00B82EC1 /* StatisticsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */; };
+		9039A30A2E46C00B00B82EC1 /* GradientBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */; };
 		903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98A82E1C589D00A130BD /* ColorCell.swift */; };
 		903A98AB2E1C58FE00A130BD /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98AA2E1C58FE00A130BD /* EmojiCell.swift */; };
 		904170DD2E06F50300638E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904170D32E06F50300638E71 /* AppDelegate.swift */; };
@@ -96,6 +99,9 @@
 		9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedDaysCount.swift; sourceTree = "<group>"; };
 		9039A03A2E4634A200B82EC1 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		9039A03C2E4634EA00B82EC1 /* TrackersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewModel.swift; sourceTree = "<group>"; };
+		9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewModel.swift; sourceTree = "<group>"; };
+		9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCardView.swift; sourceTree = "<group>"; };
+		9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBorderView.swift; sourceTree = "<group>"; };
 		903A98A82E1C589D00A130BD /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		903A98AA2E1C58FE00A130BD /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		9041709F2E06E7D500638E71 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -204,6 +210,17 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		9039A30B2E46C09200B82EC1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				9058DECC2E36AEC0000A1365 /* PlaceholderView.swift */,
+				9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */,
+				9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */,
+				904BF4492E11E5680090EFCC /* TrackerCategoryHeaderView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		904170962E06E7D500638E71 = {
 			isa = PBXGroup;
 			children = (
@@ -233,6 +250,7 @@
 				904171312E08856800638E71 /* Structures */,
 				904170EB2E06FAEA00638E71 /* Extensions */,
 				9041717D2E0B285900638E71 /* Cell */,
+				9039A30B2E46C09200B82EC1 /* View */,
 				9058DEC52E36AE29000A1365 /* ViewModels */,
 				904170E42E06F50700638E71 /* ViewControllers */,
 				904170D32E06F50300638E71 /* AppDelegate.swift */,
@@ -256,7 +274,6 @@
 				9041727F2E0D849800638E71 /* AddTrackerViewController.swift */,
 				904172812E0D9BC600638E71 /* ScheduleViewController.swift */,
 				9041734A2E0DCA2400638E71 /* TrackerTypeViewController.swift */,
-				904BF4492E11E5680090EFCC /* TrackerCategoryHeaderView.swift */,
 				9058DEC82E36AE6B000A1365 /* CategoriesViewController.swift */,
 				9058DECE2E36B7F5000A1365 /* CreateCategoryViewController.swift */,
 				9058DED02E3AA9C7000A1365 /* EditCategoryViewController.swift */,
@@ -326,12 +343,12 @@
 			isa = PBXGroup;
 			children = (
 				9058DEC62E36AE3A000A1365 /* CategoriesViewModel.swift */,
-				9058DECC2E36AEC0000A1365 /* PlaceholderView.swift */,
 				9058DEEA2E40EDE1000A1365 /* TrackerFormViewModel.swift */,
 				9058DEEC2E40EE66000A1365 /* AddTrackerViewModel.swift */,
 				9058DEEE2E40EE8E000A1365 /* EditTrackerViewModel.swift */,
 				9058DEF22E412445000A1365 /* ScheduleViewModel.swift */,
 				9039A03C2E4634EA00B82EC1 /* TrackersViewModel.swift */,
+				9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -516,6 +533,7 @@
 				9058DEE12E3E306F000A1365 /* OnboardingViewController.swift in Sources */,
 				9058DE6A2E230076000A1365 /* TrackerConstants.swift in Sources */,
 				9058DEC92E36AE6B000A1365 /* CategoriesViewController.swift in Sources */,
+				9039A3062E46AE0D00B82EC1 /* StatisticsCardView.swift in Sources */,
 				9058DE322E21623A000A1365 /* TrackerModel.xcdatamodeld in Sources */,
 				9058DE6C2E2302C6000A1365 /* CoreDataError.swift in Sources */,
 				9058DEEF2E40EE8E000A1365 /* EditTrackerViewModel.swift in Sources */,
@@ -528,6 +546,7 @@
 				9058DEEB2E40EDE1000A1365 /* TrackerFormViewModel.swift in Sources */,
 				904171332E0885E400638E71 /* Weekday+Tracker.swift in Sources */,
 				904170DE2E06F50300638E71 /* SceneDelegate.swift in Sources */,
+				9039A3042E46A90D00B82EC1 /* StatisticViewModel.swift in Sources */,
 				9058DEF32E412445000A1365 /* ScheduleViewModel.swift in Sources */,
 				9058DE5F2E22CF7D000A1365 /* TrackerCoreData.swift in Sources */,
 				9058DE412E216EB8000A1365 /* CoreDataStack.swift in Sources */,
@@ -535,6 +554,7 @@
 				9058DE5D2E22A8FC000A1365 /* TrackerRecordStore.swift in Sources */,
 				9058DE702E244F34000A1365 /* ViewConstants.swift in Sources */,
 				9039A03B2E4634A200B82EC1 /* FilterViewController.swift in Sources */,
+				9039A30A2E46C00B00B82EC1 /* GradientBorderView.swift in Sources */,
 				9058DE6E2E2406DE000A1365 /* TrackerDataProvider.swift in Sources */,
 				9058DE5B2E22A8CF000A1365 /* TrackerCategoryStore.swift in Sources */,
 				904170EA2E06F73900638E71 /* StatisticsViewController.swift in Sources */,

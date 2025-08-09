@@ -42,6 +42,11 @@ final class CategoriesViewController: UIViewController {
         print("Analytics: \(openEvent)")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.loadCategories()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -51,11 +56,6 @@ final class CategoriesViewController: UIViewController {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
         print("Analytics: \(closeEvent)")
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        viewModel.loadCategories()
     }
     
     // MARK: - Private Methods
@@ -147,7 +147,6 @@ final class CategoriesViewController: UIViewController {
         )
         
         alert.addAction(UIAlertAction(title: NSLocalizedString("Отменить", comment: ""), style: .cancel) { _ in
-
             let cancelEvent = [
                 "event": "click",
                 "screen": "Categories",
@@ -158,7 +157,6 @@ final class CategoriesViewController: UIViewController {
         })
         
         alert.addAction(UIAlertAction(title: NSLocalizedString("Удалить", comment: ""), style: .destructive) { [weak self] _ in
-
             let deleteEvent = [
                 "event": "click",
                 "screen": "Categories",
@@ -195,9 +193,7 @@ final class CategoriesViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    // MARK: - Actions
     @objc private func addCategoryTapped() {
-
         let addEvent = [
             "event": "click",
             "screen": "Categories",
@@ -271,7 +267,6 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             let editAction = UIAction(title: NSLocalizedString("Редактировать", comment: "")) { [weak self] _ in
-
                 let editEvent = [
                     "event": "click",
                     "screen": "Categories",

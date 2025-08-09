@@ -66,7 +66,6 @@ final class TrackerTypeViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
         }
-        
         eventButton.snp.makeConstraints { make in
             make.top.equalTo(habitButton.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(20)

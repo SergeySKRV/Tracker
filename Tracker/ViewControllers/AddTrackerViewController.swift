@@ -21,7 +21,6 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         self.addViewModel = AddTrackerViewModel(type: type, dataProvider: dataProvider)
         self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        
         setupForm()
     }
     
@@ -39,11 +38,9 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     private func setupForm() {
         formVC.delegate = self
         formVC.viewModel = addViewModel
-        
         title = trackerType == .habit ?
             TrackerConstants.Text.newHabitTitle :
             TrackerConstants.Text.newEventTitle
-        
         formVC.saveButton.setTitle(
             TrackerConstants.Text.createButton,
             for: .normal
@@ -58,7 +55,6 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         formVC.didMove(toParent: self)
     }
     
-    // MARK: - TrackerFormDelegate
     func didRequestSave(
         title: String,
         emoji: String,

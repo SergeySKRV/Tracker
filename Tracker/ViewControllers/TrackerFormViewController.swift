@@ -159,7 +159,6 @@ final class TrackerFormViewController: UIViewController {
         titleTextField.inputAssistantItem.leadingBarButtonGroups = []
         titleTextField.inputAssistantItem.trailingBarButtonGroups = []
         titleTextField.autocorrectionType = .no
-     
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let openEvent = [
             "event": "open",
@@ -171,7 +170,6 @@ final class TrackerFormViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-    
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let closeEvent = [
             "event": "close",
@@ -266,7 +264,17 @@ final class TrackerFormViewController: UIViewController {
         }
     }
     
-    // MARK: - Actions
+    func updateSaveButtonState() {
+        saveButton.isEnabled = viewModel.updateSaveButtonState()
+        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
         if text.count > TrackerConstants.maxTitleLength {
@@ -277,7 +285,6 @@ final class TrackerFormViewController: UIViewController {
         }
         viewModel.trackerTitle = textField.text ?? ""
         updateSaveButtonState()
-     
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let textEvent = [
             "event": "click",
@@ -295,7 +302,6 @@ final class TrackerFormViewController: UIViewController {
               !viewModel.trackerTitle.isEmpty,
               let categoryId = viewModel.selectedCategoryId else {
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Заполните все поля", comment: ""))
-     
             let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
             let validationEvent = [
                 "event": "click",
@@ -308,10 +314,8 @@ final class TrackerFormViewController: UIViewController {
             ] as [String : Any]
             AppMetrica.reportEvent(name: "Screen Event", parameters: validationEvent)
             print("Analytics: \(validationEvent)")
-            
             return
         }
-     
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let saveEvent = [
             "event": "click",
@@ -323,7 +327,6 @@ final class TrackerFormViewController: UIViewController {
         ] as [String : Any]
         AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
         print("Analytics: \(saveEvent)")
-        
         delegate?.didRequestSave(
             title: viewModel.trackerTitle,
             emoji: emoji,
@@ -342,20 +345,7 @@ final class TrackerFormViewController: UIViewController {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: cancelEvent)
         print("Analytics: \(cancelEvent)")
-        
         delegate?.didRequestCancel()
-    }
-    
-    // MARK: - Private Helpers
-    func updateSaveButtonState() {
-        saveButton.isEnabled = viewModel.updateSaveButtonState()
-        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
-    }
-    
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
 
@@ -397,7 +387,6 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         var item = ""
         switch indexPath.row {
@@ -408,7 +397,6 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
         default:
             item = "select_option_\(indexPath.row)"
         }
-        
         let selectEvent = [
             "event": "click",
             "screen": screenName,
@@ -416,7 +404,6 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: selectEvent)
         print("Analytics: \(selectEvent)")
-        
         if indexPath.row == 0 {
             let categoriesVC = CategoriesViewController(viewModel: CategoriesViewModel())
             categoriesVC.delegate = self
@@ -492,7 +479,6 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let item = collectionView == emojiCollectionView ? "select_emoji" : "select_color"
-        
         let selectEvent = [
             "event": "click",
             "screen": screenName,
@@ -500,7 +486,6 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: selectEvent)
         print("Analytics: \(selectEvent)")
-        
         if collectionView == emojiCollectionView {
             viewModel.selectedEmoji = TrackerConstants.emojis[indexPath.item]
         } else {
@@ -515,7 +500,6 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
 extension TrackerFormViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let returnEvent = [
             "event": "click",
@@ -524,7 +508,6 @@ extension TrackerFormViewController: UITextFieldDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
         print("Analytics: \(returnEvent)")
-        
         return true
     }
 }
@@ -536,7 +519,6 @@ extension TrackerFormViewController: CategorySelectionDelegate {
         selectedCategoryTitle = category.title
         optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
         updateSaveButtonState()
-
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let categoryEvent = [
             "event": "click",
@@ -554,7 +536,6 @@ extension TrackerFormViewController: ScheduleSelectionDelegate {
     func didSelectSchedule(_ selectedDays: Set<Weekday>) {
         viewModel.selectedDays = selectedDays
         optionsTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
-   
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let scheduleEvent = [
             "event": "click",

@@ -4,7 +4,7 @@ import SnapKit
 // MARK: - TrackerCategoryHeaderView
 final class TrackerCategoryHeaderView: UICollectionReusableView {
     
-    // MARK: - Properties
+    // MARK: - UI Properties
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 19)

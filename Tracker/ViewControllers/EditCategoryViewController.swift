@@ -57,7 +57,6 @@ final class EditCategoryViewController: UIViewController {
         setupActions()
         configureUI()
         setupNavigation()
-
         let openEvent = [
             "event": "open",
             "screen": "EditCategory",
@@ -69,7 +68,6 @@ final class EditCategoryViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-   
         let closeEvent = [
             "event": "close",
             "screen": "EditCategory",
@@ -94,7 +92,6 @@ final class EditCategoryViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(75)
         }
-        
         saveButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
@@ -124,10 +121,8 @@ final class EditCategoryViewController: UIViewController {
         saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
     }
     
-    // MARK: - Actions
     @objc private func textFieldDidChange() {
         updateSaveButtonState()
-   
         let text = textField.text ?? ""
         let textEvent = [
             "event": "click",
@@ -142,9 +137,7 @@ final class EditCategoryViewController: UIViewController {
     
     @objc private func saveButtonTapped() {
         guard let newTitle = textField.text, !newTitle.isEmpty else { return }
-        
         if viewModel.hasCategory(with: newTitle, excludingId: category.id) {
-
             let duplicateEvent = [
                 "event": "click",
                 "screen": "EditCategory",
@@ -153,11 +146,9 @@ final class EditCategoryViewController: UIViewController {
             ]
             AppMetrica.reportEvent(name: "Screen Event", parameters: duplicateEvent)
             print("Analytics: \(duplicateEvent)")
-            
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Категория с таким названием уже существует", comment: ""))
             return
         }
-
         let saveEvent = [
             "event": "click",
             "screen": "EditCategory",
@@ -167,14 +158,12 @@ final class EditCategoryViewController: UIViewController {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
         print("Analytics: \(saveEvent)")
-        
         do {
             try viewModel.updateCategory(category, with: newTitle)
             delegate?.didUpdateCategory()
             dismiss(animated: true)
         } catch {
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Не удалось обновить категорию", comment: ""))
-       
             AppMetrica.reportEvent(name: "Category Update Failed", parameters: [
                 "error": error.localizedDescription,
                 "category_name": newTitle
@@ -182,7 +171,6 @@ final class EditCategoryViewController: UIViewController {
         }
     }
     
-    // MARK: - Private Helpers
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -194,7 +182,6 @@ final class EditCategoryViewController: UIViewController {
 extension EditCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-
         let returnEvent = [
             "event": "click",
             "screen": "EditCategory",
@@ -202,7 +189,6 @@ extension EditCategoryViewController: UITextFieldDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
         print("Analytics: \(returnEvent)")
-        
         return true
     }
 }

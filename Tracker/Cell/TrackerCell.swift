@@ -7,9 +7,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Static Constants
     static let reuseIdentifier = "TrackerCell"
     
-    // MARK: - Properties
-    var onCheckButtonTapped: (() -> Void)?
-    
+    // MARK: - UI Elements
     private let cardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -68,6 +66,9 @@ final class TrackerCell: UICollectionViewCell {
         return imageView
     }()
     
+    // MARK: - Properties
+    var onCheckButtonTapped: (() -> Void)?
+    
     // MARK: - Lifecycle
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -98,6 +99,9 @@ final class TrackerCell: UICollectionViewCell {
         pinImageView.backgroundColor = tracker.color
         pinImageView.isHidden = !tracker.isPinned
     }
+    
+    // MARK: - Override Methods
+    // (Нет специфических override методов кроме init, которые уже обработаны)
     
     // MARK: - Private Methods
     private func setupUI() {
@@ -145,7 +149,7 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
-    func pluralizeDays(count: Int) -> String {
+    private func pluralizeDays(count: Int) -> String {
         return localizedDaysCount(count)
     }
     

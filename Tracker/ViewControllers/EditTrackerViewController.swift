@@ -4,11 +4,11 @@ import AppMetricaCore
 
 // MARK: - EditTrackerViewController
 final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
-    
+
     // MARK: - Properties
     private let editViewModel: EditTrackerViewModel
     private let formVC: TrackerFormViewController
-    
+
     // MARK: - Lifecycle
     init(
         tracker: Tracker,
@@ -22,20 +22,18 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         )
         self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        
         setupForm()
         setupInitialValues()
     }
-    
+
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
         return nil
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildViewController()
-   
         let openEvent = [
             "event": "open",
             "screen": "EditTracker",
@@ -44,10 +42,9 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
         print("Analytics: \(openEvent)")
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
- 
         let closeEvent = [
             "event": "close",
             "screen": "EditTracker",
@@ -56,29 +53,28 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
         print("Analytics: \(closeEvent)")
     }
-    
+
     // MARK: - Private Methods
     private func setupForm() {
         formVC.delegate = self
         formVC.viewModel = editViewModel
-        
         formVC.daysCountLabel = createDaysCountLabel()
         title = NSLocalizedString("Редактирование привычки", comment: "")
         formVC.saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
     }
-    
+
     private func setupInitialValues() {
         formVC.titleTextField.text = editViewModel.trackerTitle
         formVC.selectedCategoryTitle = editViewModel.selectedCategoryTitle
     }
-    
+
     private func addChildViewController() {
         addChild(formVC)
         view.addSubview(formVC.view)
         formVC.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         formVC.didMove(toParent: self)
     }
-    
+
     private func createDaysCountLabel() -> UILabel {
         let label = UILabel()
         label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
@@ -87,7 +83,7 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         label.textAlignment = .center
         return label
     }
-    
+
     // MARK: - TrackerFormDelegate
     func didRequestSave(
         title: String,
@@ -96,7 +92,6 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         schedule: Set<Weekday>,
         categoryId: UUID
     ) {
-       
         let saveEvent = [
             "event": "click",
             "screen": "EditTracker",
@@ -106,7 +101,6 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
         print("Analytics: \(saveEvent)")
-        
         editViewModel.saveTracker(
             title: title,
             emoji: emoji,
@@ -117,7 +111,6 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-           
                     let successEvent = [
                         "event": "click",
                         "screen": "EditTracker",
@@ -126,23 +119,19 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
                     ]
                     AppMetrica.reportEvent(name: "Screen Event", parameters: successEvent)
                     print("Analytics: \(successEvent)")
-                    
                     self?.dismiss(animated: true)
                 case .failure(let error):
-      
                     AppMetrica.reportEvent(name: "Tracker Update Failed", parameters: [
                         "error": error.localizedDescription,
                         "tracker_name": title
                     ])
-                    
                     self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
         }
     }
-    
-    func didRequestCancel() {
 
+    func didRequestCancel() {
         let cancelEvent = [
             "event": "click",
             "screen": "EditTracker",
@@ -150,7 +139,6 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         ]
         AppMetrica.reportEvent(name: "Screen Event", parameters: cancelEvent)
         print("Analytics: \(cancelEvent)")
-        
         dismiss(animated: true)
     }
 }

@@ -106,7 +106,6 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
-    // MARK: - Actions
     @objc private func doneButtonTapped() {
         let doneEvent = [
             "event": "click",

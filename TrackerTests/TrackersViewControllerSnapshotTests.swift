@@ -7,35 +7,35 @@ class TrackersViewControllerSnapshotTests: XCTestCase {
     func testTrackersViewControllerLightMode() {
         let mockVM = MockTrackersViewModel()
         let vc = TrackersViewController(viewModel: mockVM)
-        
-        // Настраиваем тестовые данные
+      
         setupMockData(for: mockVM)
-        
-        // Настраиваем светлую тему
+   
         vc.overrideUserInterfaceStyle = .light
-        
-        // Делаем скриншот для светлой темы
+     
         assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .light)), named: "light_mode")
     }
     
     func testTrackersViewControllerDarkMode() {
         let mockVM = MockTrackersViewModel()
         let vc = TrackersViewController(viewModel: mockVM)
-        
-        // Настраиваем тестовые данные
+       
         setupMockData(for: mockVM)
         
-        // Настраиваем тёмную тему
         vc.overrideUserInterfaceStyle = .dark
         
-        // Делаем скриншот для тёмной темы
         assertSnapshot(of: vc, as: .image(traits: .init(userInterfaceStyle: .dark)), named: "dark_mode")
     }
     
     private func setupMockData(for mockVM: MockTrackersViewModel) {
+        guard let categoryId1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001"),
+              let categoryId2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002") else {
+            XCTFail("Failed to create UUIDs from strings")
+            return
+        }
+        
         mockVM.stubVisibleCategories = [
             TrackerCategory(
-                id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+                id: categoryId1,
                 title: "Здоровье",
                 trackers: [
                     Tracker(
@@ -59,7 +59,7 @@ class TrackersViewControllerSnapshotTests: XCTestCase {
                 ]
             ),
             TrackerCategory(
-                id: UUID(uuidString: "00000000-0000-0000-0000-000000000002")!,
+                id: categoryId2,
                 title: "Работа",
                 trackers: [
                     Tracker(

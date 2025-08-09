@@ -50,8 +50,8 @@ final class TabBarController: UITabBarController {
             image: UIImage(resource: .trackers),
             selectedImage: nil
         )
-        
-        let statisticsViewController = StatisticsViewController()
+        let statisticsViewModel = StatisticsViewModel()
+        let statisticsViewController = StatisticsViewController(viewModel: statisticsViewModel)
         statisticsViewController.tabBarItem = UITabBarItem(
             title: NSLocalizedString("Статистика", comment: ""),
             image: UIImage(resource: .stats),
