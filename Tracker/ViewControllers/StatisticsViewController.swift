@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - StatisticsViewController
 final class StatisticsViewController: UIViewController {
@@ -84,13 +83,8 @@ final class StatisticsViewController: UIViewController {
         setupConstraints()
         bindViewModel()
         viewModel.loadData()
-        
-        let openEvent = [
-            "event": "open",
-            "screen": "Statistics"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+    
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .statistics))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -100,13 +94,8 @@ final class StatisticsViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        let closeEvent = [
-            "event": "close",
-            "screen": "Statistics"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+     
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .statistics))
     }
     
     // MARK: - Private Methods

@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - TrackerFormDelegate
 protocol TrackerFormDelegate: AnyObject {
@@ -159,24 +158,30 @@ final class TrackerFormViewController: UIViewController {
         titleTextField.inputAssistantItem.leadingBarButtonGroups = []
         titleTextField.inputAssistantItem.trailingBarButtonGroups = []
         titleTextField.autocorrectionType = .no
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let openEvent = [
-            "event": "open",
-            "screen": screenName
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .open,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let closeEvent = [
-            "event": "close",
-            "screen": screenName
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .close,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
     }
     
     // MARK: - Private Methods
@@ -285,15 +290,17 @@ final class TrackerFormViewController: UIViewController {
         }
         viewModel.trackerTitle = textField.text ?? ""
         updateSaveButtonState()
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let textEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "title_text_changed",
-            "text_length": text.count
-        ] as [String : Any]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: textEvent)
-        print("Analytics: \(textEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .titleTextChanged,
+            additionalParameters: [
+                "screen_name": screenName,
+                "text_length": text.count
+            ]
+        ))
     }
     
     @objc private func didTapSave() {
@@ -302,31 +309,36 @@ final class TrackerFormViewController: UIViewController {
               !viewModel.trackerTitle.isEmpty,
               let categoryId = viewModel.selectedCategoryId else {
             showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Заполните все поля", comment: ""))
+            
             let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-            let validationEvent = [
-                "event": "click",
-                "screen": screenName,
-                "item": "validation_error",
-                "has_emoji": viewModel.selectedEmoji != nil,
-                "has_color": viewModel.selectedColor != nil,
-                "has_title": !viewModel.trackerTitle.isEmpty,
-                "has_category": viewModel.selectedCategoryId != nil
-            ] as [String : Any]
-            AppMetrica.reportEvent(name: "Screen Event", parameters: validationEvent)
-            print("Analytics: \(validationEvent)")
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .createTracker,
+                item: .validationError,
+                additionalParameters: [
+                    "screen_name": screenName,
+                    "has_emoji": viewModel.selectedEmoji != nil,
+                    "has_color": viewModel.selectedColor != nil,
+                    "has_title": !viewModel.trackerTitle.isEmpty,
+                    "has_category": viewModel.selectedCategoryId != nil
+                ]
+            ))
             return
         }
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let saveEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "save_button",
-            "tracker_title": viewModel.trackerTitle,
-            "emoji": emoji,
-            "has_schedule": !viewModel.selectedDays.isEmpty
-        ] as [String : Any]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
-        print("Analytics: \(saveEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .saveButton,
+            additionalParameters: [
+                "screen_name": screenName,
+                "tracker_title": viewModel.trackerTitle,
+                "emoji": emoji,
+                "has_schedule": !viewModel.selectedDays.isEmpty
+            ]
+        ))
+        
         delegate?.didRequestSave(
             title: viewModel.trackerTitle,
             emoji: emoji,
@@ -338,13 +350,14 @@ final class TrackerFormViewController: UIViewController {
     
     @objc private func didTapCancel() {
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let cancelEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "cancel_button"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: cancelEvent)
-        print("Analytics: \(cancelEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .cancelButton,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
         delegate?.didRequestCancel()
     }
 }
@@ -387,6 +400,7 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         var item = ""
         switch indexPath.row {
@@ -397,13 +411,16 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
         default:
             item = "select_option_\(indexPath.row)"
         }
-        let selectEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": item
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: selectEvent)
-        print("Analytics: \(selectEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName,
+                "item": item
+            ]
+        ))
+        
         if indexPath.row == 0 {
             let categoriesVC = CategoriesViewController(viewModel: CategoriesViewModel())
             categoriesVC.delegate = self
@@ -477,15 +494,19 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
         let item = collectionView == emojiCollectionView ? "select_emoji" : "select_color"
-        let selectEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": item
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: selectEvent)
-        print("Analytics: \(selectEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName,
+                "item": item
+            ]
+        ))
+        
         if collectionView == emojiCollectionView {
             viewModel.selectedEmoji = TrackerConstants.emojis[indexPath.item]
         } else {
@@ -500,14 +521,16 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
 extension TrackerFormViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let returnEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "return_key"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
-        print("Analytics: \(returnEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .returnKey,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
         return true
     }
 }
@@ -519,15 +542,17 @@ extension TrackerFormViewController: CategorySelectionDelegate {
         selectedCategoryTitle = category.title
         optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
         updateSaveButtonState()
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let categoryEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "category_selected",
-            "category_name": category.title
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: categoryEvent)
-        print("Analytics: \(categoryEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .categorySelected,
+            additionalParameters: [
+                "screen_name": screenName,
+                "category_name": category.title
+            ]
+        ))
     }
 }
 
@@ -536,14 +561,16 @@ extension TrackerFormViewController: ScheduleSelectionDelegate {
     func didSelectSchedule(_ selectedDays: Set<Weekday>) {
         viewModel.selectedDays = selectedDays
         optionsTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        
         let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
-        let scheduleEvent = [
-            "event": "click",
-            "screen": screenName,
-            "item": "schedule_selected",
-            "days_count": selectedDays.count
-        ] as [String : Any]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: scheduleEvent)
-        print("Analytics: \(scheduleEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .scheduleSelected,
+            additionalParameters: [
+                "screen_name": screenName,
+                "days_count": selectedDays.count
+            ]
+        ))
     }
 }

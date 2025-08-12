@@ -1,5 +1,4 @@
 import UIKit
-import AppMetricaCore
 
 // MARK: - TabBarController
 final class TabBarController: UITabBarController {
@@ -11,23 +10,13 @@ final class TabBarController: UITabBarController {
         configureViewControllers()
         addTopBorder()
 
-        let openEvent = [
-            "event": "open",
-            "screen": "TabBar"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .tabBar))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        let closeEvent = [
-            "event": "close",
-            "screen": "TabBar"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .tabBar))
     }
     
     // MARK: - Private Methods
@@ -74,16 +63,9 @@ final class TabBarController: UITabBarController {
 // MARK: - UITabBarControllerDelegate
 extension TabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-
         let selectedItem = tabBarController.selectedIndex
-        let tabName = selectedItem == 0 ? "trackers" : "statistics"
+        let item: AnalyticsItem = selectedItem == 0 ? .trackersTab : .statisticsTab
         
-        let tabEvent = [
-            "event": "click",
-            "screen": "TabBar",
-            "item": tabName
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: tabEvent)
-        print("Analytics: \(tabEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .tabBar, item: item))
     }
 }

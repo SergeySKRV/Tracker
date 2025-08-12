@@ -6,6 +6,11 @@ enum TrackerType {
     case event
 }
 
+// MARK: - Analytics Constants
+enum AnalyticsConstants {
+    static let appMetricaAPIKey = "147a279e-5dcc-4356-a7bb-06b778f39284"
+}
+
 // MARK: - Tracker Constants
 enum TrackerConstants {
     

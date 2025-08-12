@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - CreateCategoryViewController
 final class CreateCategoryViewController: UIViewController {
@@ -48,22 +47,14 @@ final class CreateCategoryViewController: UIViewController {
         setupUI()
         setupConstraints()
         setupActions()
-        let openEvent = [
-            "event": "open",
-            "screen": "CreateCategory"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .createCategory))
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let closeEvent = [
-            "event": "close",
-            "screen": "CreateCategory"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .createCategory))
     }
 
     // MARK: - Private Methods
@@ -98,27 +89,29 @@ final class CreateCategoryViewController: UIViewController {
         createButton.isEnabled = !text.isEmpty
         createButton.backgroundColor = !text.isEmpty ? .ypBlackDayNight : .ypGray
         if !text.isEmpty {
-            let textEvent = [
-                "event": "click",
-                "screen": "CreateCategory",
-                "item": "text_changed",
-                "text_length": text.count
-            ] as [String : Any]
-            AppMetrica.reportEvent(name: "Screen Event", parameters: textEvent)
-            print("Analytics: \(textEvent)")
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .createCategory,
+                item: .textChanged,
+                additionalParameters: [
+                    "text_length": text.count
+                ]
+            ))
         }
     }
 
     @objc private func createButtonTapped() {
         guard let title = textField.text, !title.isEmpty else { return }
-        let createEvent = [
-            "event": "click",
-            "screen": "CreateCategory",
-            "item": "create_category",
-            "category_name": title
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: createEvent)
-        print("Analytics: \(createEvent)")
+      
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createCategory,
+            item: .createCategory,
+            additionalParameters: [
+                "category_name": title
+            ]
+        ))
+        
         viewModel.addCategory(title: title)
         onCategoryCreated?()
         NotificationCenter.default.post(
@@ -133,13 +126,9 @@ final class CreateCategoryViewController: UIViewController {
 extension CreateCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
-        let returnEvent = [
-            "event": "click",
-            "screen": "CreateCategory",
-            "item": "return_key"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: returnEvent)
-        print("Analytics: \(returnEvent)")
+      
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .createCategory, item: .returnKey))
+        
         return true
     }
 }

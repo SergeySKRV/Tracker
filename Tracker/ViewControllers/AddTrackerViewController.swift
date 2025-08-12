@@ -32,6 +32,14 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildViewController()
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .createTracker, item: nil))
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .createTracker, item: nil))
     }
     
     // MARK: - Private Methods
@@ -72,6 +80,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .createTracker, item: .saveSuccess))
                     self?.delegate?.addTrackerViewControllerDidCreateTracker(self!)
                     self?.dismiss(animated: true)
                 case .failure(let error):
@@ -82,6 +91,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     }
     
     func didRequestCancel() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .createTracker, item: .cancel))
         dismiss(animated: true)
     }
 }

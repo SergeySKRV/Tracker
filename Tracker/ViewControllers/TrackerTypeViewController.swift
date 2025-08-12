@@ -50,6 +50,14 @@ final class TrackerTypeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+    
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .trackerType))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+ 
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .trackerType))
     }
     
     // MARK: - Private Methods
@@ -75,12 +83,14 @@ final class TrackerTypeViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapHabitButton() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .trackerType, item: .createHabit))
         let vc = AddTrackerViewController(type: .habit, dataProvider: dataProvider)
         vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didTapEventButton() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .trackerType, item: .createEvent))
         let vc = AddTrackerViewController(type: .event, dataProvider: dataProvider)
         vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)

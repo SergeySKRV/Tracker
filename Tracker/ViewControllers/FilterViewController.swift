@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - Filter Selection Delegate
 protocol FilterViewControllerDelegate: AnyObject {
@@ -34,22 +33,14 @@ final class FilterViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
-        let openEvent = [
-            "event": "open",
-            "screen": "Filter"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .filter))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let closeEvent = [
-            "event": "close",
-            "screen": "Filter"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .filter))
     }
 
     // MARK: - Private Methods
@@ -99,13 +90,9 @@ extension FilterViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let selectedFilter = filters[indexPath.row]
-        let filterEvent = [
-            "event": "click",
-            "screen": "Filter",
-            "item": "filter_selected"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: filterEvent)
-        print("Analytics: \(filterEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .filter, item: .applyFilter))
+        
         delegate?.filterViewController(self, didSelect: selectedFilter)
     }
     

@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - ScheduleSelectionDelegate
 protocol ScheduleSelectionDelegate: AnyObject {
@@ -45,24 +44,14 @@ final class ScheduleViewController: UIViewController {
         setupConstraints()
         setupNavigation()
         bindViewModel()
-        
-        let openEvent = [
-            "event": "open",
-            "screen": "Schedule"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+      
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .schedule))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        let closeEvent = [
-            "event": "close",
-            "screen": "Schedule"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+       
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .schedule))
     }
     
     // MARK: - Private Methods
@@ -107,13 +96,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     @objc private func doneButtonTapped() {
-        let doneEvent = [
-            "event": "click",
-            "screen": "Schedule",
-            "item": "done"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: doneEvent)
-        print("Analytics: \(doneEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .schedule, item: .done))
         
         delegate?.didSelectSchedule(viewModel.selectedDays)
         navigationController?.popViewController(animated: true)
@@ -155,14 +138,14 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
             viewModel.toggleDay(at: indexPath.row)
             
             let day = viewModel.day(at: indexPath.row)
-            let dayEvent = [
-                "event": "click",
-                "screen": "Schedule",
-                "item": "day_selected",
-                "day": day?.fullName ?? "Unknown"
-            ]
-            AppMetrica.reportEvent(name: "Screen Event", parameters: dayEvent)
-            print("Analytics: \(dayEvent)")
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .schedule,
+                item: .daySelected,
+                additionalParameters: [
+                    "day": day?.fullName ?? "Unknown"
+                ]
+            ))
         }
     }
     
@@ -178,14 +161,14 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         viewModel.toggleDay(at: sender.tag)
       
         let day = viewModel.day(at: sender.tag)
-        let switchEvent = [
-            "event": "click",
-            "screen": "Schedule",
-            "item": "switch_changed",
-            "day": day?.fullName ?? "Unknown",
-            "is_on": sender.isOn
-        ] as [String : Any]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: switchEvent)
-        print("Analytics: \(switchEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .schedule,
+            item: .switchChanged,
+            additionalParameters: [
+                "day": day?.fullName ?? "Unknown",
+                "is_on": sender.isOn
+            ]
+        ))
     }
 }

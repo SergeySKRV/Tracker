@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - EditTrackerViewController
 final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
@@ -34,24 +33,28 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildViewController()
-        let openEvent = [
-            "event": "open",
-            "screen": "EditTracker",
-            "tracker_name": editViewModel.trackerTitle
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .open,
+            screen: .editTracker,
+            item: nil,
+            additionalParameters: [
+                "tracker_name": editViewModel.trackerTitle
+            ]
+        ))
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        let closeEvent = [
-            "event": "close",
-            "screen": "EditTracker",
-            "tracker_name": editViewModel.trackerTitle
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .close,
+            screen: .editTracker,
+            item: nil,
+            additionalParameters: [
+                "tracker_name": editViewModel.trackerTitle
+            ]
+        ))
     }
 
     // MARK: - Private Methods
@@ -92,15 +95,16 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         schedule: Set<Weekday>,
         categoryId: UUID
     ) {
-        let saveEvent = [
-            "event": "click",
-            "screen": "EditTracker",
-            "item": "save_tracker",
-            "tracker_name": title,
-            "emoji": emoji
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: saveEvent)
-        print("Analytics: \(saveEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .editTracker,
+            item: .saveTracker,
+            additionalParameters: [
+                "tracker_name": title,
+                "emoji": emoji
+            ]
+        ))
+        
         editViewModel.saveTracker(
             title: title,
             emoji: emoji,
@@ -111,20 +115,25 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    let successEvent = [
-                        "event": "click",
-                        "screen": "EditTracker",
-                        "item": "save_success",
-                        "tracker_name": title
-                    ]
-                    AppMetrica.reportEvent(name: "Screen Event", parameters: successEvent)
-                    print("Analytics: \(successEvent)")
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                        type: .click,
+                        screen: .editTracker,
+                        item: .saveSuccess,
+                        additionalParameters: [
+                            "tracker_name": title
+                        ]
+                    ))
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    AppMetrica.reportEvent(name: "Tracker Update Failed", parameters: [
-                        "error": error.localizedDescription,
-                        "tracker_name": title
-                    ])
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                        type: .click,
+                        screen: .editTracker,
+                        item: .saveTracker,
+                        additionalParameters: [
+                            "error": error.localizedDescription,
+                            "tracker_name": title
+                        ]
+                    ))
                     self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
@@ -132,13 +141,7 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
     }
 
     func didRequestCancel() {
-        let cancelEvent = [
-            "event": "click",
-            "screen": "EditTracker",
-            "item": "cancel_edit"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: cancelEvent)
-        print("Analytics: \(cancelEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .editTracker, item: .cancelEdit))
         dismiss(animated: true)
     }
 }

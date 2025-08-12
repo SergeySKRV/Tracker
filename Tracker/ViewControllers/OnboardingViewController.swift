@@ -1,6 +1,5 @@
 import UIKit
 import SnapKit
-import AppMetricaCore
 
 // MARK: - OnboardingViewController
 final class OnboardingViewController: UIViewController {
@@ -21,23 +20,13 @@ final class OnboardingViewController: UIViewController {
         setupUI()
         setupConstraints()
 
-        let openEvent = [
-            "event": "open",
-            "screen": "Onboarding"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: openEvent)
-        print("Analytics: \(openEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .onboarding))
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        let closeEvent = [
-            "event": "close",
-            "screen": "Onboarding"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: closeEvent)
-        print("Analytics: \(closeEvent)")
+    
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .onboarding))
     }
     
     // MARK: - Override Methods
@@ -118,13 +107,7 @@ final class OnboardingViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func doneButtonTapped() {
-        let doneEvent = [
-            "event": "click",
-            "screen": "Onboarding",
-            "item": "done"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: doneEvent)
-        print("Analytics: \(doneEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .done))
         
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         let tabBarController = TabBarController()
@@ -140,13 +123,7 @@ extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewCo
         guard let index = pages.firstIndex(of: viewController) else { return nil }
         let previousIndex = index == 0 ? pages.count - 1 : index - 1
    
-        let prevEvent = [
-            "event": "click",
-            "screen": "Onboarding",
-            "item": "page_previous"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: prevEvent)
-        print("Analytics: \(prevEvent)")
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pagePrevious))
         
         return pages[previousIndex]
     }
@@ -154,14 +131,7 @@ extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewCo
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController) else { return nil }
         let nextIndex = index == pages.count - 1 ? 0 : index + 1
-    
-        let nextEvent = [
-            "event": "click",
-            "screen": "Onboarding",
-            "item": "page_next"
-        ]
-        AppMetrica.reportEvent(name: "Screen Event", parameters: nextEvent)
-        print("Analytics: \(nextEvent)")
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pageNext))
         
         return pages[nextIndex]
     }
@@ -177,14 +147,7 @@ extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewCo
             pageControl.currentPage = index
             
             if completed {
-      
-                let pageEvent = [
-                    "event": "click",
-                    "screen": "Onboarding",
-                    "item": "page_changed"
-                ]
-                AppMetrica.reportEvent(name: "Screen Event", parameters: pageEvent)
-                print("Analytics: \(pageEvent)")
+                AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pageChanged))
             }
         }
     }

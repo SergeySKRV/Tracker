@@ -24,6 +24,7 @@
 		9039A3042E46A90D00B82EC1 /* StatisticViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */; };
 		9039A3062E46AE0D00B82EC1 /* StatisticsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */; };
 		9039A30A2E46C00B00B82EC1 /* GradientBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */; };
+		9039A3302E4BBBAB00B82EC1 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */; };
 		903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98A82E1C589D00A130BD /* ColorCell.swift */; };
 		903A98AB2E1C58FE00A130BD /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98AA2E1C58FE00A130BD /* EmojiCell.swift */; };
 		904170DD2E06F50300638E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904170D32E06F50300638E71 /* AppDelegate.swift */; };
@@ -102,6 +103,7 @@
 		9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewModel.swift; sourceTree = "<group>"; };
 		9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCardView.swift; sourceTree = "<group>"; };
 		9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBorderView.swift; sourceTree = "<group>"; };
+		9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		903A98A82E1C589D00A130BD /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		903A98AA2E1C58FE00A130BD /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		9041709F2E06E7D500638E71 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -221,6 +223,14 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		9039A32F2E4BBBAB00B82EC1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		904170962E06E7D500638E71 = {
 			isa = PBXGroup;
 			children = (
@@ -244,6 +254,7 @@
 		904170DC2E06F50300638E71 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				9039A32F2E4BBBAB00B82EC1 /* Services */,
 				90399FF42E44E2DF00B82EC1 /* Resources */,
 				9058DE682E230065000A1365 /* Enum */,
 				9058DE3F2E216EA5000A1365 /* CoreData */,
@@ -538,6 +549,7 @@
 				9058DE6C2E2302C6000A1365 /* CoreDataError.swift in Sources */,
 				9058DEEF2E40EE8E000A1365 /* EditTrackerViewModel.swift in Sources */,
 				9058DE612E22CFA7000A1365 /* UIColor+Hex.swift in Sources */,
+				9039A3302E4BBBAB00B82EC1 /* AnalyticsService.swift in Sources */,
 				903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */,
 				9039A0042E451B8B00B82EC1 /* LocalizedDaysCount.swift in Sources */,
 				904171372E08869700638E71 /* TrackerRecord.swift in Sources */,
