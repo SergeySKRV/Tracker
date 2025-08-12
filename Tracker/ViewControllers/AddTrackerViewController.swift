@@ -1,6 +1,11 @@
 import UIKit
 import SnapKit
 
+// MARK: - AddTrackerViewControllerDelegate
+protocol AddTrackerViewControllerDelegate: AnyObject {
+    func addTrackerViewControllerDidCreateTracker(_ controller: AddTrackerViewController)
+}
+
 // MARK: - AddTrackerViewController
 final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     
@@ -8,6 +13,7 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     private let addViewModel: AddTrackerViewModel
     private let formVC: TrackerFormViewController
     private let trackerType: TrackerType
+    weak var delegate: AddTrackerViewControllerDelegate?
     
     // MARK: - Lifecycle
     init(type: TrackerType, dataProvider: TrackerDataProviderProtocol = TrackerDataProvider.shared) {
@@ -15,7 +21,6 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         self.addViewModel = AddTrackerViewModel(type: type, dataProvider: dataProvider)
         self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        
         setupForm()
     }
     
@@ -27,17 +32,23 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildViewController()
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .createTracker, item: nil))
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .createTracker, item: nil))
     }
     
     // MARK: - Private Methods
     private func setupForm() {
         formVC.delegate = self
         formVC.viewModel = addViewModel
-        
         title = trackerType == .habit ?
             TrackerConstants.Text.newHabitTitle :
             TrackerConstants.Text.newEventTitle
-        
         formVC.saveButton.setTitle(
             TrackerConstants.Text.createButton,
             for: .normal
@@ -52,7 +63,6 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
         formVC.didMove(toParent: self)
     }
     
-    // MARK: - TrackerFormDelegate
     func didRequestSave(
         title: String,
         emoji: String,
@@ -70,15 +80,18 @@ final class AddTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .createTracker, item: .saveSuccess))
+                    self?.delegate?.addTrackerViewControllerDidCreateTracker(self!)
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
         }
     }
     
     func didRequestCancel() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .createTracker, item: .cancel))
         dismiss(animated: true)
     }
 }

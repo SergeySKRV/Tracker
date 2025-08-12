@@ -42,7 +42,7 @@ final class TrackerFormViewController: UIViewController {
         let field = UITextField()
         field.placeholder = TrackerConstants.Text.trackerNamePlaceholder
         field.font = UIFont.systemFont(ofSize: 17)
-        field.backgroundColor = .ypBackgroundDay
+        field.backgroundColor = .ypBackground
         field.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         field.layer.masksToBounds = true
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
@@ -77,7 +77,7 @@ final class TrackerFormViewController: UIViewController {
         table.isScrollEnabled = false
         table.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         table.layer.masksToBounds = true
-        table.backgroundColor = .ypBackgroundDay
+        table.backgroundColor = .ypBackground
         table.separatorColor = .ypGray
         return table
     }()
@@ -86,7 +86,7 @@ final class TrackerFormViewController: UIViewController {
         let label = UILabel()
         label.text = TrackerConstants.Text.emojiTitle
         label.font = UIFont.boldSystemFont(ofSize: 19)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
@@ -104,7 +104,7 @@ final class TrackerFormViewController: UIViewController {
         let label = UILabel()
         label.text = TrackerConstants.Text.colorTitle
         label.font = UIFont.boldSystemFont(ofSize: 19)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
@@ -140,7 +140,7 @@ final class TrackerFormViewController: UIViewController {
     lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle(TrackerConstants.Text.createButton, for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = TrackerConstants.Layout.cornerRadius
         button.isEnabled = false
@@ -158,11 +158,35 @@ final class TrackerFormViewController: UIViewController {
         titleTextField.inputAssistantItem.leadingBarButtonGroups = []
         titleTextField.inputAssistantItem.trailingBarButtonGroups = []
         titleTextField.autocorrectionType = .no
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .open,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .close,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
     }
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         if let daysCountLabel = daysCountLabel {
             contentView.addSubview(daysCountLabel)
         }
@@ -245,7 +269,17 @@ final class TrackerFormViewController: UIViewController {
         }
     }
     
-    // MARK: - Actions
+    func updateSaveButtonState() {
+        saveButton.isEnabled = viewModel.updateSaveButtonState()
+        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
+    }
+    
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
     @objc private func textFieldDidChange(_ textField: UITextField) {
         guard let text = textField.text else { return }
         if text.count > TrackerConstants.maxTitleLength {
@@ -256,6 +290,17 @@ final class TrackerFormViewController: UIViewController {
         }
         viewModel.trackerTitle = textField.text ?? ""
         updateSaveButtonState()
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .titleTextChanged,
+            additionalParameters: [
+                "screen_name": screenName,
+                "text_length": text.count
+            ]
+        ))
     }
     
     @objc private func didTapSave() {
@@ -263,9 +308,37 @@ final class TrackerFormViewController: UIViewController {
               let color = viewModel.selectedColor,
               !viewModel.trackerTitle.isEmpty,
               let categoryId = viewModel.selectedCategoryId else {
-            showAlert(title: "Ошибка", message: "Заполните все поля")
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Заполните все поля", comment: ""))
+            
+            let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .createTracker,
+                item: .validationError,
+                additionalParameters: [
+                    "screen_name": screenName,
+                    "has_emoji": viewModel.selectedEmoji != nil,
+                    "has_color": viewModel.selectedColor != nil,
+                    "has_title": !viewModel.trackerTitle.isEmpty,
+                    "has_category": viewModel.selectedCategoryId != nil
+                ]
+            ))
             return
         }
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .saveButton,
+            additionalParameters: [
+                "screen_name": screenName,
+                "tracker_title": viewModel.trackerTitle,
+                "emoji": emoji,
+                "has_schedule": !viewModel.selectedDays.isEmpty
+            ]
+        ))
+        
         delegate?.didRequestSave(
             title: viewModel.trackerTitle,
             emoji: emoji,
@@ -276,19 +349,16 @@ final class TrackerFormViewController: UIViewController {
     }
     
     @objc private func didTapCancel() {
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .cancelButton,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
         delegate?.didRequestCancel()
-    }
-    
-    // MARK: - Private Helpers
-    func updateSaveButtonState() {
-        saveButton.isEnabled = viewModel.updateSaveButtonState()
-        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDay : .ypGray
-    }
-    
-    func showAlert(title: String, message: String) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        present(alert, animated: true)
     }
 }
 
@@ -301,14 +371,14 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = viewModel.options[indexPath.row]
-        cell.textLabel?.textColor = .ypBlackDay
+        cell.textLabel?.textColor = .ypBlackDayNight
         cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.detailTextLabel?.textColor = .ypGray
         if indexPath.row == 0 {
-            cell.detailTextLabel?.text = selectedCategoryTitle ?? "Не выбрана"
+            cell.detailTextLabel?.text = selectedCategoryTitle ?? NSLocalizedString("Не выбрана", comment: "")
         } else if indexPath.row == 1 && !viewModel.selectedDays.isEmpty {
             let sortedDays = viewModel.selectedDays.sorted { $0.rawValue < $1.rawValue }
             cell.detailTextLabel?.text = sortedDays.map { $0.shortName }.joined(separator: ", ")
@@ -330,6 +400,27 @@ extension TrackerFormViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        var item = ""
+        switch indexPath.row {
+        case 0:
+            item = "select_category"
+        case 1:
+            item = "select_schedule"
+        default:
+            item = "select_option_\(indexPath.row)"
+        }
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName,
+                "item": item
+            ]
+        ))
+        
         if indexPath.row == 0 {
             let categoriesVC = CategoriesViewController(viewModel: CategoriesViewModel())
             categoriesVC.delegate = self
@@ -403,6 +494,19 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        let item = collectionView == emojiCollectionView ? "select_emoji" : "select_color"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: nil,
+            additionalParameters: [
+                "screen_name": screenName,
+                "item": item
+            ]
+        ))
+        
         if collectionView == emojiCollectionView {
             viewModel.selectedEmoji = TrackerConstants.emojis[indexPath.item]
         } else {
@@ -417,6 +521,16 @@ extension TrackerFormViewController: UICollectionViewDataSource, UICollectionVie
 extension TrackerFormViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .returnKey,
+            additionalParameters: [
+                "screen_name": screenName
+            ]
+        ))
         return true
     }
 }
@@ -428,6 +542,17 @@ extension TrackerFormViewController: CategorySelectionDelegate {
         selectedCategoryTitle = category.title
         optionsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
         updateSaveButtonState()
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .categorySelected,
+            additionalParameters: [
+                "screen_name": screenName,
+                "category_name": category.title
+            ]
+        ))
     }
 }
 
@@ -436,5 +561,16 @@ extension TrackerFormViewController: ScheduleSelectionDelegate {
     func didSelectSchedule(_ selectedDays: Set<Weekday>) {
         viewModel.selectedDays = selectedDays
         optionsTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        
+        let screenName = daysCountLabel != nil ? "EditTrackerForm" : "CreateTrackerForm"
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .createTracker,
+            item: .scheduleSelected,
+            additionalParameters: [
+                "screen_name": screenName,
+                "days_count": selectedDays.count
+            ]
+        ))
     }
 }

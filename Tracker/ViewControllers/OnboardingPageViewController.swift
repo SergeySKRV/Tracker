@@ -28,14 +28,14 @@ final class OnboardingPageViewController: UIViewController {
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         view.addSubview(imageView)
         
         titleLabel.font = UIFont.boldSystemFont(ofSize: 32)
-        titleLabel.textColor = .ypBlackDay
+        titleLabel.textColor = .ypBlackDayNight
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)

@@ -32,6 +32,8 @@ final class CategoriesViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupBindings()
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .categories))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,10 +41,16 @@ final class CategoriesViewController: UIViewController {
         viewModel.loadCategories()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .categories))
+    }
+    
     // MARK: - Private Methods
     private func setupUI() {
-        title = "Категория"
-        view.backgroundColor = .ypWhiteDay
+        title = NSLocalizedString("Категория", comment: "")
+        view.backgroundColor = .ypWhiteDayNight
         
         tableView.register(CategoryCell.self, forCellReuseIdentifier: CategoryCell.identifier)
         tableView.dataSource = self
@@ -56,13 +64,13 @@ final class CategoriesViewController: UIViewController {
         
         placeholderView.configure(
             image: UIImage(named: "placeholder"),
-            text: "Привычки и события можно\nобъединить по смыслу"
+            text: NSLocalizedString("Привычки и события можно\nобъединить по смыслу", comment: "")
         )
         view.addSubview(placeholderView)
         
-        addButton.setTitle("Добавить категорию", for: .normal)
-        addButton.setTitleColor(.ypWhiteDay, for: .normal)
-        addButton.backgroundColor = .ypBlackDay
+        addButton.setTitle(NSLocalizedString("Добавить категорию", comment: ""), for: .normal)
+        addButton.setTitleColor(.ypWhiteDayNight, for: .normal)
+        addButton.backgroundColor = .ypBlackDayNight
         addButton.layer.cornerRadius = 16
         addButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         addButton.addTarget(self, action: #selector(addCategoryTapped), for: .touchUpInside)
@@ -112,8 +120,8 @@ final class CategoriesViewController: UIViewController {
         
         if !category.trackers.isEmpty {
             let alert = UIAlertController(
-                title: "Невозможно удалить",
-                message: "Категория содержит трекеры. Удалите их сначала.",
+                title: NSLocalizedString("Невозможно удалить", comment: ""),
+                message: NSLocalizedString("Категория содержит трекеры. Удалите их сначала.", comment: ""),
                 preferredStyle: .actionSheet
             )
             alert.addAction(UIAlertAction(title: "ОК", style: .default))
@@ -122,24 +130,46 @@ final class CategoriesViewController: UIViewController {
         }
         
         let alert = UIAlertController(
-            title: "Эта категория точно не нужна?",
+            title: NSLocalizedString("Эта категория точно не нужна?", comment: ""),
             message: nil,
             preferredStyle: .actionSheet
         )
         
-        alert.addAction(UIAlertAction(title: "Отменить", style: .cancel))
-        alert.addAction(UIAlertAction(title: "Удалить", style: .destructive) { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Отменить", comment: ""), style: .cancel) { _ in
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .categories, item: .deleteCancel))
+        })
+        
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Удалить", comment: ""), style: .destructive) { [weak self] _ in
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .categories,
+                item: .deleteCategory,
+                additionalParameters: [
+                    "category_name": category.title
+                ]
+            ))
+            
             do {
                 try self?.viewModel.deleteCategory(category)
                 self?.updateUI()
             } catch {
                 let errorAlert = UIAlertController(
-                    title: "Ошибка",
-                    message: "Не удалось удалить категорию: \(error.localizedDescription)",
+                    title: NSLocalizedString("Ошибка", comment: ""),
+                    message: NSLocalizedString("Не удалось удалить категорию: \(error.localizedDescription)", comment: ""),
                     preferredStyle: .alert
                 )
                 errorAlert.addAction(UIAlertAction(title: "OK", style: .default))
                 self?.present(errorAlert, animated: true)
+        
+                AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                    type: .click,
+                    screen: .categories,
+                    item: .deleteCategory,
+                    additionalParameters: [
+                        "error": error.localizedDescription,
+                        "category_name": category.title
+                    ]
+                ))
             }
         })
         
@@ -151,11 +181,14 @@ final class CategoriesViewController: UIViewController {
         present(alert, animated: true)
     }
     
-    // MARK: - Actions
     @objc private func addCategoryTapped() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .categories, item: .addCategory))
+        
         let createCategoryVC = CreateCategoryViewController(viewModel: viewModel)
         createCategoryVC.onCategoryCreated = { [weak self] in
             self?.viewModel.loadCategories()
+
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .categories, item: .categoryCreated))
         }
         let navVC = UINavigationController(rootViewController: createCategoryVC)
         present(navVC, animated: true)
@@ -192,6 +225,16 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         viewModel.selectCategory(selectedCategory)
         tableView.reloadData()
         delegate?.didSelectCategory(selectedCategory)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .categories,
+            item: .selectCategory,
+            additionalParameters: [
+                "category_name": selectedCategory.title
+            ]
+        ))
+        
         navigationController?.popViewController(animated: true)
     }
     
@@ -199,11 +242,21 @@ extension CategoriesViewController: UITableViewDataSource, UITableViewDelegate {
         let category = viewModel.category(at: indexPath.row)
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
-            let editAction = UIAction(title: "Редактировать") { [weak self] _ in
+            let editAction = UIAction(title: NSLocalizedString("Редактировать", comment: "")) { [weak self] _ in
+
+                AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                    type: .click,
+                    screen: .categories,
+                    item: .editCategory,
+                    additionalParameters: [
+                        "category_name": category.title
+                    ]
+                ))
+                
                 self?.presentEditCategoryViewController(for: category, at: indexPath)
             }
             
-            let deleteAction = UIAction(title: "Удалить", attributes: .destructive) { [weak self] _ in
+            let deleteAction = UIAction(title: NSLocalizedString("Удалить", comment: ""), attributes: .destructive) { [weak self] _ in
                 self?.deleteCategory(at: indexPath)
             }
             
@@ -218,5 +271,7 @@ extension CategoriesViewController: EditCategoryViewControllerDelegate {
         viewModel.loadCategories()
         tableView.reloadData()
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesDidUpdate"), object: nil)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .categories, item: .categoryUpdated))
     }
 }

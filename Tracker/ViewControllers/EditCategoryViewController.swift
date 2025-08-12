@@ -17,8 +17,8 @@ final class EditCategoryViewController: UIViewController {
     
     private let textField: UITextField = {
         let field = UITextField()
-        field.placeholder = "Введите название категории"
-        field.backgroundColor = .ypBackgroundDay
+        field.placeholder = NSLocalizedString("Введите название категории", comment: "")
+        field.backgroundColor = .ypBackground
         field.layer.cornerRadius = 16
         field.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 40))
         field.leftViewMode = .always
@@ -29,8 +29,8 @@ final class EditCategoryViewController: UIViewController {
     
     private let saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.backgroundColor = .ypGray
         button.layer.cornerRadius = 16
         button.isEnabled = false
@@ -56,12 +56,34 @@ final class EditCategoryViewController: UIViewController {
         setupActions()
         configureUI()
         setupNavigation()
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .open,
+            screen: .editCategory,
+            item: nil,
+            additionalParameters: [
+                "category_name": category.title
+            ]
+        ))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .close,
+            screen: .editCategory,
+            item: nil,
+            additionalParameters: [
+                "category_name": category.title
+            ]
+        ))
     }
     
     // MARK: - Private Methods
     private func setupUI() {
-        title = "Редактирование категории"
-        view.backgroundColor = .ypWhiteDay
+        title = NSLocalizedString("Редактирование категории", comment: "")
+        view.backgroundColor = .ypWhiteDayNight
         view.addSubview(textField)
         view.addSubview(saveButton)
         textField.delegate = self
@@ -73,7 +95,6 @@ final class EditCategoryViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(75)
         }
-        
         saveButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
@@ -100,32 +121,64 @@ final class EditCategoryViewController: UIViewController {
         let hasChanges = text != category.title
         let isUnique = !viewModel.getAllCategories().contains { $0.title == text && $0.id != category.id }
         saveButton.isEnabled = !text.isEmpty && hasChanges && isUnique
-        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDay : .ypGray
+        saveButton.backgroundColor = saveButton.isEnabled ? .ypBlackDayNight : .ypGray
     }
     
-    // MARK: - Actions
     @objc private func textFieldDidChange() {
         updateSaveButtonState()
+        let text = textField.text ?? ""
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .editCategory,
+            item: .textChanged,
+            additionalParameters: [
+                "text_length": text.count,
+                "has_changes": text != category.title
+            ]
+        ))
     }
     
     @objc private func saveButtonTapped() {
         guard let newTitle = textField.text, !newTitle.isEmpty else { return }
-        
         if viewModel.hasCategory(with: newTitle, excludingId: category.id) {
-            showAlert(title: "Ошибка", message: "Категория с таким названием уже существует")
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .editCategory,
+                item: .duplicateCategory,
+                additionalParameters: [
+                    "category_name": newTitle
+                ]
+            ))
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Категория с таким названием уже существует", comment: ""))
             return
         }
-        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .editCategory,
+            item: .saveCategory,
+            additionalParameters: [
+                "old_name": category.title,
+                "new_name": newTitle
+            ]
+        ))
         do {
             try viewModel.updateCategory(category, with: newTitle)
             delegate?.didUpdateCategory()
             dismiss(animated: true)
         } catch {
-            showAlert(title: "Ошибка", message: "Не удалось обновить категорию")
+            showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: NSLocalizedString("Не удалось обновить категорию", comment: ""))
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .editCategory,
+                item: .saveCategory,
+                additionalParameters: [
+                    "error": error.localizedDescription,
+                    "category_name": newTitle
+                ]
+            ))
         }
     }
     
-    // MARK: - Private Helpers
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
@@ -137,6 +190,9 @@ final class EditCategoryViewController: UIViewController {
 extension EditCategoryViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
+   
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .editCategory, item: .returnKey))
+        
         return true
     }
 }

@@ -1,18 +1,24 @@
 import UIKit
 import SnapKit
 
+// MARK: - TrackerTypeViewControllerDelegate
+protocol TrackerTypeViewControllerDelegate: AnyObject {
+    func trackerTypeViewControllerDidCreateTracker(_ controller: TrackerTypeViewController)
+}
+
 // MARK: - TrackerTypeViewController
 final class TrackerTypeViewController: UIViewController {
     
     // MARK: - Properties
     private let dataProvider: TrackerDataProviderProtocol
+    weak var delegate: TrackerTypeViewControllerDelegate?
     
     private lazy var habitButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Привычка", for: .normal)
+        button.setTitle(NSLocalizedString("Привычка", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .ypBlackDay
-        button.tintColor = .ypWhiteDay
+        button.backgroundColor = .ypBlackDayNight
+        button.tintColor = .ypWhiteDayNight
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapHabitButton), for: .touchUpInside)
         return button
@@ -20,10 +26,10 @@ final class TrackerTypeViewController: UIViewController {
     
     private lazy var eventButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Нерегулярное событие", for: .normal)
+        button.setTitle(NSLocalizedString("Нерегулярное событие", comment: ""), for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .ypBlackDay
-        button.tintColor = .ypWhiteDay
+        button.backgroundColor = .ypBlackDayNight
+        button.tintColor = .ypWhiteDayNight
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(didTapEventButton), for: .touchUpInside)
         return button
@@ -44,12 +50,20 @@ final class TrackerTypeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
+    
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .trackerType))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+ 
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .trackerType))
     }
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
-        title = "Создание трекера"
+        view.backgroundColor = .ypWhiteDayNight
+        title = NSLocalizedString("Создание трекера", comment: "")
         navigationItem.hidesBackButton = true
         view.addSubviews(habitButton, eventButton)
     }
@@ -60,7 +74,6 @@ final class TrackerTypeViewController: UIViewController {
             make.leading.trailing.equalToSuperview().inset(20)
             make.height.equalTo(60)
         }
-        
         eventButton.snp.makeConstraints { make in
             make.top.equalTo(habitButton.snp.bottom).offset(16)
             make.leading.trailing.equalToSuperview().inset(20)
@@ -70,12 +83,23 @@ final class TrackerTypeViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func didTapHabitButton() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .trackerType, item: .createHabit))
         let vc = AddTrackerViewController(type: .habit, dataProvider: dataProvider)
+        vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
     }
     
     @objc private func didTapEventButton() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .trackerType, item: .createEvent))
         let vc = AddTrackerViewController(type: .event, dataProvider: dataProvider)
+        vc.delegate = self
         navigationController?.pushViewController(vc, animated: true)
+    }
+}
+
+// MARK: - AddTrackerViewControllerDelegate
+extension TrackerTypeViewController: AddTrackerViewControllerDelegate {
+    func addTrackerViewControllerDidCreateTracker(_ controller: AddTrackerViewController) {
+        delegate?.trackerTypeViewControllerDidCreateTracker(self)
     }
 }

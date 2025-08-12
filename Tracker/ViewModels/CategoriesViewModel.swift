@@ -4,11 +4,11 @@ import Foundation
 final class CategoriesViewModel {
     
     // MARK: - Properties
-    var didUpdateCategories: (() -> Void)?
-    
     private let categoryStore: TrackerCategoryStore
     private var categories: [TrackerCategory] = []
     private var selectedCategory: TrackerCategory?
+    
+    var didUpdateCategories: (() -> Void)?
     
     // MARK: - Lifecycle
     init(categoryStore: TrackerCategoryStore = TrackerCategoryStore()) {

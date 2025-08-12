@@ -7,9 +7,7 @@ final class TrackerCell: UICollectionViewCell {
     // MARK: - Static Constants
     static let reuseIdentifier = "TrackerCell"
     
-    // MARK: - Properties
-    var onCheckButtonTapped: (() -> Void)?
-    
+    // MARK: - UI Elements
     private let cardView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 16
@@ -43,14 +41,14 @@ final class TrackerCell: UICollectionViewCell {
     private let daysCountLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         return label
     }()
     
     private lazy var checkButton: UIButton = {
         let button = UIButton(type: .custom)
         button.layer.cornerRadius = 17
-        button.tintColor = .white
+        button.tintColor = .ypWhiteDayNight
         button.setImage(UIImage(systemName: "plus"), for: .normal)
         button.imageView?.contentMode = .center
         button.addTarget(self, action: #selector(checkButtonTapped), for: .touchUpInside)
@@ -60,13 +58,16 @@ final class TrackerCell: UICollectionViewCell {
     private let pinImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "pin.fill")
-        imageView.tintColor = .ypWhiteDay
+        imageView.tintColor = .ypWhiteDayNight
         imageView.isHidden = true
-        imageView.backgroundColor = .ypWhiteDay
+        imageView.backgroundColor = .ypWhiteDayNight
         imageView.layer.cornerRadius = 4
         imageView.layer.masksToBounds = true
         return imageView
     }()
+    
+    // MARK: - Properties
+    var onCheckButtonTapped: (() -> Void)?
     
     // MARK: - Lifecycle
     override init(frame: CGRect) {
@@ -98,6 +99,9 @@ final class TrackerCell: UICollectionViewCell {
         pinImageView.backgroundColor = tracker.color
         pinImageView.isHidden = !tracker.isPinned
     }
+    
+    // MARK: - Override Methods
+    // (Нет специфических override методов кроме init, которые уже обработаны)
     
     // MARK: - Private Methods
     private func setupUI() {
@@ -146,15 +150,7 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     private func pluralizeDays(count: Int) -> String {
-        let remainder10 = count % 10
-        let remainder100 = count % 100
-        if remainder10 == 1 && remainder100 != 11 {
-            return "\(count) день"
-        } else if remainder10 >= 2 && remainder10 <= 4 && (remainder100 < 10 || remainder100 >= 20) {
-            return "\(count) дня"
-        } else {
-            return "\(count) дней"
-        }
+        return localizedDaysCount(count)
     }
     
     @objc private func checkButtonTapped() {

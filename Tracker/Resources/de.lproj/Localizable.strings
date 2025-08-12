@@ -1,0 +1,93 @@
+// MARK: - Allgemein
+"Трекеры" = "Tracker";
+"Привычка" = "Gepflogenheit";
+"Нерегулярное событие" = "Unregelmäßiges Ereignis";
+"Поиск" = "Suche";
+"Что будем отслеживать?" = "Was möchten Sie verfolgen?";
+"Ничего не найдено" = "Nichts gefunden";
+"Анализировать пока нечего" = "Es gibt noch nichts zu analysieren";
+
+// MARK: - Kategorien
+"Категория" = "Kategorie";
+"Категория с таким названием уже существует" = "Eine Kategorie mit diesem Namen existiert bereits";
+"Категория не найдена" = "Kategorie nicht gefunden";
+"Удалить трекер" = "Tracker löschen";
+"Уверены что хотите удалить трекер?" = "Möchten Sie diesen Tracker wirklich löschen?";
+"Невозможно удалить" = "Kann nicht gelöscht werden";
+"Категория содержит трекеры. Удалите их сначала." = "Diese Kategorie enthält Tracker. Bitte löschen Sie sie zuerst.";
+"Эта категория точно не нужна?" = "Möchten Sie diese Kategorie wirklich löschen?";
+"Редактирование категории" = "Kategorie bearbeiten";
+"Введите название категории" = "Kategorienamen eingeben";
+"Добавить категорию" = "Kategorie hinzufügen";
+"Новая категория" = "Neue Kategorie";
+"Не выбрана" = "Nicht ausgewählt";
+"Привычки и события можно\nобъединить по смыслу" = "Gewohnheiten und Ereignisse\nkönnen nach Bedeutung gruppiert werden";
+
+// MARK: - Filter
+"Фильтры" = "Filter";
+"Все трекеры" = "Alle Tracker";
+"Трекеры на сегодня" = "Tracker für heute";
+"Завершённые" = "Abgeschlossen";
+"Незавершённые" = "Unvollendet";
+
+// MARK: - Tracker
+"Закрепленные" = "Angeheftet";
+"Закрепить" = "Anheften";
+"Открепить" = "Lösen";
+"Редактирование привычки" = "Gewohnheit bearbeiten";
+"Редактировать" = "Bearbeiten";
+"Удалить" = "Löschen";
+"Отмена" = "Abbrechen";
+
+// MARK: - Formular
+"Создание трекера" = "Erstellen eines Trackers";
+"Новая привычка" = "Neue Gewohnheit";
+"Новое нерегулярное событие" = "Neues unregelmäßiges Ereignis";
+"Введите название трекера" = "Tracker-Namen eingeben";
+"Категория" = "Kategorie";
+"Расписание" = "Zeitplan";
+"Emoji" = "Emoji";
+"Цвет" = "Farbe";
+"Отменить" = "Abbrechen";
+"Создать" = "Erstellen";
+"Готово" = "Fertig";
+"Сохранить" = "Speichern";
+"Ограничение 38 символов" = "Begrenzung auf 38 Zeichen";
+"Заполните все поля" = "Bitte füllen Sie alle Felder aus";
+"Ошибка" = "Fehler";
+
+// MARK: - Zeitplan
+"Schedule" = "Zeitplan";
+"weekday_mon_short" = "Mo";
+"weekday_tue_short" = "Di";
+"weekday_wed_short" = "Mi";
+"weekday_thu_short" = "Do";
+"weekday_fri_short" = "Fr";
+"weekday_sat_short" = "Sa";
+"weekday_sun_short" = "So";
+
+"weekday_mon_full" = "Montag";
+"weekday_tue_full" = "Dienstag";
+"weekday_wed_full" = "Mittwoch";
+"weekday_thu_full" = "Donnerstag";
+"weekday_fri_full" = "Freitag";
+"weekday_sat_full" = "Samstag";
+"weekday_sun_full" = "Sonntag";
+
+// MARK: - Statistik
+"Статистика" = "Statistik";
+"Лучший период" = "Beste Periode";
+"Идеальные дни" = "Perfekte Tage";
+"Трекеров завершено" = "Tracker abgeschlossen";
+"Среднее значение" = "Mittelwert";
+
+// MARK: - Onboarding
+"Отслеживайте только то, что хотите" = "Verfolgen Sie nur, was Sie möchten";
+"Даже если это не литры воды и йога" = "Auch wenn es kein Wasserkonsum oder Yoga ist";
+"Вот это технологии!" = "Das sind Technologien!";
+
+// MARK: - Warnungen
+"Не удалось изменить закрепление: %@" = "Anheften/Lösen fehlgeschlagen: %@";
+"Не удалось удалить трекер" = "Löschen des Trackers fehlgeschlagen";
+"Не удалось обновить категорию" = "Aktualisierung der Kategorie fehlgeschlagen";
+"Не удалось удалить категорию: %@" = "Löschen der Kategorie fehlgeschlagen: %@";

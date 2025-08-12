@@ -6,6 +6,11 @@ enum TrackerType {
     case event
 }
 
+// MARK: - Analytics Constants
+enum AnalyticsConstants {
+    static let appMetricaAPIKey = "147a279e-5dcc-4356-a7bb-06b778f39284"
+}
+
 // MARK: - Tracker Constants
 enum TrackerConstants {
     
@@ -32,17 +37,17 @@ enum TrackerConstants {
     
     // MARK: Text
     enum Text {
-        static let newHabitTitle = "Новая привычка"
-        static let newEventTitle = "Новое нерегулярное событие"
-        static let trackerNamePlaceholder = "Введите название трекера"
-        static let categoryOption = "Категория"
-        static let scheduleOption = "Расписание"
-        static let emojiTitle = "Emoji"
-        static let colorTitle = "Цвет"
-        static let cancelButton = "Отменить"
-        static let createButton = "Создать"
-        static let saveButton = "Сохранить"
-        static let lengthError = "Ограничение 38 символов"
+        static let newHabitTitle = NSLocalizedString("Новая привычка", comment: "")
+        static let newEventTitle = NSLocalizedString("Новое нерегулярное событие", comment: "")
+        static let trackerNamePlaceholder = NSLocalizedString("Введите название трекера", comment: "")
+        static let categoryOption = NSLocalizedString("Категория", comment: "")
+        static let scheduleOption = NSLocalizedString("Расписание", comment: "")
+        static let emojiTitle = NSLocalizedString("Emoji", comment: "")
+        static let colorTitle = NSLocalizedString("Цвет", comment: "")
+        static let cancelButton = NSLocalizedString("Отменить", comment: "")
+        static let createButton = NSLocalizedString("Создать", comment: "")
+        static let saveButton = NSLocalizedString("Сохранить", comment: "")
+        static let lengthError = NSLocalizedString("Ограничение 38 символов", comment: "")
     }
     
     // MARK: Layout

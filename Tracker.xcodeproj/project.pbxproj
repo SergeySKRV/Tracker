@@ -7,7 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9001C9372E1DA7A300ADD50C /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9001C9362E1DA7A300ADD50C /* SnapKit */; };
+		90399FF72E44E30B00B82EC1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 90399FF52E44E30B00B82EC1 /* Localizable.strings */; };
+		9039A0002E451B1600B82EC1 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */; };
+		9039A0042E451B8B00B82EC1 /* LocalizedDaysCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */; };
+		9039A0112E4535A400B82EC1 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A0102E4535A400B82EC1 /* SnapKit */; };
+		9039A03B2E4634A200B82EC1 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A03A2E4634A200B82EC1 /* FilterViewController.swift */; };
+		9039A03D2E4634EA00B82EC1 /* TrackersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A03C2E4634EA00B82EC1 /* TrackersViewModel.swift */; };
+		9039A2E32E466B6F00B82EC1 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2E22E466B6F00B82EC1 /* InlineSnapshotTesting */; };
+		9039A2E52E466B6F00B82EC1 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2E42E466B6F00B82EC1 /* SnapshotTesting */; };
+		9039A2E72E466B6F00B82EC1 /* SnapshotTestingCustomDump in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2E62E466B6F00B82EC1 /* SnapshotTestingCustomDump */; };
+		9039A2FA2E46813100B82EC1 /* AppMetricaAdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2F92E46813100B82EC1 /* AppMetricaAdSupport */; };
+		9039A2FC2E46813100B82EC1 /* AppMetricaCore in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2FB2E46813100B82EC1 /* AppMetricaCore */; };
+		9039A2FE2E46813100B82EC1 /* AppMetricaCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2FD2E46813100B82EC1 /* AppMetricaCrashes */; };
+		9039A3002E46813100B82EC1 /* AppMetricaLibraryAdapter in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A2FF2E46813100B82EC1 /* AppMetricaLibraryAdapter */; };
+		9039A3022E46813100B82EC1 /* AppMetricaScreenshot in Frameworks */ = {isa = PBXBuildFile; productRef = 9039A3012E46813100B82EC1 /* AppMetricaScreenshot */; };
+		9039A3042E46A90D00B82EC1 /* StatisticViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */; };
+		9039A3062E46AE0D00B82EC1 /* StatisticsCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */; };
+		9039A30A2E46C00B00B82EC1 /* GradientBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */; };
+		9039A3302E4BBBAB00B82EC1 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */; };
 		903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98A82E1C589D00A130BD /* ColorCell.swift */; };
 		903A98AB2E1C58FE00A130BD /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 903A98AA2E1C58FE00A130BD /* EmojiCell.swift */; };
 		904170DD2E06F50300638E71 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904170D32E06F50300638E71 /* AppDelegate.swift */; };
@@ -72,6 +89,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		90399FF62E44E30B00B82EC1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FF82E44E35600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		90399FF92E44E35600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FFA2E44E35D00B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		90399FFB2E44E35F00B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		90399FFF2E451B1600B82EC1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0012E451B2600B82EC1 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = de; path = de.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0022E451B2700B82EC1 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedDaysCount.swift; sourceTree = "<group>"; };
+		9039A03A2E4634A200B82EC1 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		9039A03C2E4634EA00B82EC1 /* TrackersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewModel.swift; sourceTree = "<group>"; };
+		9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewModel.swift; sourceTree = "<group>"; };
+		9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsCardView.swift; sourceTree = "<group>"; };
+		9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientBorderView.swift; sourceTree = "<group>"; };
+		9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		903A98A82E1C589D00A130BD /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
 		903A98AA2E1C58FE00A130BD /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		9041709F2E06E7D500638E71 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,12 +154,25 @@
 		9058DEF22E412445000A1365 /* ScheduleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		9039A0482E464CB400B82EC1 /* TrackerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TrackerTests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		9041709C2E06E7D500638E71 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9001C9372E1DA7A300ADD50C /* SnapKit in Frameworks */,
+				9039A3022E46813100B82EC1 /* AppMetricaScreenshot in Frameworks */,
+				9039A2FE2E46813100B82EC1 /* AppMetricaCrashes in Frameworks */,
+				9039A3002E46813100B82EC1 /* AppMetricaLibraryAdapter in Frameworks */,
+				9039A0112E4535A400B82EC1 /* SnapKit in Frameworks */,
+				9039A2FC2E46813100B82EC1 /* AppMetricaCore in Frameworks */,
+				9039A2FA2E46813100B82EC1 /* AppMetricaAdSupport in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +180,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9039A2E72E466B6F00B82EC1 /* SnapshotTestingCustomDump in Frameworks */,
+				9039A2E32E466B6F00B82EC1 /* InlineSnapshotTesting in Frameworks */,
+				9039A2E52E466B6F00B82EC1 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,10 +203,39 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		90399FF42E44E2DF00B82EC1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				90399FF52E44E30B00B82EC1 /* Localizable.strings */,
+				90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		9039A30B2E46C09200B82EC1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				9058DECC2E36AEC0000A1365 /* PlaceholderView.swift */,
+				9039A3052E46AE0D00B82EC1 /* StatisticsCardView.swift */,
+				9039A3092E46C00B00B82EC1 /* GradientBorderView.swift */,
+				904BF4492E11E5680090EFCC /* TrackerCategoryHeaderView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		9039A32F2E4BBBAB00B82EC1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9039A32E2E4BBBAB00B82EC1 /* AnalyticsService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		904170962E06E7D500638E71 = {
 			isa = PBXGroup;
 			children = (
 				904170DC2E06F50300638E71 /* Tracker */,
+				9039A0482E464CB400B82EC1 /* TrackerTests */,
 				90399FE22E42763100B82EC1 /* Frameworks */,
 				904170A02E06E7D500638E71 /* Products */,
 			);
@@ -177,11 +254,14 @@
 		904170DC2E06F50300638E71 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				9039A32F2E4BBBAB00B82EC1 /* Services */,
+				90399FF42E44E2DF00B82EC1 /* Resources */,
 				9058DE682E230065000A1365 /* Enum */,
 				9058DE3F2E216EA5000A1365 /* CoreData */,
 				904171312E08856800638E71 /* Structures */,
 				904170EB2E06FAEA00638E71 /* Extensions */,
 				9041717D2E0B285900638E71 /* Cell */,
+				9039A30B2E46C09200B82EC1 /* View */,
 				9058DEC52E36AE29000A1365 /* ViewModels */,
 				904170E42E06F50700638E71 /* ViewControllers */,
 				904170D32E06F50300638E71 /* AppDelegate.swift */,
@@ -205,12 +285,12 @@
 				9041727F2E0D849800638E71 /* AddTrackerViewController.swift */,
 				904172812E0D9BC600638E71 /* ScheduleViewController.swift */,
 				9041734A2E0DCA2400638E71 /* TrackerTypeViewController.swift */,
-				904BF4492E11E5680090EFCC /* TrackerCategoryHeaderView.swift */,
 				9058DEC82E36AE6B000A1365 /* CategoriesViewController.swift */,
 				9058DECE2E36B7F5000A1365 /* CreateCategoryViewController.swift */,
 				9058DED02E3AA9C7000A1365 /* EditCategoryViewController.swift */,
 				9058DED22E3BFA76000A1365 /* EditTrackerViewController.swift */,
 				9058DEE82E40E708000A1365 /* TrackerFormViewController.swift */,
+				9039A03A2E4634A200B82EC1 /* FilterViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -221,6 +301,7 @@
 				9058DE642E22E139000A1365 /* UIView+AddSubviews.swift */,
 				9058DE5E2E22CF7D000A1365 /* TrackerCoreData.swift */,
 				9058DE602E22CFA7000A1365 /* UIColor+Hex.swift */,
+				9039A0032E451B8B00B82EC1 /* LocalizedDaysCount.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -273,11 +354,12 @@
 			isa = PBXGroup;
 			children = (
 				9058DEC62E36AE3A000A1365 /* CategoriesViewModel.swift */,
-				9058DECC2E36AEC0000A1365 /* PlaceholderView.swift */,
 				9058DEEA2E40EDE1000A1365 /* TrackerFormViewModel.swift */,
 				9058DEEC2E40EE66000A1365 /* AddTrackerViewModel.swift */,
 				9058DEEE2E40EE8E000A1365 /* EditTrackerViewModel.swift */,
 				9058DEF22E412445000A1365 /* ScheduleViewModel.swift */,
+				9039A03C2E4634EA00B82EC1 /* TrackersViewModel.swift */,
+				9039A3032E46A90D00B82EC1 /* StatisticViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -299,7 +381,12 @@
 			);
 			name = Tracker;
 			packageProductDependencies = (
-				9001C9362E1DA7A300ADD50C /* SnapKit */,
+				9039A0102E4535A400B82EC1 /* SnapKit */,
+				9039A2F92E46813100B82EC1 /* AppMetricaAdSupport */,
+				9039A2FB2E46813100B82EC1 /* AppMetricaCore */,
+				9039A2FD2E46813100B82EC1 /* AppMetricaCrashes */,
+				9039A2FF2E46813100B82EC1 /* AppMetricaLibraryAdapter */,
+				9039A3012E46813100B82EC1 /* AppMetricaScreenshot */,
 			);
 			productName = Tracker;
 			productReference = 9041709F2E06E7D500638E71 /* Tracker.app */;
@@ -318,8 +405,14 @@
 			dependencies = (
 				904170B72E06E7D800638E71 /* PBXTargetDependency */,
 			);
+			fileSystemSynchronizedGroups = (
+				9039A0482E464CB400B82EC1 /* TrackerTests */,
+			);
 			name = TrackerTests;
 			packageProductDependencies = (
+				9039A2E22E466B6F00B82EC1 /* InlineSnapshotTesting */,
+				9039A2E42E466B6F00B82EC1 /* SnapshotTesting */,
+				9039A2E62E466B6F00B82EC1 /* SnapshotTestingCustomDump */,
 			);
 			productName = TrackerTests;
 			productReference = 904170B52E06E7D800638E71 /* TrackerTests.xctest */;
@@ -360,6 +453,7 @@
 					};
 					904170B42E06E7D800638E71 = {
 						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
 						TestTargetID = 9041709E2E06E7D500638E71;
 					};
 					904170BE2E06E7D800638E71 = {
@@ -374,11 +468,15 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
+				ru,
 			);
 			mainGroup = 904170962E06E7D500638E71;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */,
+				9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				9039A2E12E466B6F00B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 904170A02E06E7D500638E71 /* Products */;
@@ -398,6 +496,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				904170E02E06F50300638E71 /* Assets.xcassets in Resources */,
+				9039A0002E451B1600B82EC1 /* Localizable.stringsdict in Resources */,
+				90399FF72E44E30B00B82EC1 /* Localizable.strings in Resources */,
 				904170E22E06F50300638E71 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,6 +529,7 @@
 				9058DEE52E4002BD000A1365 /* CategoryError.swift in Sources */,
 				9058DEE92E40E708000A1365 /* TrackerFormViewController.swift in Sources */,
 				9058DE592E22A883000A1365 /* TrackerStore.swift in Sources */,
+				9039A03D2E4634EA00B82EC1 /* TrackersViewModel.swift in Sources */,
 				904170DD2E06F50300638E71 /* AppDelegate.swift in Sources */,
 				9058DED12E3AA9C7000A1365 /* EditCategoryViewController.swift in Sources */,
 				904170E62E06F51600638E71 /* TabBarController.swift in Sources */,
@@ -443,23 +544,29 @@
 				9058DEE12E3E306F000A1365 /* OnboardingViewController.swift in Sources */,
 				9058DE6A2E230076000A1365 /* TrackerConstants.swift in Sources */,
 				9058DEC92E36AE6B000A1365 /* CategoriesViewController.swift in Sources */,
+				9039A3062E46AE0D00B82EC1 /* StatisticsCardView.swift in Sources */,
 				9058DE322E21623A000A1365 /* TrackerModel.xcdatamodeld in Sources */,
 				9058DE6C2E2302C6000A1365 /* CoreDataError.swift in Sources */,
 				9058DEEF2E40EE8E000A1365 /* EditTrackerViewModel.swift in Sources */,
 				9058DE612E22CFA7000A1365 /* UIColor+Hex.swift in Sources */,
+				9039A3302E4BBBAB00B82EC1 /* AnalyticsService.swift in Sources */,
 				903A98A92E1C589D00A130BD /* ColorCell.swift in Sources */,
+				9039A0042E451B8B00B82EC1 /* LocalizedDaysCount.swift in Sources */,
 				904171372E08869700638E71 /* TrackerRecord.swift in Sources */,
 				9058DECD2E36AEC0000A1365 /* PlaceholderView.swift in Sources */,
 				9058DED32E3BFA76000A1365 /* EditTrackerViewController.swift in Sources */,
 				9058DEEB2E40EDE1000A1365 /* TrackerFormViewModel.swift in Sources */,
 				904171332E0885E400638E71 /* Weekday+Tracker.swift in Sources */,
 				904170DE2E06F50300638E71 /* SceneDelegate.swift in Sources */,
+				9039A3042E46A90D00B82EC1 /* StatisticViewModel.swift in Sources */,
 				9058DEF32E412445000A1365 /* ScheduleViewModel.swift in Sources */,
 				9058DE5F2E22CF7D000A1365 /* TrackerCoreData.swift in Sources */,
 				9058DE412E216EB8000A1365 /* CoreDataStack.swift in Sources */,
 				9058DEC72E36AE3A000A1365 /* CategoriesViewModel.swift in Sources */,
 				9058DE5D2E22A8FC000A1365 /* TrackerRecordStore.swift in Sources */,
 				9058DE702E244F34000A1365 /* ViewConstants.swift in Sources */,
+				9039A03B2E4634A200B82EC1 /* FilterViewController.swift in Sources */,
+				9039A30A2E46C00B00B82EC1 /* GradientBorderView.swift in Sources */,
 				9058DE6E2E2406DE000A1365 /* TrackerDataProvider.swift in Sources */,
 				9058DE5B2E22A8CF000A1365 /* TrackerCategoryStore.swift in Sources */,
 				904170EA2E06F73900638E71 /* StatisticsViewController.swift in Sources */,
@@ -498,10 +605,32 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		90399FF52E44E30B00B82EC1 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90399FF62E44E30B00B82EC1 /* en */,
+				90399FF92E44E35600B82EC1 /* de */,
+				90399FFB2E44E35F00B82EC1 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		90399FFE2E451B1600B82EC1 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90399FFF2E451B1600B82EC1 /* en */,
+				9039A0012E451B2600B82EC1 /* de */,
+				9039A0022E451B2700B82EC1 /* ru */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		904170D72E06F50300638E71 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				904170D62E06F50300638E71 /* Base */,
+				90399FF82E44E35600B82EC1 /* de */,
+				90399FFA2E44E35D00B82EC1 /* ru */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -572,6 +701,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -636,6 +766,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -692,15 +823,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C6SK932VBS;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.SergeySKRV.TrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tracker.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Tracker";
@@ -711,11 +844,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C6SK932VBS;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.SergeySKRV.TrackerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -733,6 +867,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C6SK932VBS;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.SergeySKRV.TrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -750,6 +885,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C6SK932VBS;
 				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.SergeySKRV.TrackerUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -802,7 +938,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+		9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
 			requirement = {
@@ -810,13 +946,69 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		9039A2E12E466B6F00B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.18.6;
+			};
+		};
+		9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/appmetrica/appmetrica-sdk-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		9001C9362E1DA7A300ADD50C /* SnapKit */ = {
+		9039A0102E4535A400B82EC1 /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 9001C9352E1DA7A300ADD50C /* XCRemoteSwiftPackageReference "SnapKit" */;
+			package = 9039A00F2E4535A400B82EC1 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		9039A2E22E466B6F00B82EC1 /* InlineSnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2E12E466B6F00B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = InlineSnapshotTesting;
+		};
+		9039A2E42E466B6F00B82EC1 /* SnapshotTesting */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2E12E466B6F00B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		9039A2E62E466B6F00B82EC1 /* SnapshotTestingCustomDump */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2E12E466B6F00B82EC1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTestingCustomDump;
+		};
+		9039A2F92E46813100B82EC1 /* AppMetricaAdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaAdSupport;
+		};
+		9039A2FB2E46813100B82EC1 /* AppMetricaCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaCore;
+		};
+		9039A2FD2E46813100B82EC1 /* AppMetricaCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaCrashes;
+		};
+		9039A2FF2E46813100B82EC1 /* AppMetricaLibraryAdapter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaLibraryAdapter;
+		};
+		9039A3012E46813100B82EC1 /* AppMetricaScreenshot */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9039A2F82E46813100B82EC1 /* XCRemoteSwiftPackageReference "appmetrica-sdk-ios" */;
+			productName = AppMetricaScreenshot;
 		};
 /* End XCSwiftPackageProductDependency section */
 

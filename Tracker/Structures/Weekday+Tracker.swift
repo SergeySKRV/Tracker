@@ -16,25 +16,25 @@ enum Weekday: Int, CaseIterable, Codable {
     // MARK: Properties
     var shortName: String {
         switch self {
-        case .monday: return "Пн"
-        case .tuesday: return "Вт"
-        case .wednesday: return "Ср"
-        case .thursday: return "Чт"
-        case .friday: return "Пт"
-        case .saturday: return "Сб"
-        case .sunday: return "Вс"
+        case .monday: return NSLocalizedString("weekday_mon_short", comment: "Monday short name")
+        case .tuesday: return NSLocalizedString("weekday_tue_short", comment: "Tuesday short name")
+        case .wednesday: return NSLocalizedString("weekday_wed_short", comment: "Wednesday short name")
+        case .thursday: return NSLocalizedString("weekday_thu_short", comment: "Thursday short name")
+        case .friday: return NSLocalizedString("weekday_fri_short", comment: "Friday short name")
+        case .saturday: return NSLocalizedString("weekday_sat_short", comment: "Saturday short name")
+        case .sunday: return NSLocalizedString("weekday_sun_short", comment: "Sunday short name")
         }
     }
     
     var fullName: String {
         switch self {
-        case .monday: return "Понедельник"
-        case .tuesday: return "Вторник"
-        case .wednesday: return "Среда"
-        case .thursday: return "Четверг"
-        case .friday: return "Пятница"
-        case .saturday: return "Суббота"
-        case .sunday: return "Воскресенье"
+        case .monday: return NSLocalizedString("weekday_mon_full", comment: "Monday full name")
+        case .tuesday: return NSLocalizedString("weekday_tue_full", comment: "Tuesday full name")
+        case .wednesday: return NSLocalizedString("weekday_wed_full", comment: "Wednesday full name")
+        case .thursday: return NSLocalizedString("weekday_thu_full", comment: "Thursday full name")
+        case .friday: return NSLocalizedString("weekday_fri_full", comment: "Friday full name")
+        case .saturday: return NSLocalizedString("weekday_sat_full", comment: "Saturday full name")
+        case .sunday: return NSLocalizedString("weekday_sun_full", comment: "Sunday full name")
         }
     }
 }

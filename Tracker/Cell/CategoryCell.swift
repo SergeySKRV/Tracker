@@ -7,10 +7,10 @@ final class CategoryCell: UITableViewCell {
     // MARK: - Static Constants
     static let identifier = "CategoryCell"
     
-    // MARK: - Properties
+    // MARK: - UI Properties
     private let containerView: UIView = {
         let view = UIView()
-        view.backgroundColor = .ypBackgroundDay
+        view.backgroundColor = .ypBackground
         view.layer.masksToBounds = true
         return view
     }()
@@ -18,7 +18,7 @@ final class CategoryCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17, weight: .regular)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         label.numberOfLines = 1
         return label
     }()
@@ -75,7 +75,6 @@ final class CategoryCell: UITableViewCell {
         containerView.layer.cornerRadius = cornerRadius
     }
     
-    // MARK: - Reuse
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = nil
@@ -89,7 +88,6 @@ final class CategoryCell: UITableViewCell {
     private func setupUI() {
         selectionStyle = .none
         backgroundColor = .clear
-        
         contentView.addSubview(containerView)
         [titleLabel, checkmarkImageView].forEach { containerView.addSubview($0) }
         contentView.addSubview(separatorView)

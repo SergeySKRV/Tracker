@@ -4,11 +4,13 @@ import SnapKit
 // MARK: - OnboardingViewController
 final class OnboardingViewController: UIViewController {
     
-    // MARK: - Properties
+    // MARK: - UI Elements
     private var pageViewController: UIPageViewController!
-    private var pages: [UIViewController] = []
     private let doneButton = UIButton(type: .system)
     private let pageControl = UIPageControl()
+    
+    // MARK: - Properties
+    private var pages: [UIViewController] = []
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -17,18 +19,31 @@ final class OnboardingViewController: UIViewController {
         setupPageViewController()
         setupUI()
         setupConstraints()
+
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .onboarding))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .onboarding))
+    }
+    
+    // MARK: - Override Methods
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .darkContent
     }
     
     // MARK: - Private Methods
     private func setupPages() {
         let page1 = OnboardingPageViewController(
             imageName: "onboarding1",
-            title: "Отслеживайте только то, что хотите"
+            title: NSLocalizedString("Отслеживайте только то, что хотите", comment: "")
         )
         
         let page2 = OnboardingPageViewController(
             imageName: "onboarding2",
-            title: "Даже если это не литры воды и йога"
+            title: NSLocalizedString("Даже если это не литры воды и йога", comment: "")
         )
         
         pages = [page1, page2]
@@ -56,12 +71,12 @@ final class OnboardingViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         
-        doneButton.setTitle("Вот это технологии!", for: .normal)
+        doneButton.setTitle(NSLocalizedString("Вот это технологии!", comment: ""), for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        doneButton.setTitleColor(.ypWhiteDay, for: .normal)
-        doneButton.backgroundColor = .ypBlackDay
+        doneButton.setTitleColor(.ypWhiteDayNight, for: .normal)
+        doneButton.backgroundColor = .ypBlackDayNight
         doneButton.layer.cornerRadius = 16
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         view.addSubview(doneButton)
@@ -69,7 +84,7 @@ final class OnboardingViewController: UIViewController {
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         pageControl.pageIndicatorTintColor = .ypGray
-        pageControl.currentPageIndicatorTintColor = .ypBlackDay
+        pageControl.currentPageIndicatorTintColor = .ypBlackDayNight
         view.addSubview(pageControl)
     }
     
@@ -92,6 +107,8 @@ final class OnboardingViewController: UIViewController {
     
     // MARK: - Actions
     @objc private func doneButtonTapped() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .done))
+        
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         let tabBarController = TabBarController()
         tabBarController.modalPresentationStyle = .fullScreen
@@ -99,24 +116,24 @@ final class OnboardingViewController: UIViewController {
     }
 }
 
-// MARK: - Status Bar
-extension OnboardingViewController {
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        .darkContent
-    }
-}
-
-// MARK: - UIPageViewControllerDelegate
+// MARK: - UIPageViewControllerDataSource
 extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController) else { return nil }
-        return index == 0 ? pages.last : pages[index - 1]
+        let previousIndex = index == 0 ? pages.count - 1 : index - 1
+   
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pagePrevious))
+        
+        return pages[previousIndex]
     }
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let index = pages.firstIndex(of: viewController) else { return nil }
-        return index == pages.count - 1 ? pages.first : pages[index + 1]
+        let nextIndex = index == pages.count - 1 ? 0 : index + 1
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pageNext))
+        
+        return pages[nextIndex]
     }
     
     func pageViewController(
@@ -128,6 +145,10 @@ extension OnboardingViewController: UIPageViewControllerDataSource, UIPageViewCo
         if let current = pageViewController.viewControllers?.first,
            let index = pages.firstIndex(of: current) {
             pageControl.currentPage = index
+            
+            if completed {
+                AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .onboarding, item: .pageChanged))
+            }
         }
     }
 }

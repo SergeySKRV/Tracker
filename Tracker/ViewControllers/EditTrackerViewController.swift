@@ -3,11 +3,11 @@ import SnapKit
 
 // MARK: - EditTrackerViewController
 final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
-    
+
     // MARK: - Properties
     private let editViewModel: EditTrackerViewModel
     private let formVC: TrackerFormViewController
-    
+
     // MARK: - Lifecycle
     init(
         tracker: Tracker,
@@ -21,52 +21,72 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         )
         self.formVC = TrackerFormViewController()
         super.init(nibName: nil, bundle: nil)
-        
         setupForm()
         setupInitialValues()
     }
-    
+
     required init?(coder: NSCoder) {
         assertionFailure("init(coder:) has not been implemented")
         return nil
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         addChildViewController()
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .open,
+            screen: .editTracker,
+            item: nil,
+            additionalParameters: [
+                "tracker_name": editViewModel.trackerTitle
+            ]
+        ))
     }
-    
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .close,
+            screen: .editTracker,
+            item: nil,
+            additionalParameters: [
+                "tracker_name": editViewModel.trackerTitle
+            ]
+        ))
+    }
+
     // MARK: - Private Methods
     private func setupForm() {
         formVC.delegate = self
         formVC.viewModel = editViewModel
-        
         formVC.daysCountLabel = createDaysCountLabel()
-        title = "Редактирование привычки"
+        title = NSLocalizedString("Редактирование привычки", comment: "")
         formVC.saveButton.setTitle(TrackerConstants.Text.saveButton, for: .normal)
     }
-    
+
     private func setupInitialValues() {
         formVC.titleTextField.text = editViewModel.trackerTitle
         formVC.selectedCategoryTitle = editViewModel.selectedCategoryTitle
     }
-    
+
     private func addChildViewController() {
         addChild(formVC)
         view.addSubview(formVC.view)
         formVC.view.snp.makeConstraints { $0.edges.equalToSuperview() }
         formVC.didMove(toParent: self)
     }
-    
+
     private func createDaysCountLabel() -> UILabel {
         let label = UILabel()
         label.text = editViewModel.pluralizeDays(count: editViewModel.daysCompleted)
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
-        label.textColor = .ypBlackDay
+        label.textColor = .ypBlackDayNight
         label.textAlignment = .center
         return label
     }
-    
+
     // MARK: - TrackerFormDelegate
     func didRequestSave(
         title: String,
@@ -75,6 +95,16 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
         schedule: Set<Weekday>,
         categoryId: UUID
     ) {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .editTracker,
+            item: .saveTracker,
+            additionalParameters: [
+                "tracker_name": title,
+                "emoji": emoji
+            ]
+        ))
+        
         editViewModel.saveTracker(
             title: title,
             emoji: emoji,
@@ -85,15 +115,33 @@ final class EditTrackerViewController: UIViewController, TrackerFormDelegate {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                        type: .click,
+                        screen: .editTracker,
+                        item: .saveSuccess,
+                        additionalParameters: [
+                            "tracker_name": title
+                        ]
+                    ))
                     self?.dismiss(animated: true)
                 case .failure(let error):
-                    self?.formVC.showAlert(title: "Ошибка", message: error.localizedDescription)
+                    AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                        type: .click,
+                        screen: .editTracker,
+                        item: .saveTracker,
+                        additionalParameters: [
+                            "error": error.localizedDescription,
+                            "tracker_name": title
+                        ]
+                    ))
+                    self?.formVC.showAlert(title: NSLocalizedString("Ошибка", comment: ""), message: error.localizedDescription)
                 }
             }
         }
     }
-    
+
     func didRequestCancel() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .editTracker, item: .cancelEdit))
         dismiss(animated: true)
     }
 }

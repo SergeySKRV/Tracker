@@ -18,10 +18,10 @@ final class ScheduleViewController: UIViewController {
     
     private lazy var doneButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("Готово", for: .normal)
-        button.setTitleColor(.ypWhiteDay, for: .normal)
+        button.setTitle(NSLocalizedString("Готово", comment: ""), for: .normal)
+        button.setTitleColor(.ypWhiteDayNight, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        button.backgroundColor = .ypBlackDay
+        button.backgroundColor = .ypBlackDayNight
         button.layer.cornerRadius = 16
         button.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         return button
@@ -44,16 +44,24 @@ final class ScheduleViewController: UIViewController {
         setupConstraints()
         setupNavigation()
         bindViewModel()
+      
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .open, screen: .schedule))
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+       
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .close, screen: .schedule))
     }
     
     // MARK: - Private Methods
     private func setupUI() {
-        view.backgroundColor = .ypWhiteDay
+        view.backgroundColor = .ypWhiteDayNight
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.rowHeight = 75
-        tableView.backgroundColor = .ypWhiteDay
+        tableView.backgroundColor = .ypWhiteDayNight
         tableView.separatorColor = .ypGray
         tableView.separatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
         view.addSubviews(tableView, doneButton)
@@ -74,7 +82,7 @@ final class ScheduleViewController: UIViewController {
     }
     
     private func setupNavigation() {
-        title = "Расписание"
+        title = NSLocalizedString("Расписание", comment: "")
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.hidesBackButton = true
     }
@@ -87,8 +95,9 @@ final class ScheduleViewController: UIViewController {
         }
     }
     
-    // MARK: - Actions
     @objc private func doneButtonTapped() {
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(type: .click, screen: .schedule, item: .done))
+        
         delegate?.didSelectSchedule(viewModel.selectedDays)
         navigationController?.popViewController(animated: true)
     }
@@ -109,7 +118,7 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
         content.text = day.fullName
         content.textProperties.font = UIFont.systemFont(ofSize: 17)
         cell.contentConfiguration = content
-        cell.backgroundColor = .ypBackgroundDay
+        cell.backgroundColor = .ypBackground
         
         let switchView = UISwitch()
         switchView.onTintColor = .ypBlue
@@ -127,6 +136,16 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
            let switchView = cell.accessoryView as? UISwitch {
             switchView.setOn(!switchView.isOn, animated: true)
             viewModel.toggleDay(at: indexPath.row)
+            
+            let day = viewModel.day(at: indexPath.row)
+            AnalyticsService.shared.reportEvent(AnalyticsEvent(
+                type: .click,
+                screen: .schedule,
+                item: .daySelected,
+                additionalParameters: [
+                    "day": day?.fullName ?? "Unknown"
+                ]
+            ))
         }
     }
     
@@ -140,5 +159,16 @@ extension ScheduleViewController: UITableViewDataSource, UITableViewDelegate {
     
     @objc private func switchValueChanged(_ sender: UISwitch) {
         viewModel.toggleDay(at: sender.tag)
+      
+        let day = viewModel.day(at: sender.tag)
+        AnalyticsService.shared.reportEvent(AnalyticsEvent(
+            type: .click,
+            screen: .schedule,
+            item: .switchChanged,
+            additionalParameters: [
+                "day": day?.fullName ?? "Unknown",
+                "is_on": sender.isOn
+            ]
+        ))
     }
 }

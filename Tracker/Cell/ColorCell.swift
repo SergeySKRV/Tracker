@@ -42,7 +42,7 @@ final class ColorCell: UICollectionViewCell {
         }
     }
     
-    // MARK: - Reuse
+    // MARK: - Override Methods
     override func prepareForReuse() {
         super.prepareForReuse()
         colorView.backgroundColor = nil
